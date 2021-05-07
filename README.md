@@ -48,10 +48,10 @@ The highlight follows the cursor. Pressing `HiEarase` key turns off the mode.
 ## Customizing Colors
 
 The plugin provides 14 + 2 default colors. 
-
+  <div style="display:inline-block">
   <img width="190" alt="default_light" src="https://user-images.githubusercontent.com/83812658/117488164-0bf5f600-afa7-11eb-90ff-fe085c814a52.png">
   <img width="190" alt="default_dark"  src="https://user-images.githubusercontent.com/83812658/117488162-0a2c3280-afa7-11eb-94dd-94d58e9de0e9.png">
-
+  </div>
 You can add, change, reorder, and save colors using Vim's native **hi** command, and see the results in real time.
 
 ### Example
