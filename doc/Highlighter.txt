@@ -1,0 +1,161 @@
+*Highlighter.txt*  Vim Highlighter
+                                                                             ~
+                                                                             ~
+            |   |_)       |     |_)       |     |                            ~
+            |   | |  _` | __ \  | |  _` | __ \  __|  _ \  __|                ~
+            ___ | | (   | | | | | | (   | | | | |    __/ |                   ~
+           _|  _|_|\__, |_| |_|_|_|\__, |_| |_|\__|\___|_|                   ~
+                    |___/           |___/                                    ~
+                                                                             ~
+          An easy words highlighter using configurable colors                ~
+                                                                             ~
+                Author: Azabiong <azabiongc@gmail.com>                       ~
+                           Licence: MIT                                      ~
+                                                                             ~
+------------------------------------------------------------------------------
+CONTENTS                                                           *Highlighter*
+
+        Introduction`..............................`|Hi-introduction|
+        Key Map`........................................`|Hi-key-map|
+        One Time Highlight`..................`|Hi-one-time-highlight|
+        Following Highlight`................`|Hi-following-highlight|
+        Customizing Colors`..................`|Hi-customizing-colors|
+        Commands`......................................`|Hi-commands|
+        Options`........................................`|Hi-options|
+        Reference`....................................`|Hi-reference|
+
+------------------------------------------------------------------------------
+INTRODUCTION                                                   *Hi-introduction*
+
+One of the things that are not easy for people, but an easy thing for computers
+would be finding symbols very quickly. This plugin provides an easy way to use
+Vim's highlighting function which helps quickly find the usage of words and
+easily check spelling of variables.
+
+------------------------------------------------------------------------------
+KEY-MAP                                       *HiSet* *HiErase* *HiClear* *Hi-key-map*
+
+The plugin uses three mapped keys which users can assign in the configuration
+file.
+>
+    let HiSet   = 'f<CR>'           " normal, visual
+    let HiErase = 'f<BS>'           " normal, visual
+    let HiClear = 'f<C-L>'          " normal
+<
+In normal mode, `HiSet` and `HiErase` keys set or erase highlights of the word
+under the cursor. `HiClear` key clears all highlights.
+
+In visual mode, the highlight is selected as a pattern from the selection, and
+applied to other words. To reselect the pattern, |gv| command would be helpful.
+`HiErase` key erases visually selected highlight in normal mode.
+
+------------------------------------------------------------------------------
+ONE TIME HIGHLIGHT                                       *Hi-one-time-highlight*
+
+The plugin provides an automatic feature that erases highlights after using.
+It would be useful when just one time quick scanning is needed at the cursor
+position.
+
+When the cursor is on a word that is not highlighted, pressing `HiErase` key
+sets `ONE TIME HIGHLIGHT`, The highlight is maintained while the cursor stays,
+and then automatically turned off after the cursor moved.
+
+------------------------------------------------------------------------------
+FOLLOWING HIGHLIGHT                                     *Hi-following-highlight*
+
+When repeated operation of one time highlight is needed, there is more automatic
+mode which follows the cursor.
+
+Pressing `HiSet` key over **one time highlight** before moving the cursor sets
+`FOLLOWING HIGHLIGHT` mode.
+The highlight follows the cursor. Pressing `HiEarase`
+key turns off the mode.
+
+------------------------------------------------------------------------------
+CUSTOMIZING COLORS                                       *Hi-customizing-colors*
+
+The plugin provides 14 + 2 default colors.
+>
+    HiColor1, HiColor2, HiColor3, ... HiColor14
+    HiFollow, HiOneTime,
+<
+You can add, change, reorder, and save colors using Vim's native |:hi| command,
+and see the results in real time.
+
+Example ~
+    The following command adds a new custom color numbered 21.
+>
+    :hi HiColor21 ctermfg=20 ctermbg=159 guifg=#0000df guibg=#afffff
+<
+    Now move the cursor to any word, then input the number `21` and `HiSet` key.
+    Does it work? You can try some other values to change the color, and see
+    the result instantly. You can also save the color to the configuration
+    file using this format.
+
+The highlighting colors are selected in order, or can be picked with the number.
+If the next color is not defined, the first one is selected.
+
+`HiOneTime` is the color of `ONE TIME HIGHLIGHT` function, and `HiFollow` is for
+`FOLLOWING HIGHLIGHT` mode.
+
+------------------------------------------------------------------------------
+COMMANDS                                                       *:Hi* *Hi-commands*
+
+Highlighting functions can be invoked using `:Hi` command if necessary.
+
+:Hi + ~
+    `HiSet` key function in normal mode
+    Set highlight of the word under the cursor
+
+:Hi +x ~
+    `HiSet` key function in visual mode
+    Set highlighting pattern from the selection
+
+:Hi - ~
+    `HiErase` key function in normal mode
+    Erase highlight of the word or pattern at the cursor position, or set
+    `ONE TIME HIGHLIGHT`
+
+:Hi -x ~
+    `HiErase` key function in visual mode
+    Erase highlight from the selection, or set `ONE TIME HIGHLIGHT`
+
+:Hi >> ~
+    Set `FOLLOWING HIGHLIGHT` mode
+
+:Hi clear ~
+    `HiClear` key function
+    Clear all highlights
+
+:Hi default ~
+    Load the plugin default colors
+
+------------------------------------------------------------------------------
+OPTIONS                                                             *Hi-options*
+
+*HiMapKeys* lets the plugin map keys on loading.
+
+    Default: 1
+    Vaules:  0, 1
+
+*HiOneTimeWait* defines the wait time before turning off the highlights after
+    the cursor stopped in `ONE TIME HIGHLIGHT` mode.
+
+    Default: 260 (ms)
+    Values:  0 ~ 320
+
+*HiFollowWait* defines the wait time before moving the highlights to the cursor
+    position after the cursor stopped in `FOLLOWING HIGHLIGHT` mode.
+
+    Default: 360 (ms)
+    Values:  260 ~ 520
+
+------------------------------------------------------------------------------
+REFERENCE                                                         *Hi-reference*
+
+    The following tool would be helpful when you pick colors.
+
+    `xterm-color-table.vim` (https://github.com/guns/xterm-color-table.vim)
+
+------------------------------------------------------------------------------
+Vim:tw=78:ts=4:ft=help:nowrap:norl
