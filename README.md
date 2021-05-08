@@ -12,7 +12,7 @@ The plugin uses three mapped keys which users can assign in the configuration fi
   ```vim
     let HiSet   = 'f<CR>'           " normal, visual
     let HiErase = 'f<BS>'           " normal, visual
-    let HiClear = 'f<C-L>'          " normal        
+    let HiClear = 'f<C-L>'          " normal
   ```
 >  The default key mappings are: `f Enter`, `f Backspace` and `f Ctrl+L`
 
@@ -51,14 +51,15 @@ The plugin provides 14 + 2 default colors.
   <div style="display:inline-block">
   <img width="190" alt="default_light" src="https://user-images.githubusercontent.com/83812658/117488164-0bf5f600-afa7-11eb-90ff-fe085c814a52.png">
   <img width="190" alt="default_dark"  src="https://user-images.githubusercontent.com/83812658/117488162-0a2c3280-afa7-11eb-94dd-94d58e9de0e9.png">
-  </div>
+  </div><br>
+ 
 You can add, change, reorder, and save colors using Vim's native **hi** command, and see the results in real time.
 
 ### Example
->
 > This example describes how to add two custom colors
-> <span style="color:#0000df;background:#afffff"> HiColor21 </span> &nbsp;
-> <span style="color:#ffff87;background:#af00ff"> HiColor22 </span> &nbsp;
+> <span style="inline">
+> <img alt="example" height=18 sytle="vertical-align:middle" src="https://user-images.githubusercontent.com/83812658/117539479-cc321b80-b045-11eb-82f6-f9cdf046a69d.png">
+> </span>
 > in 256 or 24-bit colors mode.
 >
 > If the plugin is installed and working, copy the following lines one by one, then run it in Vim's command window.
