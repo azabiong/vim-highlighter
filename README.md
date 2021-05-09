@@ -77,8 +77,16 @@ You can add, change, reorder, and save colors using Vim's native **hi** command,
 >
 >   [xterm-color-table.vim](https://github.com/guns/xterm-color-table.vim)
 
+## Help tags
+
+For more information about commands and options, please refer to:
+```vim
+:h Highlighter
+```
+
 ## Installation
-  There are some options. Please choose your convenient way.
+
+There are some options. Please choose your convenient way.
 
 #### vim-plug
 > In Vim's command window,
