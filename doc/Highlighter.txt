@@ -66,9 +66,8 @@ FOLLOWING HIGHLIGHT                                     *Hi-following-highlight*
 When repeated operation of one time highlight is needed, there is more automatic
 mode which follows the cursor.
 
-Pressing `HiSet` key over **one time highlight** before moving the cursor sets
-`FOLLOWING HIGHLIGHT` mode.
-The highlight follows the cursor. Pressing `HiEarase`
+Pressing `HiSet` key over **one time highlight** without moving the cursor sets
+`FOLLOWING HIGHLIGHT` mode. The highlight follows the cursor. Pressing `HiErase`
 key turns off the mode.
 
 ------------------------------------------------------------------------------
@@ -136,7 +135,7 @@ OPTIONS                                                             *Hi-options*
 *HiMapKeys* lets the plugin map keys on loading.
 
     Default: 1
-    Vaules:  0, 1
+    Values:  0, 1
 
 *HiOneTimeWait* defines the wait time before turning off the highlights after
     the cursor stopped in `ONE TIME HIGHLIGHT` mode.
