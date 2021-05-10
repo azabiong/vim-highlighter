@@ -30,7 +30,7 @@ In visual mode, the highlight is selected as a pattern from the selection, and a
 
 The plugin provides an automatic feature that erases highlights after using. It would be useful when just one time quick scanning is needed at the cursor position.
 
-When the cursor is on a word that is not highlighted, pressing `HiErase` key sets **one time highlight**.
+When the cursor is on a word that is not highlighted, pressing `HiErase` key sets '**one time highlight**'.
 
   <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif">
 
@@ -40,7 +40,7 @@ The highlight is maintained while the cursor stays, and then automatically turne
 
 When repeated operation of one time highlight is needed, there is more automatic mode which follows the cursor.
 
-Pressing `HiSet` key over **one time highlight** without moving the cursor sets **following highlight** mode.  
+Pressing `HiSet` key over '**one time highlight**' without moving the cursor sets '**following highlight**' mode.  
 The highlight follows the cursor. Pressing `HiEarase` key turns off the mode.
 
   <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/117488604-95a5c380-afa7-11eb-9625-b92efaa31817.gif">
