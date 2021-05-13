@@ -66,9 +66,21 @@ FOLLOWING HIGHLIGHT                                     *Hi-following-highlight*
 When repeated operation of one time highlight is needed, there is more automatic
 mode which follows the cursor.
 
-Pressing `HiSet` key over **one time highlight** without moving the cursor sets
+Pressing `HiSet` key over `ONE TIME HIGHLIGHT` without moving the cursor sets
 `FOLLOWING HIGHLIGHT` mode. The highlight follows the cursor. Pressing `HiErase`
 key turns off the mode.
+
+For better visibility, `FOLLOWING HIGHLIGHT` skips moving on well-known keywords
+defined in the keyword file in the plugin's `keywords` directory.
+>
+    vim-highlighter/
+        autoload
+        doc
+        keywords ◀
+        plugin
+<
+The keyword filename is same as the |filetype|, and you can add more keywords
+or filetypes in this directory.
 
 ------------------------------------------------------------------------------
 CUSTOMIZING COLORS                                       *Hi-customizing-colors*
@@ -134,7 +146,7 @@ OPTIONS                                                             *Hi-options*
 
 *HiMapKeys* lets the plugin map keys on loading.
 
-    Default: 1
+    Default: 1 (enable)
     Values:  0, 1
 
 *HiOneTimeWait* defines the wait time before turning off the highlights after
@@ -146,7 +158,7 @@ OPTIONS                                                             *Hi-options*
 *HiFollowWait* defines the wait time before moving the highlights to the cursor
     position after the cursor stopped in `FOLLOWING HIGHLIGHT` mode.
 
-    Default: 360 (ms)
+    Default: 320 (ms)
     Values:  260 ~ 520
 
 ------------------------------------------------------------------------------

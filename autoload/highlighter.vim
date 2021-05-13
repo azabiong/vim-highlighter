@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.0
+" Version: 1.1
 
 scriptencoding utf-8
 if exists("s:Colors")
@@ -15,8 +15,10 @@ if !exists("g:HiOneTimeWait")
   let g:HiOneTimeWait = 260
 endif
 if !exists("g:HiFollowWait")
-  let g:HiFollowWait = 360
+  let g:HiFollowWait = 320
 endif
+
+let s:Keywords = { '/': expand('<sfile>:h:h').'/keywords/', '.':[] }
 
 function s:Load()
   if !exists('s:Check')
@@ -73,6 +75,8 @@ function s:Load()
 
   aug Highlighter
     au!
+    au BufEnter *       call highlighter#BufEnter()
+    au BufLeave *       call highlighter#BufLeave()
     au WinEnter *       call highlighter#WinEnter()
     au WinLeave *       call highlighter#WinLeave()
     au ColorSchemePre * call highlighter#ColorSchemePre()
@@ -204,80 +208,77 @@ endfunction
 
 function s:GetMode(word)
   return !v:count && exists("w:HiMode") &&
-        \!w:HiMode['>'] && w:HiMode['p'] == getpos('.') && w:HiMode['w'] ==# a:word
+       \ !w:HiMode['>'] && w:HiMode['p'] == getpos('.') && w:HiMode['w'] ==# a:word
 endfunction
 
 " s:SetMode(cmd) actions
-"     |       |     !>     |   >    |
-" cmd | !mode | !same same | always |  1:on, 0:off
-"  .  |   1   |   =     0  |   0    |  =:update
-"  >  |   >   |   >     >  |   .    |  >:follow
-"  -  |   0   |   0     0  |   0    |
-let s:Action = { 'cmd':[ '.', '>' ], 'action':[['1','=0','0'], ['>','>>','.']] }
-"
+"     |       |     !>     |     >    |
+" cmd | !mode | !same same | !key key |  1:on, 0:off
+"  .  |   1   |   =     0  |   0   >  |  =:update
+"  >  |   >   |   >     >  |   >   >  |  >:follow
+"  -  |   0   |   0     0  |   0   0  |
 function s:SetMode(cmd, word)
-  let l:mode = exists("w:HiMode")
-  let l:index = index(s:Action['cmd'], a:cmd)
-
-  if index == -1
-    let l:op = '0'
-  else
-    let l:action = s:Action['action'][l:index]
-    call s:LinkCursorEvent(a:word)
-    let w:HiMode['p'] = getpos('.')
-
-    if !l:mode
-      let l:op = l:action[0]
+  if a:cmd == '.'
+    if !exists("w:HiMode")
+      let l:word = a:word
+      let l:op = '1'
     elseif !w:HiMode['>']
-      let l:word = empty(a:word) ? s:GetCurrentWord() : a:word
-      let l:same = w:HiMode['w'] ==# l:word
-      let l:op = l:action[1][l:same]
+      let l:word = empty(a:word) ? s:GetCurrentWord('*') : a:word
+      let l:op = (w:HiMode['w'] ==# l:word) ? '0' : '='
     else
-      let l:op = l:action[2]
+      let l:word = s:GetCurrentWord('k')
+      let l:op = (w:HiMode['m'] || empty(l:word)) ? '0' : '>'
     endif
+  elseif a:cmd == '>'
+    let l:word = empty(a:word) ? s:GetCurrentWord('*') : a:word
+    let l:op = '>'
+  else
+    let l:op = '0'
+  endif
 
+  if '1=>' =~ l:op
+    call s:LinkCursorEvent(l:word)
+    let w:HiMode['p'] = getpos('.')
     if l:op == '>'
+      call s:GetKeywords()
       let w:HiMode['>'] = 1
       let w:HiMode['_'] = s:Wait[1]
+      call highlighter#UpdateHiWord(0)
     elseif l:op == '='
       call timer_stop(w:HiMode['t'])
       let w:HiMode['t'] = 0
-      let w:HiMode['w'] = l:word
     endif
-  endif
-
-  if '=>' =~ l:op
-    call highlighter#UpdateHiWord(0)
-  elseif '0' == l:op
+  elseif l:op == '0'
     call s:UnlinkCursorEvent(1)
   endif
 endfunction
 
 " symbols: follow('>'), wait('_'), pos, timer, reltime, match, word
 function s:LinkCursorEvent(word)
-  if !exists("#HiEventCursor")
-    if !exists("w:HiMode")
-      let w:HiMode = {'>':0, '_':s:Wait[0], 'p':[], 't':0, 'r':[], 'm':0, 'w':a:word}
-      call s:UpdateWait()
-    else
-      let w:HiMode['t'] = 0
-      let w:HiMode['w'] = ''
-    endif
-    call highlighter#UpdateHiWord(0)
+  let l:event = exists("#HiEventCursor")
+  if !exists("w:HiMode")
+    let w:HiMode = {'>':0, '_':s:Wait[0], 'p':[], 't':0, 'r':[], 'm':0, 'w':a:word}
+    call s:UpdateWait()
+  else
+    let w:HiMode['w'] = a:word
+  endif
+  call highlighter#UpdateHiWord(0)
+  if !l:event
     aug HiEventCursor
       au!
-      au InsertEnter * call <SID>EraseOneTime()
+      au InsertEnter * call <SID>InsertEnter()
+      au InsertLeave * call <SID>InsertLeave()
       au CursorMoved * call <SID>FollowCursor()
     aug END
   endif
 endfunction
 
-function s:UnlinkCursorEvent(op)
+function s:UnlinkCursorEvent(force)
   if exists("#HiEventCursor")
     au!  HiEventCursor
     aug! HiEventCursor
     call s:EraseHiWord()
-    if a:op || !w:HiMode['>']
+    if a:force || !w:HiMode['>']
       unlet w:HiMode
     endif
   endif
@@ -297,6 +298,7 @@ function s:EraseHiWord()
   if w:HiMode['m']
     call matchdelete(w:HiMode['m'])
     let w:HiMode['m'] = 0
+    let w:HiMode['w'] = ''
   endif
 endfunction
 
@@ -307,18 +309,31 @@ function s:SetHiWord(word)
   let w:HiMode['w'] = a:word
 endfunction
 
-function s:GetCurrentWord()
-  if match(getline('.')[col('.')-1], '\k') != -1
-    return '\V\<'.expand('<cword>').'\>'
-  else
-    return ''
+function s:GetKeywords()
+  let l:ft = &filetype
+  if !exists("s:Keywords['".l:ft."']")
+    let s:Keywords[l:ft] = []
+    let l:file = s:Keywords['/'].l:ft
+    if filereadable(l:file)
+      for l:line in readfile(l:file)
+        if l:line[0] == '#' | continue | endif
+        let s:Keywords[l:ft] += split(l:line)
+      endfor
+    endif
   endif
+  let s:Keywords['.'] = s:Keywords[l:ft]
 endfunction
 
-function s:EraseOneTime()
-  if exists("w:HiMode") && !w:HiMode['>']
-    call s:FollowCursor()
+"op:  *:any  #:filter  k:keyword
+function s:GetCurrentWord(op)
+  if match(getline('.')[col('.')-1], '\k') != -1
+    let l:word = expand('<cword>')
+    let l:keyword = index(s:Keywords['.'], l:word) != -1
+    if(a:op == '*') || (a:op == '#' && !l:keyword) || (a:op == 'k' && l:keyword)
+      return '\V\<'.l:word.'\>'
+    endif
   endif
+  return ''
 endfunction
 
 function s:FollowCursor(...)
@@ -332,10 +347,25 @@ function s:FollowCursor(...)
   endif
 endfunction
 
-function highlighter#UpdateHiWord(_)
+function s:InsertEnter()
   if !exists("w:HiMode") | return | endif
-  if !w:HiMode['t']
-    let l:word = empty(w:HiMode['w']) ? s:GetCurrentWord() : w:HiMode['w']
+  if w:HiMode['>']
+    call s:EraseHiWord()
+  else
+    call s:FollowCursor()
+  endif
+endfunction
+
+function s:InsertLeave()
+  if !exists("w:HiMode") || !w:HiMode['>'] | return | endif
+  call s:LinkCursorEvent('')
+endfunction
+
+function highlighter#UpdateHiWord(tid)
+  if !exists("w:HiMode") | return | endif
+  if !a:tid
+    let l:word = empty(w:HiMode['w']) ? s:GetCurrentWord('#') : w:HiMode['w']
+    let w:HiMode['t'] = 0
   else
     if !empty(w:HiMode['r'])
       let l:wait = float2nr(reltimefloat(reltime(w:HiMode['r'])) * 1000)
@@ -346,19 +376,30 @@ function highlighter#UpdateHiWord(_)
     endif
     if w:HiMode['>']
       let w:HiMode['t'] = 0
-      let l:word = s:GetCurrentWord()
-      if empty(l:word) | return | endif
+      let l:word = s:GetCurrentWord('#')
+      if  l:word ==# w:HiMode['w'] | return | endif
     else
       if w:HiMode['p'] == getpos('.')  " visual selection
         let w:HiMode['t'] = 0
       else
-        call s:SetMode('-', '')
+        call s:UnlinkCursorEvent(1)
       endif
       return
     endif
   endif
   call s:EraseHiWord()
   call s:SetHiWord(l:word)
+endfunction
+
+function highlighter#BufEnter()
+  if !exists("w:HiMode") || !w:HiMode['>'] | return | endif
+  call s:GetKeywords()
+  call s:LinkCursorEvent('')
+endfunction
+
+function highlighter#BufLeave()
+  if !exists("w:HiMode") | return | endif
+  call s:EraseHiWord()
 endfunction
 
 function highlighter#WinEnter()
