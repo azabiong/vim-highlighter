@@ -79,7 +79,7 @@ defined in the keyword file in the plugin's `keywords` directory.
         keywords ◀
         plugin
 <
-The keyword filename is same as the |filetype|, and you can add more keywords
+The filename of the keywords is the same as |filetype|. You can add more keywords
 or filetypes in this directory.
 
 ------------------------------------------------------------------------------
