@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.1
+" Version: 1.12
 
 scriptencoding utf-8
 if exists("s:Colors")
@@ -18,7 +18,8 @@ if !exists("g:HiFollowWait")
   let g:HiFollowWait = 320
 endif
 
-let s:Keywords = { '/': expand('<sfile>:h:h').'/keywords/', '.':[] }
+" u:user  p:plugin  .:current
+let s:Keywords = { '/u': expand('<sfile>:h:h').'/keywords/',  '/p': expand('<sfile>:h').'/keywords/', '.':[] }
 
 function s:Load()
   if !exists('s:Check')
@@ -277,9 +278,11 @@ function s:UnlinkCursorEvent(force)
   if exists("#HiEventCursor")
     au!  HiEventCursor
     aug! HiEventCursor
-    call s:EraseHiWord()
-    if a:force || !w:HiMode['>']
-      unlet w:HiMode
+    if exists("w:HiMode")
+      call s:EraseHiWord()
+      if a:force || !w:HiMode['>']
+        unlet w:HiMode
+      endif
     endif
   endif
 endfunction
@@ -313,13 +316,17 @@ function s:GetKeywords()
   let l:ft = &filetype
   if !exists("s:Keywords['".l:ft."']")
     let s:Keywords[l:ft] = []
-    let l:file = s:Keywords['/'].l:ft
-    if filereadable(l:file)
-      for l:line in readfile(l:file)
-        if l:line[0] == '#' | continue | endif
-        let s:Keywords[l:ft] += split(l:line)
-      endfor
-    endif
+    let l:list = s:Keywords[l:ft]
+    let l:files = [s:Keywords['/p'].l:ft, s:Keywords['/u'].l:ft]
+    for l:f in l:files
+      if filereadable(l:f)
+        for l:line in readfile(l:f)
+          if l:line[0] == '#' | continue | endif
+          let l:list += split(l:line)
+        endfor
+      endif
+    endfor
+    call uniq(sort(l:list))
   endif
   let s:Keywords['.'] = s:Keywords[l:ft]
 endfunction

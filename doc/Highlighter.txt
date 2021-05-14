@@ -23,6 +23,7 @@ CONTENTS                                                           *Highlighter*
         Commands`......................................`|Hi-commands|
         Options`........................................`|Hi-options|
         Reference`....................................`|Hi-reference|
+        Log`................................................`|Hi-log|
 
 ------------------------------------------------------------------------------
 INTRODUCTION                                                   *Hi-introduction*
@@ -70,17 +71,21 @@ Pressing `HiSet` key over `ONE TIME HIGHLIGHT` without moving the cursor sets
 `FOLLOWING HIGHLIGHT` mode. The highlight follows the cursor. Pressing `HiErase`
 key turns off the mode.
 
-For better visibility, `FOLLOWING HIGHLIGHT` skips moving on well-known keywords
-defined in the keyword file in the plugin's `keywords` directory.
+USING KEYWORDS~
+
+For better visibility, `FOLLOWING HIGHLIGHT` skips moving on well-known keywords.
+The plugin has some default keywords in `./autoload/keywords` directory, and you
+can define more keywords in the `./keywords` directory.
 >
     vim-highlighter/
-        autoload
-        doc
-        keywords ◀
-        plugin
+        ├── autoload
+        │   └── keywords  ◁ plugin-default
+        ├── doc
+        ├── keywords  ◀ user-defined
+        └── plugin
 <
-The filename of the keywords is the same as |filetype|. You can add more keywords
-or filetypes in this directory.
+The keywords file uses the |filetype| as the filename, and can be saved as a
+text file using spaces as delimiters.
 
 ------------------------------------------------------------------------------
 CUSTOMIZING COLORS                                       *Hi-customizing-colors*
@@ -93,7 +98,7 @@ The plugin provides 14 + 2 default colors.
 You can add, change, reorder, and save colors using Vim's native |:hi| command,
 and see the results in real time.
 
-Example ~
+Example~
     The following command adds a new custom color numbered 21.
 >
     :hi HiColor21 ctermfg=20 ctermbg=159 guifg=#0000df guibg=#afffff
@@ -167,6 +172,17 @@ REFERENCE                                                         *Hi-reference*
     The following tool would be helpful when you pick colors.
 
     `xterm-color-table.vim` (https://github.com/guns/xterm-color-table.vim)
+
+------------------------------------------------------------------------------
+LOG                                                                     *Hi-log*
+
+1.12~
+    Added "Following Highlight" default keywords directory.
+1.1~
+    Upgrade "Following Highlight" with well-known keywords.
+    Fixed buffer switching error
+1.0~
+    First Release
 
 ------------------------------------------------------------------------------
 Vim:tw=78:ts=4:ft=help:nowrap:norl
