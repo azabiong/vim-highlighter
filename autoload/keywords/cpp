@@ -2,7 +2,7 @@
 
 include ifdef elif endif defined
 if else and or not for while do break continue switch case default return try catch throw
-enum class struct union auto void unsigned bool int short char long double float size_t
+enum class struct union auto void unsigned bool int short char long double float size_t typedef
 static inline volatile virtual const constexpr decltype noexcept
 new delete operator sizeof
 true false nullptr

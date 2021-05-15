@@ -2,6 +2,6 @@
 
 include ifdef elif endif defined
 if else and or not for while do break continue switch case default return
-enum struct union void unsigned bool int short char long double float size_t
+enum struct union void unsigned bool int short char long double float size_t typedef
 static inline volatile const sizeof
 true false
