@@ -317,10 +317,9 @@ function s:GetKeywords()
   if !exists("s:Keywords['".l:ft."']")
     let s:Keywords[l:ft] = []
     let l:list = s:Keywords[l:ft]
-    let l:files = [s:Keywords['/p'].l:ft, s:Keywords['/u'].l:ft]
-    for l:f in l:files
-      if filereadable(l:f)
-        for l:line in readfile(l:f)
+    for l:file in [s:Keywords['/p'].l:ft, s:Keywords['/u'].l:ft]
+      if filereadable(l:file)
+        for l:line in readfile(l:file)
           if l:line[0] == '#' | continue | endif
           let l:list += split(l:line)
         endfor

@@ -1,10 +1,12 @@
 # Python frequently used keywords
 
 import from
-class def pass lambda
+class def pass lambda self
 if else elif and or not for in while break continue return try except del
 type list tuple set dict
-with as yield
+with as
 global nonlocal
 True False None
-len range iter next
+len range iter next yield
+
+print

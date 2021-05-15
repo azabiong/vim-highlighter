@@ -4,3 +4,5 @@ function fu endfunction endf call
 if else elseif endif for endfor while endwhile break continue return finish try catch
 let unlet set setlocal setl
 command com autocmd au augroup aug
+
+echo

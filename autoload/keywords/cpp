@@ -5,7 +5,9 @@ if else and or not for while do break continue switch case default return try ca
 enum class struct union auto void unsigned bool int short char long double float size_t typedef
 static inline volatile virtual const constexpr decltype noexcept
 new delete operator sizeof
+public protected private friend
 true false nullptr
 using namespace std
-public protected private friend
 template typename
+
+cout

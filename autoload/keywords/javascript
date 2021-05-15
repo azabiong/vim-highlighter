@@ -1,0 +1,11 @@
+# JavaScript frequently used keywords
+
+require
+if else for in of switch case default break continue return try catch throw
+class function super this async typeof
+new delete extends let var const static
+true false null undefined
+instanceof yield
+document window
+
+console log
