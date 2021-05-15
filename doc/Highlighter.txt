@@ -84,8 +84,8 @@ can define more keywords in the `./keywords` directory.
         ├── keywords  ◀ user-defined
         └── plugin
 <
-The keywords file uses the |filetype| as the filename, and can be saved as a
-text file using spaces as delimiters.
+The keywords are separated by spaces and can be saved as a plain text file using
+the |filetype| as the filename.
 
 ------------------------------------------------------------------------------
 CUSTOMIZING COLORS                                       *Hi-customizing-colors*
