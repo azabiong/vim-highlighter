@@ -71,11 +71,11 @@ Pressing `HiSet` key over `ONE TIME HIGHLIGHT` without moving the cursor sets
 `FOLLOWING HIGHLIGHT` mode. The highlight follows the cursor. Pressing `HiErase`
 key turns off the mode.
 
-USING KEYWORDS~
+Using Keywords~
 
-For better visibility, `FOLLOWING HIGHLIGHT` skips moving on well-known keywords.
-The plugin has some default keywords in `./autoload/keywords` directory, and you
-can define more keywords in the `./keywords` directory.
+For better visibility, `FOLLOWING HIGHLIGHT` skips moving on well-known keywords
+defined in the `./autoload/keywords` directory. You can add more keywords to the
+users `./keywords` directory.
 >
     vim-highlighter/
         ├── autoload
@@ -85,7 +85,7 @@ can define more keywords in the `./keywords` directory.
         └── plugin
 <
 The keywords are separated by spaces and can be saved as a plain text file using
-the |filetype| as the filename.
+the 'filetype' as the filename.
 
 ------------------------------------------------------------------------------
 CUSTOMIZING COLORS                                       *Hi-customizing-colors*
