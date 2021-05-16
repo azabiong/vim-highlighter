@@ -19,7 +19,7 @@ if !exists("g:HiFollowWait")
 endif
 
 " u:user  p:plugin  .:current
-let s:Keywords = { '/u': expand('<sfile>:h:h').'/keywords/',  '/p': expand('<sfile>:h').'/keywords/', '.':[] }
+let s:Keywords = {'/u': expand('<sfile>:h:h').'/keywords/',  '/p': expand('<sfile>:h').'/keywords/', '.':[]}
 
 function s:Load()
   if !exists('s:Check')
@@ -313,7 +313,7 @@ function s:SetHiWord(word)
 endfunction
 
 function s:GetKeywords()
-  let l:ft = &filetype
+  let l:ft = !empty(&filetype) ?  split(&filetype, '\.')[0] : ''
   if !exists("s:Keywords['".l:ft."']")
     let s:Keywords[l:ft] = []
     let l:list = s:Keywords[l:ft]

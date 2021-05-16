@@ -1,6 +1,6 @@
 # Shell frequently used keywords
 
-source
+source export
 if then else elif fi for in do while done break continue case esac return
 local
 true false
