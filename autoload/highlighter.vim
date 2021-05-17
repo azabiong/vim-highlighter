@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.13
+" Version: 1.14
 
 scriptencoding utf-8
 if exists("s:Colors")
@@ -125,21 +125,27 @@ function s:SetHighlight(cmd, mode)
     if !l:color | call s:SetMode('-', '') | endif
     return
   endif
-  let l:word = escape(l:word[0], '\')
 
+  let l:word = escape(l:word[0], '\')
+  let l:case = (&ic || @/ =~ '\\c') ? '\c' : ''
+  let l:search = match(@/, l:word.l:case) != -1
+  if  l:search && a:mode == 'n' &&  @/[:1] == '\<'
+    let l:search = match(l:word.l:case, @/) != -1
+  endif
   if a:mode == 'n'
     let l:word = '\V\<'.l:word.'\>'
   else
     let l:word = '\V'.l:word
   endif
-  let l:deleted = s:DeleteMatch(l:match, l:word, '==')
 
+  let l:deleted = s:DeleteMatch(l:match, l:word, '==')
   if l:color
     if a:mode == 'n' && s:GetMode(l:word)
       call s:SetMode('>', l:word)
     else
       let w:HiColor = l:color
       call matchadd(s:Color.l:color, l:word, 0)
+      let s:Search = l:search
     endif
   else
     if !l:deleted
@@ -147,7 +153,7 @@ function s:SetHighlight(cmd, mode)
       let l:deleted = s:DeleteMatch(l:match, l:str, '≈≈')
     endif
     if !l:deleted
-      call s:SetMode('.', l:word)
+      let s:Search = (s:SetMode('.', l:word) == '1') && l:search
     endif
   endif
 endfunction
@@ -252,6 +258,7 @@ function s:SetMode(cmd, word)
   elseif l:op == '0'
     call s:UnlinkCursorEvent(1)
   endif
+  return l:op
 endfunction
 
 " symbols: follow('>'), wait('_'), pos, timer, reltime, match, word
@@ -452,6 +459,7 @@ function highlighter#Command(cmd)
   let l:arg = split(a:cmd)
   let l:cmd = get(l:arg, 0, '')
   let l:opt = get(l:arg, 1, '')
+  let s:Search = 0
 
   if     l:cmd ==# ''        | echo " Hi there!"
   elseif l:cmd ==# '+'       | call s:SetHighlight('+', 'n')
@@ -464,6 +472,7 @@ function highlighter#Command(cmd)
   else
     echo ' Hi: unknown_command: '.l:cmd
   endif
+  return s:Search
 endfunction
 
 let &cpo = s:cpo_save
