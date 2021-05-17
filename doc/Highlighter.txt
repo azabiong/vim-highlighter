@@ -176,6 +176,10 @@ REFERENCE                                                         *Hi-reference*
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-log*
 
+1.14~
+    Improvement on setting highlight over the hlsearch
+1.13~
+    Added "Following Highlight" default keywords
 1.12~
     Added "Following Highlight" default keywords directory.
 1.1~
