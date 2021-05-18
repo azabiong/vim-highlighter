@@ -127,14 +127,14 @@ There are some options. Please choose your convenient way.
 #### pathogen
 > In the terminal,
 > ```zsh
-> cd ~/.vim/bundle && git clone https://github.com/azabiong/vim-highlighter.git
+> cd ~/.vim/bundle && git clone --depth=1 https://github.com/azabiong/vim-highlighter.git
 > cd ~/.vim/bundle && vim -u NONE -c "helptags vim-highlighter/doc" -c q
 > ```
 
 #### Vim 8 native
 > In the terminal,
 > ```zsh
-> cd ~/.vim && git clone https://github.com/azabiong/vim-highlighter.git pack/azabiong/start/vim-highlighter
+> cd ~/.vim && git clone --depth=1 https://github.com/azabiong/vim-highlighter.git pack/azabiong/start/vim-highlighter
 > cd ~/.vim && vim -u NONE -c "helptags pack/azabiong/start/vim-highlighter/doc" -c q
 > ```
 
