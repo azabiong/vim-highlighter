@@ -43,6 +43,8 @@ file.
     let HiErase = 'f<BS>'           " normal, visual
     let HiClear = 'f<C-L>'          " normal
 <
+    Default key mappings are: `f Enter`, `f Backspace` and `f Ctrl+L`
+
 In normal mode, `HiSet` and `HiErase` keys set or erase highlights of the word
 under the cursor. `HiClear` key clears all highlights.
 
@@ -73,19 +75,19 @@ key turns off the mode.
 
 Using Keywords~
 
-For better visibility, `FOLLOWING HIGHLIGHT` skips moving on well-known keywords
-defined in the `./autoload/keywords` directory. You can add more keywords to the
-users `./keywords` directory.
+    For better visibility, `FOLLOWING HIGHLIGHT` skips moving on well-known
+    keywords defined in the `./autoload/keywords` directory. You can add more
+    keywords to the users `./keywords` directory.
 >
-    vim-highlighter/
-        ├── autoload
-        │   └── keywords  ◁ plugin-default
-        ├── doc
-        ├── keywords  ◀ user-defined
-        └── plugin
+        vim-highlighter/
+            ├── autoload
+            │   └── keywords  ◁ plugin-default
+            ├── doc
+            ├── keywords  ◀ user-defined
+            └── plugin
 <
-The keywords are separated by spaces and can be saved as a plain text file using
-the 'filetype' as the filename.
+    The keywords are separated by spaces and can be saved as a plain text file
+    using the 'filetype' as the filename.
 
 ------------------------------------------------------------------------------
 CUSTOMIZING COLORS                                       *Hi-customizing-colors*
@@ -99,6 +101,7 @@ You can add, change, reorder, and save colors using Vim's native |:hi| command,
 and see the results in real time.
 
 Example~
+
     The following command adds a new custom color numbered 21.
 >
     :hi HiColor21 ctermfg=20 ctermbg=159 guifg=#0000df guibg=#afffff
