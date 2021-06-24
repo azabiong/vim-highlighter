@@ -12,7 +12,7 @@
   [Visual Selection](#visual-selection) &nbsp; &nbsp;
   [One Time Highlight](#one-time-highlight) &nbsp; &nbsp;
   [Following Highlight](#following-highlight) &nbsp; &nbsp;
-  [Find in Files Highlight 🔎](#find-in-files-highlight-🔎) <br> &nbsp; &nbsp;
+  [Find in Files Highlight 🔎](#find-in-files-highlight-) <br> &nbsp; &nbsp;
   [Customizing Colors](#customizing-colors) <br> &nbsp; &nbsp;
   [Installation](#installation)
 
