@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.14
+" Version: 1.15
 
 scriptencoding utf-8
 if exists("g:loaded_vim_highlighter")
@@ -24,6 +24,8 @@ function s:MapKeys()
   \ [ 'nn', 'HiErase', 'f<BS>',  '-'     ],
   \ [ 'xn', 'HiErase', 'f<BS>',  '-x'    ],
   \ [ 'nn', 'HiClear', 'f<C-L>', 'clear' ],
+  \ [ 'nn', 'HiFind',  'f<Tab>', '/'     ],
+  \ [ 'xn', 'HiFind',  'f<Tab>', '/x'    ],
   \ ]
   for l:map in l:key_map
     let l:key = get(g:, l:map[1], l:map[2])
@@ -31,15 +33,17 @@ function s:MapKeys()
   endfor
 endfunction
 
-if !exists("HiMapKeys") || HiMapKeys
+if !exists("g:HiMapKeys") || g:HiMapKeys
   call s:MapKeys()
   let HiMapKeys = 1
 endif
 
-command! -complete=custom,s:List -nargs=* Hi if highlighter#Command(<q-args>) | noh | endif
+command! -complete=custom,s:List -count -nargs=* Hi if highlighter#Command(<q-args>, <count>) | noh | endif
 function s:List(...)
-  return ">>\nclear\ndefault"
+  return "+\n-\n>>\nclear\ndefault\n/\n/next\n/previous\n/older\n/newer\n\/open\n/close\n"
 endfunction
+
+ca HI Hi
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
