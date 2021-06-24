@@ -2,7 +2,7 @@
 
 source export
 if then else elif fi for in do while done break continue case esac return
-local
+local set unset
 true false
 
 echo

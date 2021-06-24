@@ -2,10 +2,10 @@
 
 require
 if else for in of do while switch case default break continue return try catch throw
-class function super this async typeof
+class function super this typeof
 new delete extends let var const static
+async await instanceof yield
 true false null undefined
-instanceof yield
 document window
 
 console log

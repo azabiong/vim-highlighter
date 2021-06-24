@@ -1,8 +1,9 @@
 # Vim frequently used keywords
 
-function fu endfunction endf call
+source so
 if else elseif endif for endfor while endwhile break continue return finish try catch
+function fu endfunction endf call
 let unlet set setlocal setl
-command com autocmd au augroup aug
+command com autocmd au augroup aug END
 
 echo
