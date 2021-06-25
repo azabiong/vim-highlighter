@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.15
+" Version: 1.16
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -25,14 +25,14 @@ if !exists('g:HiFindHistory')
 endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.15'
+let s:Version   = '1.16'
 let s:Keywords  = {'usr': expand('<sfile>:h:h').'/keywords/', 'plug': expand('<sfile>:h').'/keywords/', '.':[]}
 let s:Find      = {'cmd':[], 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0, 'hi_exp':'', 'hi_err':'', 'hi':''}
 let s:FindList  = {'name':' Find *', 'height':8, 'log':'*',
                   \'buf':0, 'pos':0, 'lines':0, 'select':0, 'edit':0, 'logs':{'list':[], 'tag':[], 'index':0}}
-let s:FindTools = ['ag --nocolor --noheading --column --nobreak',
-                  \'rg --color=never --no-heading --column',
-                  \'ack --nocolor --noheading --column',
+let s:FindTools = ['rg --color=never --no-heading --column --smart-case',
+                  \'ag --nocolor --noheading --column --nobreak',
+                  \'ack --nocolor --noheading --column --smart-case',
                   \'egrep -rnI --exclude-dir=.git']
 const s:FL = s:FindList
 
@@ -595,29 +595,63 @@ endfunction
 
 function s:FindMatch()
   let [s:Find.hi_exp, s:Find.hi_err] = ['', '']
-  let l:flag = {'i':0, 'w':0}
+  let l:opts = {'pos':32, 'i':0, 'I':0, 's':0, 'S':0,'w':0}
+
+  for l:op in s:Find.cmd
+    call s:FindOption('iIsSw', l:op, l:opts)
+  endfor
   for l:op in s:Find.opt
-    if l:op[1] == '-'
-      if l:op == '--' | continue |  endif
+    if l:op == '--' | break | endif
+    if !s:FindOption('iIsSw', l:op, l:opts)
       return
     endif
-    for l:c in range(1, len(l:op)-1)
-      if     l:op[l:c] ==# 'i' | let l:flag.i = 1
-      elseif l:op[l:c] ==# 'w' | let l:flag.w = 1
-      else   | return
-      endif
-    endfor
   endfor
+
+  " --smart-case
+  let l:tool = s:Find.cmd[0]
+  if index(['ag', 'rg', 'ack'], l:tool) != -1
+    if l:tool == 'ag' | let l:opts.S += 1 | endif
+    let l:opts.pos = 0
+    let l:case = max(l:opts)
+    if  l:case && l:case == l:opts.S
+      let l:opts.i = match(s:Find.exp, '\v^\u|[^\\]\u') == -1
+    elseif l:case != l:opts.i
+      let l:opts.i = 0
+    endif
+  endif
+
   let l:exp = escape(s:Find.exp, '~@%&=<>'."'")
   let [l:p, l:q] = ['', '']
-  if l:flag.i | let l:p = '\c' | endif
-  if l:flag.w
+  if l:opts.i | let l:p = '\c' | endif
+  if l:opts.w
     let l:p .= '<' | let l:q = '>'
   else
     if l:exp[:1]  == '\b' | let l:exp = '<'.l:exp[2:]  | endif
     if l:exp[-2:] == '\b' | let l:exp = l:exp[:-3].'>' | endif
   endif
   let s:Find.hi_exp = '\v'.l:p.l:exp.l:q
+endfunction
+
+function s:FindOption(flags, op, opts)
+  let l:op = a:op
+  if l:op[0] != '-' | return | endif
+  if l:op[1] == '-'
+    if l:op ==# '--smart-case'
+      let l:op = '-S'
+    else
+      return
+    endif
+  endif
+  for i in range(1, len(l:op)-1)
+    let l:c = l:op[i]
+    if a:flags =~# l:c
+      let a:opts.pos += 32
+      let a:opts[l:c] = a:opts.pos
+    else
+      return
+    endif
+  endfor
+  return 1
 endfunction
 
 function s:FindStatus(msg)
