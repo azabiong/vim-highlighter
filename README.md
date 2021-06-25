@@ -57,7 +57,7 @@
 
 ## Find in Files Highlight 🔎
 
-  If you have installed hi-performance search tools such as **ag**, **rg**, **ack**, or **grep**, the plugin can run it when looking for symbols based on the current directory. And when the given option is **-i** or **-w**, and expression is simple, the plugin can highlight patterns to make them easier to find.
+  If you have installed hi-performance search tools such as **ag**, **rg**, **ack**, or **grep**, the plugin can run it when looking for symbols based on the current directory. And when the given options and expression are simple, the plugin can highlight patterns to make them easier to find.
 
   `HiFind` key brings up the **Find** command prompt.
 
@@ -68,9 +68,9 @@
   ```vim
     let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
 
-    let HiFindTool = 'rg --color=never --no-heading --column'
+    let HiFindTool = 'rg --color=never --no-heading --column --smart-case'
 
-    let HiFindTool = 'ack --nocolor --noheading --column'
+    let HiFindTool = 'ack --nocolor --noheading --column --smart-case'
 
     let HiFindTool = 'egrep -rnI --exclude-dir=.git'
   ```
@@ -127,6 +127,8 @@
   |<kbd>r</kbd>                | Rotate Find window |
   |<kbd>s</kbd>                | Split and Jump to file |
   |<kbd>Enter</kbd>            | Jump to file |
+
+  <br>
 
 ## Customizing Colors
 
