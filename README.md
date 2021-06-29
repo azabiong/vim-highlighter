@@ -1,6 +1,15 @@
 # Vim Highlighter
 
-  An easy words highlighter using configurable colors
+> &nbsp; Upcoming... &nbsp;  Version 1.17
+> ```
+> Find in Files Highlight — Improved Input Handling
+>
+>   [√] Added --fixed-strings --literal option
+>   [√] rg options --type-add 'foo:*.foo' -tfoo PATTERN
+>   [ ] other tools
+>
+> Progress: 85%    Estimation: release in 1~2 days
+> ```
 
 ## Introduction
 
@@ -41,16 +50,16 @@
 
   The plugin provides an automatic feature that erases highlights after using. It would be useful when just one time quick scanning is needed at the cursor position.
 
-  When the cursor is on a word that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'.  
+  When the cursor is on a word that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'.
   The highlight is maintained while the cursor stays, and then automatically turned off after the cursor moved.
 
   <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif">
 
 ## Following Highlight
 
-  When you need automatic matching based on cursor movement, **Following Highlight** mode can be useful. 
+  When you need automatic matching based on cursor movement, **Following Highlight** mode can be useful.
 
-  Pressing `HiSet` key over '**One Time Highlight**' without moving the cursor sets '**Following Highlight**' mode.  
+  Pressing `HiSet` key over '**One Time Highlight**' without moving the cursor sets '**Following Highlight**' mode.
   The highlight follows the cursor. Pressing `HiEarase` key turns off the mode.
 
   <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/117488604-95a5c380-afa7-11eb-9625-b92efaa31817.gif">
@@ -64,44 +73,54 @@
   <img width="760" alt="find" src="https://user-images.githubusercontent.com/83812658/123290729-77daf080-d54c-11eb-8181-949333013d71.gif">
 
 ### Search tool
+
   If one of the tools listed above is found in the $PATH, the plugin can run it using default options. You can set your preferred tool and options in the `HiFindTool` variable. For example:
+  ```vim
+    let HiFindTool = 'egrep -rnI --exclude-dir=.git'
+  ```
+ <details>
+ <summary> Tools </summary>
+
   ```vim
     let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
 
     let HiFindTool = 'rg --color=never --no-heading --column --smart-case'
 
     let HiFindTool = 'ack --nocolor --noheading --column --smart-case'
-
-    let HiFindTool = 'egrep -rnI --exclude-dir=.git'
   ```
-### Regular expression 
+ </details>
+
+### Input
+
+  You can use general order of passing arguments to search tools:
+  ```
+    Find  [options]  expression  [directories_or_files]
+  ```
+
+### Expression
 
   Among various regular expression options in **Vim**, the plugin uses "very magic" style syntax which uses the standard regex syntax with fewer escape sequences.
 
 #### Examples
 
 > searching for "red" or "blue":
-> ``` 
+> ```
 >   Find  red|blue
-> ``` 
+> ```
 > pattern with spaces:
-> ``` 
+> ```
 >   Find  "pattern with spaces"
-> ``` 
+> ```
 > color codes such as: &nbsp; #e3d3b7, &nbsp; #AFD9D9
-> ``` 
->   Find  -i #[A-F0-9]{6}
-> ``` 
+> ```
+>   Find  -i  #[A-F0-9]{6}
+> ```
 > class types or variables that start with a capital letter A or S: &nbsp; Array, Set, String, Symbol
-> ``` 
+> ```
 >   Find  \b[AS]\w+
-> ``` 
-> strings that looks like a URL:
-> ``` 
->   Find  https?://[^"'\ ()]+
-> ``` 
+> ```
 
-### Navigation 
+### Navigation
 
   After a search, it will be handy to use keyboard shortcuts to the following commands to easily navigate the results.
 
@@ -109,7 +128,7 @@
 
   `Hi/older` and `Hi/newer` commands navigate the search history.
 
-  Key-mapping example: &nbsp; 
+  Key-mapping example: &nbsp;
   ```vim
    :nn <silent>-  :<C-U> Hi/next <CR>
    :nn <silent>_  :<C-U> Hi/previous <CR>
@@ -117,7 +136,7 @@
    :nn f<Right>   :<C-U> Hi/newer <CR>
   ```
 
-### Find window 
+### Find window
 
   The following keys and functions are available in the **Find** window.
 
@@ -143,7 +162,7 @@
 ### Example 1
 > This example describes how to add two custom colors
 > <span style="inline">
-> <img alt="example" height=18 sytle="vertical-align:middle" src="https://user-images.githubusercontent.com/83812658/117539479-cc321b80-b045-11eb-82f6-f9cdf046a69d.png">
+> <img alt="example" height=18 style="vertical-align:middle" src="https://user-images.githubusercontent.com/83812658/117539479-cc321b80-b045-11eb-82f6-f9cdf046a69d.png">
 > </span>
 > in 256 or 24-bit colors mode.
 >
