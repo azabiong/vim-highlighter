@@ -256,7 +256,7 @@
 > cd ~/.vim && git clone --depth=1 https://github.com/azabiong/vim-highlighter.git pack/azabiong/start/vim-highlighter
 > cd ~/.vim && vim -u NONE -c "helptags pack/azabiong/start/vim-highlighter/doc" -c q
 > ```
-
+ 
 ## Tested
   ```
     Linux   Vim 8.2
