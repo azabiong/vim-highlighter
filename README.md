@@ -1,14 +1,8 @@
 # Vim Highlighter
 
-> &nbsp; Upcoming... &nbsp;  Version 1.17
+> &nbsp; Version 1.17
 > ```
 > Find in Files Highlight — Improved Input Handling
->
->   [√] Added --fixed-strings --literal option
->   [√] rg options --type-add 'foo:*.foo' -tfoo PATTERN
->   [ ] other tools
->
-> Progress: 85%    Estimation: release in 1~2 days
 > ```
 
 ## Introduction
@@ -66,7 +60,7 @@
 
 ## Find in Files Highlight 🔎
 
-  If you have installed hi-performance search tools such as **ag**, **rg**, **ack**, or **grep**, the plugin can run it when looking for symbols based on the current directory. And when the given options and expression are simple, the plugin can highlight patterns to make them easier to find.
+  If you have installed hi-performance search tools such as **ag**, **rg**, **ack**, **sift**, or **grep**, the plugin can run it when looking for symbols based on the current directory. And when the given expression is simple, the plugin can highlight patterns to make them easier to find.
 
   `HiFind` key brings up the **Find** command prompt.
 
@@ -76,7 +70,7 @@
 
   If one of the tools listed above is found in the $PATH, the plugin can run it using default options. You can set your preferred tool and options in the `HiFindTool` variable. For example:
   ```vim
-    let HiFindTool = 'egrep -rnI --exclude-dir=.git'
+    let HiFindTool = 'grep -EnrI --exclude-dir=.git'
   ```
  <details>
  <summary> Tools </summary>
@@ -87,6 +81,10 @@
     let HiFindTool = 'rg --color=never --no-heading --column --smart-case'
 
     let HiFindTool = 'ack --nocolor --noheading --column --smart-case'
+
+    let HiFindTool = 'sift --no-color --line-number --column --binary-skip --git --smart-case'
+
+    let HiFindTool = 'ggrep -EnrI --exclude-dir=.git'
   ```
  </details>
 
@@ -118,6 +116,18 @@
 > class types or variables that start with a capital letter A or S: &nbsp; Array, Set, String, Symbol
 > ```
 >   Find  \b[AS]\w+
+> ```
+
+#### Fixed string or Literal option
+
+> This option treats the input as a literal string, which is useful when searching for codes with symbols.
+> ```
+>   ag,  rg,  grep    -F --fixed-strings
+>   ack, sift         -Q --literal
+> ```
+> Example: &nbsp; searching for `item[i+1].size() * 2`
+> ```
+>   Find  -F  'item[i+1].size() * 2'
 > ```
 
 ### Navigation
