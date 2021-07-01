@@ -7,14 +7,14 @@
            _|  _|_|\__, |_| |_|_|_|\__, |_| |_|\__|\___|_|                   ~
                     |___/           |___/                                    ~
                                                                              ~
-          An easy words highlighter using configurable colors                ~
+              Highlighting words with configurable colors                ~
                                                                              ~
                    Azabiong <azabiongc@gmail.com>                            ~
                            Licence: MIT                                      ~
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                        *Highlighter*
-                                                                 `ver 1.16`
+                                                                 `ver 1.17`
          Introduction`..........................`|Hi-Introduction|
          Key Map`....................................`|Hi-Key-Map|
          One Time Highlight`..............`|Hi-One-Time-Highlight|
@@ -79,7 +79,7 @@ Pressing `HiSet` key over `ONE TIME HIGHLIGHT` without moving the cursor sets
 `FOLLOWING HIGHLIGHT` mode. The highlight follows the cursor. Pressing `HiErase`
 key turns off the mode.
 
-Using Keywords~
+  Using Keywords~
 
     For better visual representation, `FOLLOWING HIGHLIGHT` skips moving on
     well-known keywords defined in the `vim-highlighter/autoload/keywords`
@@ -92,10 +92,10 @@ Using Keywords~
 ------------------------------------------------------------------------------
 FIND IN FILES HIGHLIGHT                            *Hi-Find-In-Files-Highlight*
 
-If you have installed hi-performance search tools such as 'ag', 'rg', 'ack' or
-'grep', the plugin can run it when looking for symbols based on the current
-directory. And when the given options and expression are simple, the plugin
-can highlight patterns to make them easier to find.
+If you have installed hi-performance search tools such as 'ag', 'rg', 'ack',
+'sift' or 'grep', the plugin can run it when looking for symbols based on the
+current directory. And when the given expression is simple, the plugin can
+highlight patterns to make them easier to find.
 
 1.Search tool ~
 
@@ -103,39 +103,23 @@ can highlight patterns to make them easier to find.
     it using default options. You can set your preferred tool and options in
     the |HiFindTool| variable. For example:
 >
-        let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
-
-        let HiFindTool = 'rg --color=never --no-heading --column --smart-case'
-
-        let HiFindTool = 'ack --nocolor --noheading --column --smart-case'
-
-        let HiFindTool = 'egrep -rnI --exclude-dir=.git'
+        let HiFindTool = 'grep -EnrI --exclude-dir=.git'
 <
-    When `--smart-case` option is set to default, you can use option -s or -I to
-    run a case-sensitve search:
->
-        ag   -s
-        rg   -s
-        ack  -I
-<
-2.Start ~
+    Please refer to the |HiFindTool| section for more options.
+
+2.Input ~
 
     |HiFind| key brings up `Find` command prompt.
     You can use general order of passing arguments to search tools:
 >
-       [options]  expression  [directory_or_file]
+        Find  [options]  expression  [directories_or_files]
 <
-    Visual selection ~
-    When searching for part of a string in the file as is, using visual
-    selection would be useful. After selecting the part, press |HiFind| key.
-    The plugin will escape the pattern properly.
-
-3.Regular expression ~
+3.Expression ~
 
     Among various regular expression options in Vim, the plugin uses "very magic"
-    style syntax which is almost same as the standard regex syntax.
+    style syntax which uses the standard regex syntax with fewer escape sequences.
 
-    Example~
+  Example~
     * searching for "red" or "blue":
 >
         Find  red|blue
@@ -148,7 +132,7 @@ can highlight patterns to make them easier to find.
 <
     * color codes such as: #e3d3b7, #AFD9D9
 >
-        Find  -i #[A-F0-9]{6}
+        Find  -i  #[A-F0-9]{6}
 <
     * class types or variables that start with a capital letter A or S:
       Array, Set, String, Symbol
@@ -159,7 +143,32 @@ can highlight patterns to make them easier to find.
 >
         Find  https?://[^"'\ ()]+
 <
-4.Navigation ~
+4.Options ~
+
+  -F --fixed-strings  or -Q --literal  option ~
+    This option treats the input as a literal string, which is useful when
+    searching for codes with symbols
+>
+        ag,  rg,  grep  -F --fixed-strings
+        ack, sift       -Q --literal
+<
+    Example: searching for `item[i+1].size() * 2`
+>
+        Find  -F  'item[i+1].size() * 2'
+<
+  --smart-case option ~
+    When this option is set to default, you can use option -s or -I to
+    run a case-sensitive search:
+>
+        ag,  rg         -s --case-sensitive
+        ack, sift       -I --no-ignore-case
+<
+  Visual selection ~
+    When searching for part of a string in the file as is, using visual
+    selection would be useful. After selecting the part, press |HiFind| key.
+    The plugin will escape the pattern properly.
+
+5.Navigation ~
 
     After a search, it will be handy to use keyboard shortcuts to the following
     commands to easily navigate the results.
@@ -175,7 +184,7 @@ can highlight patterns to make them easier to find.
         :nn f<Left>    :<C-U> Hi/older <CR>
         :nn f<Right>   :<C-U> Hi/newer <CR>
 <
-5.Find window ~
+6.Find window ~
 
     The following keys and functions are available in the Find window.
 
@@ -195,7 +204,7 @@ The plugin provides 14 + 3 default colors.
 You can add, change, reorder, and save colors using Vim's native |:hi| command,
 and see the changes in real time.
 
-Example 1 ~
+  Example 1 ~
 
     The following command adds two custom colors numbered 21 and 22.
 >
@@ -215,7 +224,7 @@ number. If the next color is not defined, the first one is selected.
 `HiFollow`  is the color of `FOLLOWING HIGHLIGHT`
 `HiFind`    is the color of `FIND IN FILES HIGHLIGHT`
 
-Example 2 ~
+  Example 2 ~
 
     The following command changes the color of `FIND IN FILES HIGHLIGHT`
 >
@@ -315,8 +324,10 @@ OPTIONS                                                            *Hi-Options*
           let HiFindTool = 'rg --color=never --no-heading --column --smart-case'
 <    "ack": >
           let HiFindTool = 'ack --nocolor --noheading --column --smart-case'
-<    "grep": >
-          let HiFindTool = 'egrep -rnI --exclude-dir=.git'
+<    "sift:" >
+          let HiFindTool = 'sift --no-color --line-number --column --binary-skip --git --smart-case'
+<    "ggrep": >
+          let HiFindTool = 'ggrep -EnrI --exclude-dir=.git'
 <                                                                 *HiFindHistory*
 |HiFindHistory| specifies the number of most recently used `FIND IN FILES` lists to
     keep in memory. You can use |Hi/older| and |Hi/newer| commands to navigate
@@ -341,6 +352,10 @@ REFERENCE                                                        *Hi-Reference*
 ------------------------------------------------------------------------------
 LOG                                                                    *Hi-Log*
 
+1.17~
+    Improved "Find in Files Highlight" input handling
+      - added --fixed-strings  --literal option
+      - read more tools options
 1.16~
     Added "Find in Files Highlight" --smart-case option
 1.15~
