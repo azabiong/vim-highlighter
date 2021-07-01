@@ -1,4 +1,4 @@
-" Find | grep output
+" Find in Files - grep output
 
 if exists("b:current_syntax")
   finish

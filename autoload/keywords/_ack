@@ -1,0 +1,14 @@
+# Find in Files - ack v3.5.0 options
+
+single:
+-l --files-with-matches -i --ignore-case -S --smart-case --nosmart-case -I --no-ignore-case -w --word-regexp -Q --literal -o --passthru -1 -H --with-filename -h --no-filename --column --nocolumn --print0 -s --nopager --heading --noheading --break --nobreak --group --nogroup --underline --nounderline --color --nocolor --colour --nocolour --help-colors --help-rgb-colors --flush --sort-files --show-types -x -r -R --recurse -n --no-recurse --follow --nofollow --env --noenv --ignore-ack-defaults --filter --nofilter -k --known-types
+--actionscript --ada --asm --asp --aspx --batch --bazel --cc --cfmx --clojure --cmake --coffeescript cpp csharp css dart delphi --elisp --elixir --elm --erlang --fortran --go --groovy --gsp --haskell --hh --hpp --html --jade --java --js --json --jsp --kotlin --less --lisp --lua --make --markdown --matlab --objc --objcpp --ocaml --perl --perltest --php --plone --pod --purescript --python --rake --rr --rst --ruby --rust --sass --scala --scheme --shell --smalltalk --smarty --sql --stylus --svg --swift --tcl --tex --toml --ts --ttml --vb --verilog --vhdl --vim --xml --yaml
+
+single!:
+-f -L --files-without-matches -c --count -v --invert-match --help-types --version --dump --help --man --help-types --help-colors --help-rgb-colors --thpppt --bar --cathy --create-ackrc
+
+with_value:
+--range-start --range-end --match --output -m --max-count -A --after-context -B --before-context -C --context --pager -p --proximate --color-filename --color-match --color-colno --color-lineno --files-from --ignore-dir --noignore-dir --ignore-directory --noignore-directory --ignore-file -t X --type -T X --type --type-set --type-add --type-del --ackrc
+
+with_value!:
+-g

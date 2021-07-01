@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.16
+" Version: 1.17
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -25,15 +25,20 @@ if !exists('g:HiFindHistory')
 endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.16'
+let s:Version   = '1.17'
 let s:Keywords  = {'usr': expand('<sfile>:h:h').'/keywords/', 'plug': expand('<sfile>:h').'/keywords/', '.':[]}
-let s:Find      = {'cmd':[], 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0, 'hi_exp':'', 'hi_err':'', 'hi':''}
+let s:Find      = {'tool':'', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0, 'hi_exp':'', 'hi_err':'', 'hi':'',
+                  \'type':'', 'options':{}}
 let s:FindList  = {'name':' Find *', 'height':8, 'log':'*',
                   \'buf':0, 'pos':0, 'lines':0, 'select':0, 'edit':0, 'logs':{'list':[], 'tag':[], 'index':0}}
+let s:FindOpts  = ['--literal', '_li', '--fixed-strings', '_li', '--smart-case', '_sc', '--ignore-case',  '_ic',
+                  \'--word-regexp', '_wr']
 let s:FindTools = ['rg --color=never --no-heading --column --smart-case',
                   \'ag --nocolor --noheading --column --nobreak',
                   \'ack --nocolor --noheading --column --smart-case',
-                  \'egrep -rnI --exclude-dir=.git']
+                  \'sift --no-color --line-number --column --binary-skip --git --smart-case',
+                  \'ggrep -EnrI--exclude-dir=.git',
+                  \'grep -EnrI--exclude-dir=.git']
 const s:FL = s:FindList
 
 function s:Load()
@@ -277,7 +282,7 @@ function s:SetMode(cmd, word)
     let l:op = '0'
   endif
 
-  if '1=>' =~ l:op
+  if stridx('1=>', l:op) != -1
     call s:LinkCursorEvent(l:word)
     let w:HiMode['p'] = getpos('.')
     if l:op == '>'
@@ -379,7 +384,7 @@ function s:GetKeywords()
   let s:Keywords['.'] = s:Keywords[l:ft]
 endfunction
 
-"op:  *:any  #:filter  k:keyword
+" op:  *:any  #:filter  k:keyword
 function s:GetCurrentWord(op)
   if match(getline('.')[col('.')-1], '\k') != -1
     let l:word = expand('<cword>')
@@ -487,7 +492,7 @@ function s:Find(mode)
   call inputrestore()
   if !s:FindArgs(l:input) | return | endif
 
-  let l:cmd = s:Find.cmd + s:Find.opt + [s:Find.exp] + s:Find.file
+  let l:cmd = [s:Find.tool] + s:Find.opt + [s:Find.exp] + s:Find.file
   call s:FindStop(0)
   call s:FindStart(l:input)
   if exists('*job_start')
@@ -507,22 +512,41 @@ function s:Find(mode)
 endfunction
 
 function s:FindTool()
-  let s:Find.cmd = []
   let l:list = !empty(g:HiFindTool) ? [g:HiFindTool] : s:FindTools
-  for l:tool in l:list
-    let l:cmd = split(l:tool)
-    if !empty(l:cmd) && executable(l:cmd[0])
-      let s:Find.cmd = l:cmd
-      if empty(g:HiFindTool) | let g:HiFindTool = l:tool | endif
+  let l:tool = ''
+  for l:line in l:list
+    let l:cmd = matchstr(l:line, '\v\S+')
+    if !empty(l:cmd) && executable(l:cmd)
+      let l:tool = l:cmd
+      if empty(g:HiFindTool) | let g:HiFindTool = l:line | endif
       break
     endif
   endfor
-  if empty(s:Find.cmd)
+  if empty(l:tool)
     echo " No executable search tool, HiFindTool='".g:HiFindTool."'"
     return
   elseif !exists('*job_start') && !exists('*jobstart')
     echo " channel - feature not found "
     return
+  endif
+
+  if s:Find.tool !=# l:tool
+    let s:Find.tool = l:tool
+    let s:Find.options = {'single':[], 'single!':[], 'with_value':[], 'with_value!':[], '_':[]}
+    let s:Find.type = (l:tool =~ 'grep$') ? 'grep' : l:tool
+    let l:file = s:Keywords.plug.'_'.s:Find.type
+    let l:type = '_'
+    if filereadable(l:file)
+      for l:line in readfile(l:file)
+        if l:line[0] == '#'
+          continue
+        elseif index(['single:', 'single!:', 'with_value:', 'with_value!:'], l:line) != -1
+          let l:type = l:line[:-2] | continue
+        else
+          let s:Find.options[l:type] += split(l:line)
+        endif
+      endfor
+    endif
   endif
   return 1
 endfunction
@@ -531,127 +555,207 @@ function s:FindArgs(arg)
   if match(a:arg, '\S') == -1
     call s:FindStatus('') | return
   endif
-  let l:exp = s:FindExp(a:arg)
-  let s:Find.opt = l:exp ? split(a:arg[:l:exp-1]) : []
-  let l:pat = s:FindUnescape(a:arg[l:exp:])
-  let s:Find.exp = l:pat.str
-  let l:path = l:exp + l:pat.len
-  let l:path = split(a:arg[l:path:])
-  let s:Find.file = (l:path == []) ? ['.'] : l:path
-  call s:FindMatch()
+  let l:opt = s:FindOptions(a:arg)
+  let l:exp = s:FindUnescape(l:opt.exp)
+  let s:Find.exp = l:exp.pattern
+  let l:path = split(l:exp.path)
+  let s:Find.file = empty(l:path) ? ['.'] : l:path
+  call s:FindMatch(l:opt)
   return 1
 endfunction
 
-function s:FindExp(arg)
-  let l:op = match(a:arg, '-- ')
-  if l:op != -1 | return l:op + 3 | endif
-  let l:len = len(a:arg)
-  let l:op = 0
-  for i in range(l:len)
-    if  a:arg[i] == ' '
-      let l:op = 0
-    elseif !l:op
-      if a:arg[i] != '-'
-        return i
-      endif
-      let l:op = 1
-    endif
-  endfor
-  return l:len
-endfunction
-
-function s:FindUnescape(arg)
-  let l:exp = {'str':'', 'len':0}
-  let l:len = len(a:arg)
-  let l:qt = ''
+function s:FindOptions(arg)
+  let s:Find.opt = []
+  let l:opt = {'case':{'i':0, 'I':0, '_ic':0, 's':0, 'S':0, '_sc':0}, 'pos':32, 'nohi':0, 'exp':'',
+              \'F':0, 'Q':0, '_li':0, 'w':0, '_wr':0}
+  let l:args = len(s:Find.tool)
+  let l:args = g:HiFindTool[l:args+1:].' '.a:arg.' '
+  let l:next = 0 | let l:key = ''
+  let l:len = len(l:args)
   let i = 0
+  if l:args =~ '^grep'
+    call add(s:Find.opt, 'grep') | let i = 5
+  endif
   while i < l:len
-    let c = a:arg[i]
-    if c == "'" || c == '"'
-      if     i == 0    | let l:qt = c
-      elseif l:qt == c | let i += 1 | break
-      else             | let l:exp.str .= c
-      endif
-    elseif c == '\'
-      let c = a:arg[i+1]
-      if index([' ', "'", '"'], c) != -1
-        let l:exp.str .= c
+    let l:c = l:args[i]
+    if empty(l:key)
+      if     l:c == ' '
+      elseif l:c == '-'
+        if l:args[i:i+3] == '-- '
+          call add(s:Find.opt, '--') | let i += 3 | break
+        endif
+        let l:key = l:c
       else
-        let l:exp.str .= '\'.c
+        if !l:next | break | endif
+        if l:c == '='
+          let l:next = l:args[i+1]
+          if stridx("\"'", l:next) != -1
+            let l:c = l:next
+            let i += 1
+          endif
+        endif
+        let l:quote = 0
+        if stridx("\"'", l:c) != -1
+          let l:next = stridx(l:args, l:c, i+1)
+          let l:value = l:args[i+1:l:next-1]
+          let l:quote = 2
+        else
+          let l:value = matchstr(l:args, '\v\S+', i)
+        endif
+        if !empty(l:value)
+          if l:value[0] == '='
+            let s:Find.opt[-1] .= l:value
+          else
+            call add(s:Find.opt, l:value)
+          endif
+          let i += len(l:value) + l:quote
+        endif
+        let l:next = 0 | let l:key = ''
       endif
-      let i += 1
-    elseif c == ' '
-      if empty(l:qt) | break
-      else           | let l:exp.str .= c
-      endif
+    elseif stridx("=\ \"'", l:c) != -1
+      call add(s:Find.opt, l:key)
+      let l:next = s:FindFlag(l:opt, l:key)
+      let l:next += l:c != ' '
+      let l:key = ''
+      continue
     else
-      let l:exp.str .= c
+      let l:key .= l:c
     endif
     let i += 1
   endwhile
-  let l:exp.len = i
-  return l:exp
+  let l:opt.exp = l:args[i:-2]
+
+  " --literal --fixed-strings
+  let l:type = s:Find.type
+  let l:opt._li += (l:opt.F && index(['ag','rg','grep'], l:type) != -1)
+                \+ (l:opt.Q && index(['ack','sift'], l:type) != -1)
+  if (s:Find.type == 'grep') && l:opt._li
+    let l:o = s:Find.opt
+    let i = 0 | let l:len = len(l:o)
+    while i  < l:len
+      if (l:o[i] =~# '\v-\w+') && (stridx(l:o[i], 'E') != -1)
+        let l:o[i] = substitute(l:o[i], 'E', 'F', '') | break
+      endif
+    endwhile
+  endif
+  " --smart-case --ignore-case
+  let l:case = l:opt.case
+  let l:case._ic = max([l:case._ic, l:case.i])
+  if  l:type == 'ag'
+    let l:case._sc += 1
+  endif
+  if index(['ag', 'rg', 'ack'], l:type) != -1
+    let l:case._sc = max([l:case._sc, l:case.S])
+  elseif l:type == 'sift'
+    let l:case._sc = max([l:case._sc, l:case.s])
+  endif
+  let l:o = max(l:case)
+  if  l:o && l:o == l:case._sc
+    let l:upper = l:opt._li ? '\v\u' : '\v^\u|[^\\]\u'
+    let l:case._ic = match(s:Find.exp, l:upper) == -1
+  elseif l:o != l:case._ic
+    let l:case._ic = 0
+  endif
+  " --word-regexp
+  let l:opt._wr = max([l:opt._wr, l:opt.w])
+  return l:opt
 endfunction
 
-function s:FindMatch()
-  let [s:Find.hi_exp, s:Find.hi_err] = ['', '']
-  let l:opts = {'pos':32, 'i':0, 'I':0, 's':0, 'S':0,'w':0}
+function s:FindFlag(opts, op)
+  let l:options = ['single', 'single!', 'with_value', 'with_value!']
+  let l:f = (a:op[1] == '-') ? a:op : a:op[:1]
+  let l:known = 0
+  let l:len = len(a:op)
+  let l:inc = len(l:f) - 1
+  let i = 1
+  while i < l:len
+    for l:opts in l:options
+      if index(s:Find.options[l:opts], l:f) == -1 | continue | endif
+      let a:opts.pos += 32 | let l:known = 1
 
-  for l:op in s:Find.cmd
-    call s:FindOption('iIsSw', l:op, l:opts)
-  endfor
-  for l:op in s:Find.opt
-    if l:op == '--' | break | endif
-    if !s:FindOption('iIsSw', l:op, l:opts)
-      return
+      if l:inc > 1  " long options
+        let l:o = index(s:FindOpts, l:f)
+        if  l:o != -1
+          let l:o = s:FindOpts[l:o+1]
+          if index(['_ic', '_sc'], l:o)
+            let a:opts.case[l:o] = a:opts.pos
+          else
+            let a:opts[l:o] = a:opts.pos
+          endif
+        endif
+      else
+        let l:f = l:f[1]
+        if stridx("iIsS", l:f) != -1
+          let a:opts.case[l:f] = a:opts.pos
+        elseif stridx("FQw", l:f) != -1
+          let a:opts[l:f] = a:opts.pos
+        endif
+      endif
+
+      let a:opts.nohi += l:opts[-1:] == '!'
+      if l:opts[0] == 'w'
+        return i + l:inc == l:len
+      endif
+    endfor
+    let a:opts.nohi += !l:known
+    let l:known = 0
+    let i += l:inc
+    let l:f = '-'.a:op[i]
+  endwhile
+endfunction
+
+function s:FindUnescape(arg)
+  let l:exp = {'pattern':'', 'path':''}
+  let l:q = a:arg[0]
+  if l:q == "'"
+    let l:q = stridx(a:arg, l:q, 1)
+    if  l:q == -1
+      let l:q = stridx(a:arg, ' ', 1)
     endif
-  endfor
-
-  " --smart-case
-  let l:tool = s:Find.cmd[0]
-  if index(['ag', 'rg', 'ack'], l:tool) != -1
-    if l:tool == 'ag' | let l:opts.S += 1 | endif
-    let l:opts.pos = 0
-    let l:case = max(l:opts)
-    if  l:case && l:case == l:opts.S
-      let l:opts.i = match(s:Find.exp, '\v^\u|[^\\]\u') == -1
-    elseif l:case != l:opts.i
-      let l:opts.i = 0
+    if l:q == -1
+      return {'pattern':a:arg[1:-1], 'path':''}
+    else
+      return {'pattern':a:arg[1:l:q-1], 'path':a:arg[l:q+1]}
     endif
   endif
 
-  let l:exp = escape(s:Find.exp, '~@%&=<>'."'")
+  let l:len = len(a:arg)
+  if  l:q != '"' | let l:q = '' | endif
+  let i = len(l:q)
+  while i < l:len
+    let c = a:arg[i]
+    if     c == '"'  | let i += 1    | break
+    elseif c == ' '  | if empty(l:q) | break | endif
+    elseif c == '\'
+      let l:next = a:arg[i+1]
+      if stridx(' "', l:next) != -1
+        let c = l:next
+      else
+        let c .= l:next
+      endif
+      let i += 1
+    endif
+    let l:exp.pattern .= c
+    let i += 1
+  endwhile
+  let l:exp.path = a:arg[i:]
+  return l:exp
+endfunction
+
+function s:FindMatch(opt)
+  let [s:Find.hi_exp, s:Find.hi_err] = ['', '']
+  if a:opt.nohi | return | endif
+
+  let l:exp = escape(s:Find.exp, (a:opt._li ? '\' : '~@%&=<>'."'"))
   let [l:p, l:q] = ['', '']
-  if l:opts.i | let l:p = '\c' | endif
-  if l:opts.w
+  if a:opt.case._ic | let l:p = '\c' | endif
+  if a:opt._wr
     let l:p .= '<' | let l:q = '>'
   else
     if l:exp[:1]  == '\b' | let l:exp = '<'.l:exp[2:]  | endif
     if l:exp[-2:] == '\b' | let l:exp = l:exp[:-3].'>' | endif
   endif
-  let s:Find.hi_exp = '\v'.l:p.l:exp.l:q
-endfunction
-
-function s:FindOption(flags, op, opts)
-  let l:op = a:op
-  if l:op[0] != '-' | return | endif
-  if l:op[1] == '-'
-    if l:op ==# '--smart-case'
-      let l:op = '-S'
-    else
-      return
-    endif
-  endif
-  for i in range(1, len(l:op)-1)
-    let l:c = l:op[i]
-    if a:flags =~# l:c
-      let a:opts.pos += 32
-      let a:opts[l:c] = a:opts.pos
-    else
-      return
-    endif
-  endfor
-  return 1
+  let s:Find.hi_exp = (a:opt._li ? '\V' : '\v').l:p.l:exp.l:q
 endfunction
 
 function s:FindStatus(msg)
@@ -697,7 +801,7 @@ function s:FindStart(arg)
     let l:logs -= 1
   endwhile
   let l:index = l:logs - 1
-  let l:status = join(s:Find.cmd).' '.join(s:Find.opt).' '.s:Find.exp.' '.join(s:Find.file)
+  let l:status = s:Find.tool.' '.join(s:Find.opt).' '.s:Find.exp.' '.join(s:Find.file)
   let s:FL.logs.index = l:index
   let s:FL.log = s:FL.logs.list[l:index]
   let s:FL.logs.tag[l:index] = [l:status, '']
@@ -1018,7 +1122,7 @@ function highlighter#Status()
   return getbufvar(s:FL.buf, 'Status')
 endfunction
 
-function! highlighter#Airline(...)
+function highlighter#Airline(...)
   if winnr() == bufwinnr(s:FL.buf)
     let w:airline_section_a = ' Find '
     let w:airline_section_b = ''

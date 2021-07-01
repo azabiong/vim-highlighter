@@ -1,0 +1,13 @@
+# Find in Files - sift 0.9.0 options
+
+single:
+--binary-skip -a --binary-text --color --no-color --err-show-line-length --err-skip-line-length -l --files-with-matches --follow --git --group --no-group -i --ignore-case -I --no-ignore-case -s --smart-case -S --no-smart-case --no-conf -Q --literal -m --multiline -M --no-multiline --only-matching -r --recursive -R --no-recursive --filename -n --line-number -N --no-line-number --column --no-column --byte-offset --no-byte-offset --stats -w --word-regexp -z --zip -Z --no-zip
+
+single!:
+-c --count -v --invert-match -L --files-without-match -f --regexp-file --print-config -q --quiet --no-filename --targets --list-types -V --version --write-config -h --help
+
+with_value:
+--blocksize --conf -C --context -A --context-after -B --context-before -j --cores --dirs --exclude-dirs -x --ext -X --exclude-ext --files --exclude-files --path --ipath --exclude-path --exclude-ipath -t --type -T --no-type --add-type --del-type --field-sep --limit -o --output --output-limit --output-sep --output-unixpath -e --regexp --replace --file-matches --line-matches --range-matches --preceded-by --followed-by --surrounded-by --preceded-within --followed-within --surrounded-within
+
+with_value!:
+--not-file-matches --not-line-matches --not-range-matches --not-preceded-by --not-followed-by --not-surrounded-by --not-preceded-within --not-followed-within --not-surrounded-within

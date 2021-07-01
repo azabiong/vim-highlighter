@@ -1,0 +1,13 @@
+# Find in Files - GNU grep 3.6 options
+
+single:
+-E --extended-regexp -F --fixed-strings -G --basic-regexp -P --perl-regexp -i --ignore-case --no-ignore-case -w --word-regexp -x --line-regexp -z --null-data -s --no-messages -b --byte-offset -n --line-number --line-buffered -H --with-filename -h --no-filename -l --files-with-matches -o --only-matching -a --text -I -r --recursive -R --dereference-recursive -T --initial-tab -Z --null -1 -2 -3 -4 -5 -6 -7 -8 -9 -U --binary -J --bz2decompress --decompress --mmap -O -p -S
+
+single!:
+-v --invert-match -V --version --help -q --quiet --silent -L --files-without-match -c --count
+
+with_value:
+-e --regexp -m --max-count --label --binary-files -d --directories -D --devices --include --exclude --exclude-from --exclude-dir --include-dir -B --before-context -A --after-context -C --context --color --colour
+
+with_value!:
+-f --file
