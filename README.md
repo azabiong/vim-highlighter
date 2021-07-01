@@ -1,8 +1,7 @@
 # Vim Highlighter
 
-> &nbsp; Version 1.17
 > ```
-> Find in Files Highlight — Improved Input Handling
+> Version 1.17   Find in Files Highlight — Improved Input Handling
 > ```
 
 ## Introduction
