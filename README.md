@@ -1,9 +1,5 @@
 # Vim Highlighter
 
-> ```
-> Version 1.17   Find in Files Highlight — Improved Input Handling
-> ```
-
 ## Introduction
 
   One of the things that are not easy for people, but an easy thing for computers would be finding symbols very quickly. This plugin provides an easy way to use Vim's highlighting function which helps quickly find the usage of words and easily check spelling of variables.
