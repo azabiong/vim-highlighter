@@ -165,13 +165,13 @@
   You can add, change, reorder, and save colors using Vim's native **hi** command, and see the changes in real time.
 
 ### Example 1
-> This example describes how to add two custom colors
+> This example adds two custom colors
 > <span style="inline">
 > <img alt="example" height=18 style="vertical-align:middle" src="https://user-images.githubusercontent.com/83812658/117539479-cc321b80-b045-11eb-82f6-f9cdf046a69d.png">
 > </span>
 > in 256 or 24-bit colors mode.
 >
-> If the plugin is installed and working, copy the following lines one by one, then run it in Vim's command window.
+> If the plugin is installed and working, copy the following lines one by one, then run it in the Vim's command window.
 > ```vim
 > :hi HiColor21 ctermfg=20  ctermbg=159 guifg=#0000df guibg=#afffff
 > :hi HiColor22 ctermfg=228 ctermbg=129 guifg=#ffff87 guibg=#af00ff
@@ -198,13 +198,15 @@
   ```vim
   :h Highlighter
   ```
-
 ## Installation
 
   There are some options. Please choose your convenient way.
 
-#### vim-plug
-> In Vim's command window,
+<details>
+<summary> vim-plug </summary>
+  
+> &nbsp;  
+> in the Vim's command window,
 > ```vim
 > :Plug 'azabiong/vim-highlighter'
 > :PlugInstall
@@ -214,9 +216,14 @@
 > call plug#begin()
 > call plug#end()
 > ```
+</details>
 
-#### neobundle.vim
-> In Vim's command window,
+
+<details>
+<summary> neobundle </summary>
+  
+> &nbsp;  
+> in the Vim's command window,
 > ```vim
 > :NeoBundle 'azabiong/vim-highlighter'
 > :NeoBundleInstall
@@ -226,9 +233,13 @@
 > call neobundle#begin()
 > call neobundle#end()
 > ```
+</details>
 
-#### Vundle.vim
-> In Vim's command window,
+<details>
+<summary> Vundle.vim </summary>
+  
+> &nbsp;  
+> in the Vim's command window,
 > ```vim
 > :Plugin 'azabiong/vim-highlighter'
 > :PluginInstall
@@ -238,20 +249,22 @@
 > call vundle#begin()
 > call vundle#end()
 > ```
+</details>
 
-#### pathogen
-> In the terminal,
-> ```zsh
-> cd ~/.vim/bundle && git clone --depth=1 https://github.com/azabiong/vim-highlighter.git
-> cd ~/.vim/bundle && vim -u NONE -c "helptags vim-highlighter/doc" -c q
-> ```
-
-#### Vim 8 native
-> In the terminal,
+<details>
+<summary> Vim 8 native </summary>
+  
+> &nbsp;  
+> in the terminal,
 > ```zsh
 > cd ~/.vim && git clone --depth=1 https://github.com/azabiong/vim-highlighter.git pack/azabiong/start/vim-highlighter
 > cd ~/.vim && vim -u NONE -c "helptags pack/azabiong/start/vim-highlighter/doc" -c q
 > ```
+> in your vimrc,
+> ```vim
+> packadd vim-highlighter
+> ```
+</details>
  
 ## Tested
   ```
