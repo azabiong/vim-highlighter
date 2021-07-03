@@ -1,5 +1,13 @@
 # Vim Highlighter
 
+> &nbsp; Upcoming... &nbsp;  Version 1.18
+> ```
+> [√] fixed empty expression input
+> [ ] Support multiple -e --regexp option
+>
+> Progress: 80%    Estimate: release in 1~2 days
+> ```
+
 ## Introduction
 
   One of the things that are not easy for people, but an easy thing for computers would be finding symbols very quickly. This plugin provides an easy way to use Vim's highlighting function which helps quickly find the usage of words and easily check spelling of variables.
