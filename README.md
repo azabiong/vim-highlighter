@@ -1,11 +1,8 @@
 # Vim Highlighter
 
-> &nbsp; Upcoming... &nbsp;  Version 1.18
 > ```
-> [√] fixed empty expression input
-> [ ] Support multiple -e --regexp option
->
-> Progress: 80%    Estimate: release in 1~2 days
+> Version 1.18   Support multiple -e --regexp option
+>                Highlight line (visual mode)
 > ```
 
 ## Introduction
@@ -88,6 +85,8 @@
     let HiFindTool = 'sift --no-color --line-number --column --binary-skip --git --smart-case'
 
     let HiFindTool = 'ggrep -EnrI --exclude-dir=.git'
+ 
+    let HiFindTool = 'git grep -EnrI --no-color --column'
   ```
  </details>
 
@@ -143,10 +142,10 @@
 
   Key-mapping example: &nbsp;
   ```vim
-   :nn <silent>-  :<C-U> Hi/next <CR>
-   :nn <silent>_  :<C-U> Hi/previous <CR>
-   :nn f<Left>    :<C-U> Hi/older <CR>
-   :nn f<Right>   :<C-U> Hi/newer <CR>
+   :nn <silent>-  :Hi/next<CR>
+   :nn <silent>_  :Hi/previous<CR>
+   :nn f<Left>    :Hi/older<CR>
+   :nn f<Right>   :Hi/newer<CR>
   ```
 
 ### Find window

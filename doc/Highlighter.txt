@@ -7,14 +7,14 @@
            _|  _|_|\__, |_| |_|_|_|\__, |_| |_|\__|\___|_|                   ~
                     |___/           |___/                                    ~
                                                                              ~
-              Highlighting words with configurable colors                ~
+                Highlight words with configurable colors                     ~
                                                                              ~
-                   Azabiong <azabiongc@gmail.com>                            ~
-                           Licence: MIT                                      ~
+                    Azabiong <azabiongc@gmail.com>                           ~
+                            Licence: MIT                                     ~
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                        *Highlighter*
-                                                                 `ver 1.17`
+                                                                 `ver 1.18`
          Introduction`..........................`|Hi-Introduction|
          Key Map`....................................`|Hi-Key-Map|
          One Time Highlight`..............`|Hi-One-Time-Highlight|
@@ -179,10 +179,10 @@ highlight patterns to make them easier to find.
 
     Key-mapping example:  `-` `_`  `f<Left>` `f<Right>`
 >
-        :nn <silent>-  :<C-U> Hi/next <CR>
-        :nn <silent>_  :<C-U> Hi/previous <CR>
-        :nn f<Left>    :<C-U> Hi/older <CR>
-        :nn f<Right>   :<C-U> Hi/newer <CR>
+        :nn <silent>-  :Hi/next<CR>
+        :nn <silent>_  :Hi/previous<CR>
+        :nn f<Left>    :Hi/older<CR>
+        :nn f<Right>   :Hi/newer<CR>
 <
 6.Find window ~
 
@@ -278,8 +278,8 @@ Highlighting functions can be invoked using |:Hi| command.
     easily navigate the search list. For example, to map '-' and '_' keys in
     normal mode: >
 
-        :nn <silent>-  :<C-U> Hi/next <CR>
-        :nn <silent>_  :<C-U> Hi/previous <CR>
+        :nn <silent>-  :Hi/next<CR>
+        :nn <silent>_  :Hi/previous<CR>
 <                                                           *Hi/older*  *Hi/newer*
 :Hi /older ~
 :Hi /newer ~
@@ -287,8 +287,8 @@ Highlighting functions can be invoked using |:Hi| command.
     It would be also convenient to map this commands to somewhere. For example
     to map `f <Left>` and `f <Right>` keys in normal mode: >
 
-        :nn f<Left>    :<C-U> Hi/older <CR>
-        :nn f<Right>   :<C-U> Hi/newer <CR>
+        :nn f<Left>    :Hi/older<CR>
+        :nn f<Right>   :Hi/newer<CR>
 <                                                                      *Hi/open*
 :Hi /open ~
     Open `Find` window
@@ -308,7 +308,7 @@ OPTIONS                                                            *Hi-Options*
     the cursor stopped in `ONE TIME HIGHLIGHT` mode.
 
     Default: 260 (ms)
-     Values:  0 ~ 320
+     Values: 0 ~ 320
                                                                   *HiFollowWait*
 |HiFollowWait| defines the wait time before moving the highlights to the cursor
     position after the cursor stopped in `FOLLOWING HIGHLIGHT` mode.
@@ -328,6 +328,8 @@ OPTIONS                                                            *Hi-Options*
           let HiFindTool = 'sift --no-color --line-number --column --binary-skip --git --smart-case'
 <    "ggrep": >
           let HiFindTool = 'ggrep -EnrI --exclude-dir=.git'
+<    "git grep": >
+          let HiFindTool = 'git grep -EnrI --no-color --column'
 <                                                                 *HiFindHistory*
 |HiFindHistory| specifies the number of most recently used `FIND IN FILES` lists to
     keep in memory. You can use |Hi/older| and |Hi/newer| commands to navigate
@@ -352,29 +354,31 @@ REFERENCE                                                        *Hi-Reference*
 ------------------------------------------------------------------------------
 LOG                                                                    *Hi-Log*
 
+1.18~
+    Support multiple -e --regexp option
+      - fixed empty expression input
+      - added git-grep options
+    Highlight line (visual mode)
 1.17~
-    Improved "Find in Files Highlight" input handling
+    Improve "Find in Files Highlight" input handling
       - added --fixed-strings  --literal option
       - read more tools options
 1.16~
-    Added "Find in Files Highlight" --smart-case option
+    Add "Find in Files Highlight" --smart-case option
 1.15~
-    Added "Find in Files Highlight"
+    Add "Find in Files Highlight"
       - "very magic" style regex syntax
       - asynchronous search
       - airline compatible
-
-    Improved "One Time Highlight" to show all matches in the current tab
-    Improved erasing highlight using visual selection
+    Improve "One Time Highlight" to show all matches in the current tab
+    Improve erasing highlight using visual selection
 1.14~
-    Improved setting highlight on the hlsearch
+    Improve highlight on the hlsearch
 1.13~
-    Added "Following Highlight" default keywords
-1.12~
-    Added "Following Highlight" default keywords directory.
+    Add "Following Highlight" default keywords
 1.1~
     Upgrade "Following Highlight" with well-known keywords.
-    Fixed buffer switching error
+    Fix buffer switching error
 1.0~
     First Release
 
