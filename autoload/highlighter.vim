@@ -1,8 +1,8 @@
-" Vim Highlighter: Vim easy words highlighter
+" Vim Highlighter: Highlight words with configurable colors
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.18
+" Version: 1.19
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -25,7 +25,7 @@ if !exists('g:HiFindHistory')
 endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.18'
+let s:Version   = '1.19'
 let s:Keywords  = {'usr': expand('<sfile>:h:h').'/keywords/', 'plug': expand('<sfile>:h').'/keywords/', '.':[]}
 let s:Find      = {'tool':'', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
@@ -38,8 +38,8 @@ let s:FindTools = ['rg --color=never --no-heading --column --smart-case',
                   \'ack --nocolor --noheading --column --smart-case',
                   \'sift --no-color --line-number --column --binary-skip --git --smart-case',
                   \'ggrep -EnrI--exclude-dir=.git',
-                  \'git grep -EnrI --no-color --column',
-                  \'grep -EnrI--exclude-dir=.git']
+                  \'grep -EnrI--exclude-dir=.git',
+                  \'git grep -EnrI --no-color --column']
 const s:FL = s:FindList
 
 function s:Load()
@@ -95,6 +95,7 @@ function s:Load()
   let s:SchemeRange = 64
   let s:Wait = [g:HiOneTimeWait, g:HiFollowWait]
   let s:WaitRange = [[0, 320], [260, 520]]
+  let s:Word = '<cword>'
   call s:SetColors(0)
 
   aug Highlighter
@@ -168,8 +169,8 @@ function s:SetHighlight(cmd, mode, num)
 
   let l:deleted = s:DeleteMatch(l:match, '==', l:word)
   if l:color
-    if a:mode == 'n' && s:GetMode(l:word)
-      call s:SetMode('>', l:word)
+    if a:mode == 'n' && s:GetMode(1, l:word)
+      call s:SetMode('>', '')
     else
       let w:HiColor = l:color
       call matchadd(s:Color.l:color, l:word, 0)
@@ -184,6 +185,9 @@ function s:SetHighlight(cmd, mode, num)
       endif
     endif
     if !l:deleted
+      if a:mode != 'n' && s:GetMode('>', '')
+        let s:HiMode['>'] = '<'
+      endif
       let s:Search = (s:SetMode('.', l:word) == '1') && l:search
     endif
   endif
@@ -208,7 +212,7 @@ function s:GetVisualLine()
   let [l:top, l:left] = getpos("'<")[1:2]
   let [l:bottom, l:right] = getpos("'>")[1:2]
   if l:top != l:bottom | let l:right = -1 | endif
-  if l:left == l:right | return | endif
+  if l:left == l:right | return '' | endif
   if l:right > 0
     let l:right -= &selection == 'inclusive' ? 1 : 2
   endif
@@ -245,39 +249,43 @@ endfunction
 function s:GetStringPart()
   let l:line = getline('.')
   let l:col = col('.')
-  let l:low = max([l:col-256, 0])
+  let l:low = max([l:col-1024, 0])
   let l:left = strpart(l:line, l:low, l:col - l:low)
-  let l:right = strpart(l:line, l:col, l:col + 256)
+  let l:right = strpart(l:line, l:col, l:col + 1024)
   let l:word = matchstr(l:left, '\zs\S\+$')
   let l:word .= matchstr(l:right, '^\S\+')
   return {'word':l:word, 'line': l:left.l:right}
 endfunction
 
-function s:GetMode(word)
-  return !v:count && exists("w:HiMode") &&
-       \ !w:HiMode['>'] && w:HiMode['p'] == getpos('.') && w:HiMode['w'] ==# a:word
+function s:GetMode(mode, word)
+  if !exists("s:HiMode") | return | endif
+  if a:mode == 1
+    return !v:count && s:HiMode['>'] == '1' && s:HiMode['p'] == getpos('.') && s:HiMode['w'] ==# a:word
+  else
+    return s:HiMode['>'] == '>'
+  endif
 endfunction
 
 " s:SetMode(cmd) actions
-"     |       |     !>     |     >    |
-" cmd | !mode | !same same | !key key |  1:on, 0:off
-"  .  |   1   |   =     0  |   0   >  |  =:update
-"  >  |   >   |   >     >  |   >   >  |  >:follow
-"  -  |   0   |   0     0  |   0   0  |
+" |   mode  |   !   |  '1,<'  |   '>'   |
+" |   word  |   *   | !=   == | !=   == |
+" |-----+---|-------|---------|---------|  1:one-time
+" |     | . |   1   |  =   0  |  >   0  |  >:follow
+" | cmd | > |   >   |  >   >  |  >   >  |  =:update
+" |     | - |   0   |  0   0  |  0   0  |  0:off
 function s:SetMode(cmd, word)
   if a:cmd == '.'
-    if !exists("w:HiMode")
+    if !exists("s:HiMode")
       let l:word = a:word
       let l:op = '1'
-    elseif !w:HiMode['>']
-      let l:word = empty(a:word) ? s:GetCurrentWord('*') : a:word
-      let l:op = (w:HiMode['w'] ==# l:word) ? '0' : '='
     else
-      let l:word = s:GetCurrentWord('k')
-      let l:op = (empty(w:HiMode['m']) || empty(l:word)) ? '0' : '>'
+      let l:action = ['=0', '>0'][s:HiMode['>'] == '>']
+      let l:word = empty(a:word) ? s:GetCurrentWord().word : a:word
+      let l:op = l:word =~# s:HiMode['w'] && s:HiMode['w'] =~# l:word
+      let l:op = l:action[l:op]
     endif
   elseif a:cmd == '>'
-    let l:word = empty(a:word) ? s:GetCurrentWord('*') : a:word
+    let l:word = empty(a:word) ? s:GetCurrentWord().word : a:word
     let l:op = '>'
   else
     let l:op = '0'
@@ -285,15 +293,16 @@ function s:SetMode(cmd, word)
 
   if stridx('1=>', l:op) != -1
     call s:LinkCursorEvent(l:word)
-    let w:HiMode['p'] = getpos('.')
+    let s:HiMode['p'] = getpos('.')
     if l:op == '>'
       call s:GetKeywords()
-      let w:HiMode['>'] = 1
-      let w:HiMode['_'] = s:Wait[1]
+      let s:HiMode['>'] = '>'
+      let s:HiMode['_'] = s:Wait[1]
       call s:UpdateHiWord(0)
     elseif l:op == '='
-      call timer_stop(w:HiMode['t'])
-      let w:HiMode['t'] = 0
+      call timer_stop(s:HiMode['t'])
+      let s:HiMode['t'] = 0
+      let s:HiMode['_'] = s:Wait[0]
     endif
   elseif l:op == '0'
     call s:UnlinkCursorEvent(1)
@@ -301,14 +310,29 @@ function s:SetMode(cmd, word)
   return l:op
 endfunction
 
-" symbols: follow('>'), wait('_'), pos, timer, reltime, match, word
+function s:SwitchMode(op)
+  if a:op == '<>'
+    let s:Word = s:Word == '<cword>' ? '<cWORD>' : '<cword>'
+  elseif index(['<cword>', '<cWORD>'], a:op) != -1
+    let s:Word = a:op
+  else
+    echo ' Hi: no matching options: '.a:op
+    return
+  endif
+  echo ' Hi '.s:Word
+  if exists("s:HiMode") && s:HiMode['>'] == '>'
+    call s:SetMode('>', '')
+  endif
+endfunction
+
+" symbols: follow('>'), wait('_'), pos, timer, reltime, word
 function s:LinkCursorEvent(word)
   let l:event = exists("#HiEventCursor")
-  if !exists("w:HiMode")
-    let w:HiMode = {'>':0, '_':s:Wait[0], 'p':[], 't':0, 'r':[], 'm':'', 'w':a:word}
+  if !exists("s:HiMode")
     call s:UpdateWait()
+    let s:HiMode = {'>':'1', '_':s:Wait[0], 'p':[], 't':0, 'r':[], 'w':a:word}
   else
-    let w:HiMode['w'] = a:word
+    let s:HiMode['w'] = a:word
   endif
   call s:UpdateHiWord(0)
   if !l:event
@@ -323,13 +347,15 @@ endfunction
 
 function s:UnlinkCursorEvent(force)
   if exists("#HiEventCursor")
-    au!  HiEventCursor
-    aug! HiEventCursor
-    if exists("w:HiMode")
+    if exists("s:HiMode")
       call s:EraseHiWord()
-      if a:force || !w:HiMode['>']
-        unlet w:HiMode
+      if a:force || s:HiMode['>'] == '1'
+        unlet s:HiMode
       endif
+    endif
+    if !exists("s:HiMode")
+      au!  HiEventCursor
+      aug! HiEventCursor
     endif
   endif
 endfunction
@@ -340,31 +366,24 @@ function s:UpdateWait()
     let s:Wait[0] = min([max([l:wait[0], s:WaitRange[0][0]]), s:WaitRange[0][1]])
     let s:Wait[1] = min([max([l:wait[1], s:WaitRange[1][0]]), s:WaitRange[1][1]])
     let [g:HiOneTimeWait, g:HiFollowWait] = s:Wait
-    let w:HiMode['_'] = s:Wait[0]
   endif
 endfunction
 
 function s:EraseHiWord()
-  if !empty(w:HiMode['m'])
-    if w:HiMode['m'] == '<1>'
-      call s:SetOneTimeWin('')
-    else
-      call matchdelete(w:HiMode['m'])
-    endif
-    let w:HiMode['m'] = ''
-    let w:HiMode['w'] = ''
+  if !empty(s:HiMode['w'])
+    let s:HiMode['w'] = ''
+    call s:SetHiFocusWin('')
   endif
 endfunction
 
 function s:SetHiWord(word)
   if empty(a:word) | return | endif
-  if w:HiMode['>']
-    let w:HiMode['m'] = matchadd('HiFollow', a:word, -1)
+  if s:HiMode['>'] == '1'
+    call s:SetHiFocusWin(['HiOneTime', a:word, 10])
   else
-    let w:HiMode['m'] = '<1>'
-    call s:SetOneTimeWin(a:word)
+    call s:SetHiFocusWin(['HiFollow', a:word, -1])
   endif
-  let w:HiMode['w'] = a:word
+  let s:HiMode['w'] = a:word
 endfunction
 
 function s:GetKeywords()
@@ -385,48 +404,62 @@ function s:GetKeywords()
   let s:Keywords['.'] = s:Keywords[l:ft]
 endfunction
 
-" op:  *:any  #:filter  k:keyword
-function s:GetCurrentWord(op)
-  if match(getline('.')[col('.')-1], '\k') != -1
-    let l:word = expand('<cword>')
+function s:GetCurrentWord()
+  let l:cw = {'word':'', 'key':0}
+  let l:word = expand(s:Word)
+  if  l:word =~ '\w'
     let l:keyword = index(s:Keywords['.'], l:word) != -1
-    if(a:op == '*') || (a:op == '#' && !l:keyword) || (a:op == 'k' && l:keyword)
-      return '\V\<'.l:word.'\>'
+    if s:Word ==# '<cword>'
+      let l:cw.word = '\V\<'.l:word.'\>'
+    else
+      let l:word = substitute(l:word, '\v[,.;]$', '', '')
+      let l:p = l:word =~ '^\w' ? '\<' : ''
+      let l:q = l:word =~ '\w$' ? '\>' : ''
+      let l:cw.word = '\V'.l:p.escape(l:word, '\').l:q
     endif
+    let l:cw.key  = l:keyword
   endif
+  return l:cw
 endfunction
 
 function s:FollowCursor(...)
-  if !exists("w:HiMode") | return | endif
-  if w:HiMode['t']
-    let w:HiMode['r'] = reltime()
+  if !exists("s:HiMode") | return | endif
+  if s:HiMode['t']
+    let s:HiMode['r'] = reltime()
   else
-    let l:wait = a:0 ? a:1 : w:HiMode['_']
-    let w:HiMode['t'] = timer_start(l:wait, function('s:UpdateHiWord'))
-    let w:HiMode['r'] = []
+    let l:wait = a:0 ? a:1 : s:HiMode['_']
+    let s:HiMode['t'] = timer_start(l:wait, function('s:UpdateHiWord'))
+    let s:HiMode['r'] = []
   endif
 endfunction
 
 function s:UpdateHiWord(tid)
-  if !exists("w:HiMode") | return | endif
+  if !exists("s:HiMode") | return | endif
   if !a:tid
-    let l:word = empty(w:HiMode['w']) ? s:GetCurrentWord('#') : w:HiMode['w']
-    let w:HiMode['t'] = 0
+    let l:word = s:HiMode['w']
+    if empty(l:word)
+      let l:word = s:GetCurrentWord()
+      let l:word = l:word.key ? '' : l:word.word
+    endif
+    let s:HiMode['t'] = 0
   else
-    if !empty(w:HiMode['r'])
-      let l:wait = float2nr(reltimefloat(reltime(w:HiMode['r'])) * 1000)
-      let l:wait = max([0, w:HiMode['_'] - l:wait])
-      let w:HiMode['t'] = 0
+    let s:HiMode['t'] = 0
+    if !empty(s:HiMode['r'])
+      let l:wait = float2nr(reltimefloat(reltime(s:HiMode['r'])) * 1000)
+      let l:wait = max([0, s:HiMode['_'] - l:wait])
       call s:FollowCursor(l:wait)
       return
-    endif
-    if w:HiMode['>']
-      let w:HiMode['t'] = 0
-      let l:word = s:GetCurrentWord('#')
-      if  l:word ==# w:HiMode['w'] | return | endif
+    elseif s:HiMode['>'] == '>'
+      if mode() != 'n' | return | endif
+      let l:word = s:GetCurrentWord()
+      if  l:word.word ==# s:HiMode['w'] | return | endif
+      let l:word = l:word.key ? '' : l:word.word
     else
-      if w:HiMode['p'] == getpos('.') && mode() =='n' " visual selection
-        let w:HiMode['t'] = 0
+      if s:HiMode['p'] == getpos('.') && mode() =='n' " after visual selection
+      elseif s:HiMode['>'] == '<'  " back to following mode
+        let s:HiMode['>'] = '>'
+        let s:HiMode['w'] = ''
+        call s:UpdateHiWord(0)
       else
         call s:UnlinkCursorEvent(1)
       endif
@@ -438,33 +471,32 @@ function s:UpdateHiWord(tid)
 endfunction
 
 function s:InsertEnter()
-  if !exists("w:HiMode") | return | endif
-  if w:HiMode['>']
-    call s:EraseHiWord()
-  else
+  if !exists("s:HiMode") | return | endif
+  if s:HiMode['>'] == '1'
     call s:FollowCursor()
+  else
+    call s:EraseHiWord()
   endif
 endfunction
 
 function s:InsertLeave()
-  if !exists("w:HiMode") || !w:HiMode['>'] | return | endif
+  if !exists("s:HiMode") || s:HiMode['>'] == '1' | return | endif
   call s:LinkCursorEvent('')
 endfunction
 
-function s:SetOneTimeWin(exp)
+function s:SetHiFocusWin(hi)
   let l:win = winnr()
-  noa windo call <SID>SetOneTime(a:exp)
+  noa windo call <SID>SetHiFocus(a:hi)
   noa exe l:win." wincmd w"
 endfunction
 
-function s:SetOneTime(exp)
-  if empty(a:exp)
-    if exists('w:HiOneTime')
-      call matchdelete(w:HiOneTime)
-      unlet w:HiOneTime
-    endif
-  else
-    let w:HiOneTime = matchadd('HiOneTime', a:exp)
+function s:SetHiFocus(hi)
+  if exists('w:HiFocus')
+    call matchdelete(w:HiFocus)
+    unlet w:HiFocus
+  endif
+  if !empty(a:hi)
+    let w:HiFocus = matchadd(a:hi[0], a:hi[1], a:hi[2])
   endif
 endfunction
 
@@ -485,7 +517,7 @@ function s:SetHiFind(on, buf)
   if a:on && (empty(&buftype) || bufnr() == a:buf)
     let w:HiFind = {'tag':s:Find.hi_tag, 'id':[]}
     for h in s:Find.hi
-      call add(w:HiFind.id, matchadd('HiFind', h))
+      call add(w:HiFind.id, matchadd('HiFind', h, 0))
     endfor
   endif
 endfunction
@@ -545,19 +577,23 @@ function s:FindTool()
     let s:Find.tool = l:tool
     let s:Find.options = {'single':[], 'single!':[], 'with_value':[], 'with_value!':[], '_':[]}
     let s:Find.type = (l:tool =~ 'grep$') ? 'grep' : l:tool
-    let l:file = s:Keywords.plug.'_'.s:Find.type
-    let l:type = '_'
-    if filereadable(l:file)
-      for l:line in readfile(l:file)
-        if l:line[0] == '#'
-          continue
-        elseif index(['single:', 'single!:', 'with_value:', 'with_value!:'], l:line) != -1
-          let l:type = l:line[:-2] | continue
-        else
-          let s:Find.options[l:type] += split(l:line)
-        endif
-      endfor
-    endif
+    for l:file in [s:Keywords.plug.'_'.s:Find.type, s:Keywords.usr.'_'.s:Find.type]
+      let l:key = '_'
+      if filereadable(l:file)
+        for l:line in readfile(l:file)
+          if l:line[0] == '#'
+            continue
+          elseif index(keys(s:Find.options), l:line[:-2]) != -1
+            let l:key = l:line[:-2] | continue
+          else
+            let s:Find.options[l:key] += split(l:line)
+          endif
+        endfor
+      endif
+    endfor
+    for l:key in keys(s:Find.options)
+      call uniq(sort(s:Find.options[l:key]))
+    endfor
   endif
   return 1
 endfunction
@@ -707,7 +743,7 @@ function s:FindFlag(opts, op)
           let l:p = i + l:inc
           if l:p == l:len | return 2 | endif
           call add(a:opts._re, a:op[l:p:])
-          return 0
+          return
         elseif stridx("iIsS", l:f) != -1
           let a:opts.case[l:f] = a:opts.pos
         elseif stridx("FQw", l:f) != -1
@@ -862,7 +898,7 @@ function s:FindStart(arg)
 
   try
     for l:exp in s:Find.hi_exp
-      let l:id = matchadd('HiFind', l:exp)
+      let l:id = matchadd('HiFind', l:exp, 0)
       call add(w:HiFind.id, l:id)
       call add(s:Find.hi, l:exp)
       call add(s:FL.log.hi, l:exp)
@@ -1099,13 +1135,13 @@ function s:FindClear()
 endfunction
 
 function s:BufEnter()
-  if !exists("w:HiMode") || !w:HiMode['>'] | return | endif
+  if !exists("s:HiMode") || s:HiMode['>'] == '1' | return | endif
   call s:GetKeywords()
   call s:LinkCursorEvent('')
 endfunction
 
 function s:BufLeave()
-  if !exists("w:HiMode") | return | endif
+  if !exists("s:HiMode") | return | endif
   call s:EraseHiWord()
 endfunction
 
@@ -1116,12 +1152,12 @@ function s:BufHidden()
 endfunction
 
 function s:WinEnter()
-  if !exists("w:HiMode") | return | endif
+  if !exists("s:HiMode") | return | endif
   call s:LinkCursorEvent('')
 endfunction
 
 function s:WinLeave()
-  if !exists("w:HiMode") | return | endif
+  if !exists("s:HiMode") | return | endif
   call s:UnlinkCursorEvent(0)
 endfunction
 
@@ -1133,7 +1169,7 @@ endfunction
 
 function s:ColorSchemePre()
   let s:Current = []
-  for l:k in ['HiOneTime', 'HiFollow']
+  for l:k in ['HiOneTime', 'HiFollow', 'HiFind']
     let l:v = s:GetColor(l:k)
     if !empty(l:v)
       call add(s:Current, [l:k, l:v])
@@ -1185,6 +1221,7 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '+x'       | call s:SetHighlight('+', 'x', l:num)
   elseif l:cmd ==# '-x'       | call s:SetHighlight('-', 'x', l:num)
   elseif l:cmd ==# '>>'       | call s:SetMode('>', '')
+  elseif l:cmd =~# '<\w*>'    | call s:SwitchMode(l:cmd)
   elseif l:cmd ==# 'default'  | call s:SetColors(1)
   elseif l:cmd ==# '/'        | call s:Find('n')
   elseif l:cmd ==# '/x'       | call s:Find('x')

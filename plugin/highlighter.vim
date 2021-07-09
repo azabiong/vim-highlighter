@@ -1,8 +1,8 @@
-" Vim Highlighter: Vim easy words highlighter
+" Vim Highlighter: Highlight words with configurable colors
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.18
+" Version: 1.19
 
 scriptencoding utf-8
 if exists("g:loaded_vim_highlighter")
@@ -40,7 +40,7 @@ endif
 
 command! -complete=custom,s:List -count -nargs=* Hi if highlighter#Command(<q-args>, <count>) | noh | endif
 function s:List(...)
-  return "+\n-\n>>\nclear\ndefault\n/\n/next\n/previous\n/older\n/newer\n\/open\n/close\n"
+  return "+\n-\n>>\n\<>\nclear\ndefault\n/\n/next\n/previous\n/older\n/newer\n\/open\n/close\n"
 endfunction
 
 ca HI Hi
