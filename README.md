@@ -1,8 +1,7 @@
 # Vim Highlighter
 
 > ```
-> Version 1.18   Support multiple -e --regexp option
->                Highlight line (visual mode)
+> Version 1.19   Add "Following Highlight" <cWORD> matching mode
 > ```
 
 ## Introduction
@@ -38,25 +37,40 @@
 
   In visual mode, the highlight is selected as a pattern from the selection, and applied to other words.
 
-  <img width="292" alt="visual" src="https://user-images.githubusercontent.com/83812658/117488190-11534080-afa7-11eb-8731-bf382f71fd4e.png">
+  <img width="290" alt="visual" src="https://user-images.githubusercontent.com/83812658/117488190-11534080-afa7-11eb-8731-bf382f71fd4e.png"> <br>
+
+  You can also select the entire line and highlight it.
+
+  <img height="137" alt="visual_line" src="https://user-images.githubusercontent.com/83812658/125082608-6542e880-e102-11eb-9205-12836daa05bc.png">
 
 ## One Time Highlight
 
   The plugin provides an automatic feature that erases highlights after using. It would be useful when just one time quick scanning is needed at the cursor position.
 
-  When the cursor is on a word that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'.
-  The highlight is maintained while the cursor stays, and then automatically turned off after the cursor moved.
+  When the cursor is on a word that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'.  
+  The highlight stays on while the cursor is not moving, and then automatically turns off after the cursor moves.
 
   <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif">
 
 ## Following Highlight
 
-  When you need automatic matching based on cursor movement, **Following Highlight** mode can be useful.
+  When you need automatic matching based on cursor movement, '**Following Highlight**' mode can be useful.
 
   Pressing `HiSet` key over '**One Time Highlight**' without moving the cursor sets '**Following Highlight**' mode.
   The highlight follows the cursor. Pressing `HiEarase` key turns off the mode.
 
   <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/117488604-95a5c380-afa7-11eb-9625-b92efaa31817.gif">
+
+### Matching option
+
+  Sometimes **`<cWORD>`** matching option of **Vim** can be useful to quickly compare variables consisting of characters and symbols.
+
+  <img width="420" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
+
+  The following command toggles between **`<cword>`** and **`<cWORD>`** options.
+  ```vim
+    :Hi <>
+  ```
 
 ## Find in Files Highlight 🔎
 

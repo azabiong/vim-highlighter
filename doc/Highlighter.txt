@@ -14,17 +14,18 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                        *Highlighter*
-                                                                 `ver 1.18`
-         Introduction`..........................`|Hi-Introduction|
-         Key Map`....................................`|Hi-Key-Map|
-         One Time Highlight`..............`|Hi-One-Time-Highlight|
-         Following Highlight`............`|Hi-Following-Highlight|
-         Find in files Highlight`....`|Hi-Find-In-Files-Highlight|
-         Customizing Colors`..............`|Hi-Customizing-Colors|
-         Commands`..................................`|Hi-Commands|
-         Options`....................................`|Hi-Options|
-         Reference`................................`|Hi-Reference|
-         Log`............................................`|Hi-Log|
+                                                                 `ver 1.19`
+         Introduction`...........................`|Hi-Introduction|
+         Key Map`.....................................`|Hi-Key-Map|
+         One Time Highlight`...............`|Hi-One-Time-Highlight|
+         Following Highlight`.............`|Hi-Following-Highlight|
+         Find in files Highlight`.....`|Hi-Find-In-Files-Highlight|
+         Customizing Colors`...............`|Hi-Customizing-Colors|
+         Commands`...................................`|Hi-Commands|
+         Options`.....................................`|Hi-Options|
+         Reference`.................................`|Hi-Reference|
+         Issues`.......................................`|Hi-Issues|
+         Log`.............................................`|Hi-Log|
 
 ------------------------------------------------------------------------------
 INTRODUCTION                                                  *Hi-Introduction*
@@ -52,9 +53,9 @@ under the cursor. `HiClear` key clears all highlights.
 
 In visual mode, the highlight is selected as a pattern from the selection, and
 applied to other words. To reselect the pattern, |gv| command would be helpful.
-`HiErase` key erases highlights in normal mode.
+You can also select the entire line and highlight it.
 
-`HiFind` key a shortcut to `FIND IN FILES HIGHLIGHT`
+`HiFind` key is the shortcut for `FIND IN FILES HIGHLIGHT`
 
 ------------------------------------------------------------------------------
 ONE TIME HIGHLIGHT                                      *Hi-One-Time-Highlight*
@@ -63,9 +64,9 @@ The plugin provides an automatic feature that erases highlights after using.
 It would be useful when just one time quick scanning is needed at the cursor
 position.
 
-When the cursor is on a word that is not highlighted, pressing `HiErase` key
-sets `ONE TIME HIGHLIGHT`, The highlight is maintained while the cursor stays,
-and then automatically turned off after the cursor moved.
+When the cursor is over a word that is not highlighted, pressing `HiErase` key
+sets `ONE TIME HIGHLIGHT`, The highlight stays on while the cursor is not moving,
+and then automatically turns off after the cursor moves.
 
 `ONE TIME HIGHLIGHT` shows all matching symbols in the current tab.
 
@@ -79,15 +80,31 @@ Pressing `HiSet` key over `ONE TIME HIGHLIGHT` without moving the cursor sets
 `FOLLOWING HIGHLIGHT` mode. The highlight follows the cursor. Pressing `HiErase`
 key turns off the mode.
 
-  Using Keywords~
+Matching option ~
+
+    Sometimes |<cWORD>| matching option of **Vim** can be useful to quickly
+    compare variables consisting of characters and symbols. For example:
+>
+        object.method         directory/file.ext
+        item[index]           https://www.vim.org
+        function(param)       AB:12:CD:34:EF:56
+        property:'value'      --long-option
+        attribute="value"
+<
+    The following command toggles between |<cword>| and |<cWORD>| options.
+>
+        :Hi <>
+<
+keywords~
 
     For better visual representation, `FOLLOWING HIGHLIGHT` skips moving on
     well-known keywords defined in the `vim-highlighter/autoload/keywords`
     directory.
-
-    If needed, you can add more keywords in the `vim-highlighter/keywords`
+    If needed, you can store more keywords in the `vim-highlighter/keywords`
     directory. The keywords are separated by spaces, and can be saved as a
     plain text file using the 'filetype' as the filename.
+
+    You can also add additional search tool's options to this directory.
 
 ------------------------------------------------------------------------------
 FIND IN FILES HIGHLIGHT                            *Hi-Find-In-Files-Highlight*
@@ -236,65 +253,57 @@ COMMANDS                                                *:HI*  *:Hi*  *Hi-Comman
 Highlighting functions can be invoked using |:Hi| command.
                                                                           *Hi+*
 :Hi + ~
-    `HiSet` key function in normal mode
+:Hi +x ~
+    `HiSet` key function in normal mode (+), visual mode (+x)
     Set highlight of the word under the cursor
 
-:Hi +x ~
-    `HiSet` key function in visual mode
-    Set highlighting pattern from the selection
-                                                                          *Hi-*
 :Hi - ~
-    `HiErase` key function in normal mode
-    Erase highlight of the word or pattern at the cursor position, or set
-    `ONE TIME HIGHLIGHT`
-
 :Hi -x ~
-    `HiErase` key function in visual mode
-    Erase highlight from the selection, or set `ONE TIME HIGHLIGHT`
-                                                                         *Hi>>*
+    `HiErase` key function in normal mode (-), visual mode (-x)
+    Erase highlight of the word or pattern, or set `ONE TIME HIGHLIGHT`
+
 :Hi >> ~
-    `HiErase` + `HiSet` key function
     Set `FOLLOWING HIGHLIGHT` mode
+                                                                         *Hi<>*
+:Hi <>  <cword>  <cWORD> ~
+    Set matching mode of `FOLLOWING HIGHLIGHT`
+    <> toggles between two options
 
 :Hi clear ~
     `HiClear` key function
     Clear all highlights in the current window
-
-:Hi default ~
-    Load the plugin default color
                                                                           *Hi/*
 :Hi / ~
-    `FIND IN FILES` - `HiFind` key function in normal mode
+:Hi /x ~
+    `HiFind` key function of `FIND IN FILES` in normal mode (/), visual mode (/x)
     Invoke `Find` command prompt in normal mode
 
-:Hi /x ~
-    `FIND IN FILES` - `HiFind` key function in visual mode
-    Invoke `Find` command prompt with visual selection
+:Hi default ~
+    Load the plugin default colors
+                                                                      *Hi/open*
+:Hi /open ~
+    Open `Find` window
+                                                                     *Hi/close*
+:Hi /close ~
+    Close `Find` window
                                                          *Hi/next*  *Hi/previous*
 :Hi /next ~
 :Hi /previous ~
     Jump to the next | previous item in the `Find` list
-    It will be convenient to map keyboard shortcuts for these commands to
-    easily navigate the search list. For example, to map '-' and '_' keys in
-    normal mode: >
-
+    It will be convenient to use keyboard shortcut to these commands to easily
+    navigate the search list. For example, to map '-' and '_' keys in normal
+    mode: >
         :nn <silent>-  :Hi/next<CR>
         :nn <silent>_  :Hi/previous<CR>
 <                                                           *Hi/older*  *Hi/newer*
 :Hi /older ~
 :Hi /newer ~
     Go to older | newer `Find` list in history
-    It would be also convenient to map this commands to somewhere. For example
-    to map `f <Left>` and `f <Right>` keys in normal mode: >
+    It would be also convenient to map these commands somewhere.
+    To map `f <Left>` and `f <Right>` keys in normal mode: >
 
         :nn f<Left>    :Hi/older<CR>
         :nn f<Right>   :Hi/newer<CR>
-<                                                                      *Hi/open*
-:Hi /open ~
-    Open `Find` window
-                                                                     *Hi/close*
-:Hi /close ~
-    Close `Find` window
 
 ------------------------------------------------------------------------------
 OPTIONS                                                            *Hi-Options*
@@ -345,20 +354,33 @@ STATUS VARIABLES ~
     `IN FILES` operation. You can use this variable to check if an item exists.
 
 ------------------------------------------------------------------------------
-REFERENCE                                                        *Hi-Reference*
+REFERENCE                                                         *Hi-Reference*
 
     This tool would be helpful when editing colors.
 
     `xterm-color-table.vim` (https://github.com/guns/xterm-color-table.vim)
 
 ------------------------------------------------------------------------------
-LOG                                                                    *Hi-Log*
+ISSUES                                                               *Hi-Issues*
 
+Please feel free to open an issue if you have any problems that need fixing
+or comments or new features you would like to add.
+
+
+------------------------------------------------------------------------------
+LOG                                                                     *Hi-Log*
+
+1.19~
+    Add "Following Highlight" <cWORD> matching mode
+      - extended matching to windows in the current tab
+    Adjust "HiFind" match priority
+      - added restoring HiFind color on color scheme change
+    Add user keywords options for search tools
 1.18~
     Support multiple -e --regexp option
       - fixed empty expression input
       - added git-grep options
-    Highlight line (visual mode)
+    Highlight a single line using visual selection
 1.17~
     Improve "Find in Files Highlight" input handling
       - added --fixed-strings  --literal option
