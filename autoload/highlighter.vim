@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.19
+" Version: 1.20
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -17,16 +17,17 @@ endif
 if !exists("g:HiFollowWait")
   let g:HiFollowWait = 320
 endif
-if !exists('g:HiFindTool')
+if !exists("g:HiFindTool")
   let g:HiFindTool = ''
 endif
-if !exists('g:HiFindHistory')
+if !exists("g:HiFindHistory")
   let g:HiFindHistory = 5
 endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.19'
-let s:Keywords  = {'usr': expand('<sfile>:h:h').'/keywords/', 'plug': expand('<sfile>:h').'/keywords/', '.':[]}
+let s:Version   = '1.20'
+let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
+let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords/', '.':[], 'usr': expand('<sfile>:h:h').'/keywords/'}
 let s:Find      = {'tool':'', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
 let s:FindList  = {'name':' Find *', 'height':8, 'buf':0, 'pos':0, 'lines':0, 'select':0, 'edit':0,
@@ -38,12 +39,12 @@ let s:FindTools = ['rg --color=never --no-heading --column --smart-case',
                   \'ack --nocolor --noheading --column --smart-case',
                   \'sift --no-color --line-number --column --binary-skip --git --smart-case',
                   \'ggrep -EnrI--exclude-dir=.git',
-                  \'grep -EnrI--exclude-dir=.git',
+                  \'grep -EnI--exclude-dir=.git',
                   \'git grep -EnrI --no-color --column']
 const s:FL = s:FindList
 
 function s:Load()
-  if !exists('s:Check')
+  if !exists("s:Check")
     let s:Check = 0
   endif
   if s:Check < 256
@@ -92,6 +93,7 @@ function s:Load()
     \ ]
   endif
   let s:Color = 'HiColor'
+  let s:Number = 0
   let s:SchemeRange = 64
   let s:Wait = [g:HiOneTimeWait, g:HiFollowWait]
   let s:WaitRange = [[0, 320], [260, 520]]
@@ -106,6 +108,7 @@ function s:Load()
     au WinEnter       * call <SID>WinEnter()
     au WinLeave       * call <SID>WinLeave()
     au BufWinEnter    * call <SID>BufWinEnter()
+    au TabClosed      * call <SID>TabClosed()
     au ColorSchemePre * call <SID>ColorSchemePre()
     au ColorScheme    * call <SID>ColorScheme()
   aug END
@@ -127,18 +130,15 @@ endfunction
 function s:SetHighlight(cmd, mode, num)
   if s:CheckRepeat(60) | return | endif
 
-  if !exists("w:HiColor")
-    let w:HiColor = 0
-  endif
   let l:match = getmatches()
-
   if a:cmd == '--'
     for l:m in l:match
-      if match(l:m['group'], s:Color) == 0
-        call matchdelete(l:m['id'])
+      if match(l:m.group, s:Color) == 0
+        call matchdelete(l:m.id)
       endif
     endfor
-    let w:HiColor = 0
+    call s:UpdateSync('del', '*', '')
+    let s:Number = 0
     return
   elseif a:cmd == '+'
     let l:color = s:GetNextColor(a:num)
@@ -153,7 +153,7 @@ function s:SetHighlight(cmd, mode, num)
     let l:word = l:visual
   endif
   if empty(l:word)
-    if !l:color | call s:SetMode('-', '') | endif
+    if !l:color | call s:SetFocusMode('-', '') | endif
     return
   endif
   let l:word = escape(l:word, '\')
@@ -162,18 +162,19 @@ function s:SetHighlight(cmd, mode, num)
   else
     let l:word = '\V'.l:word
   endif
-
   " hlsearch overlap
   let l:case = (&ic || stridx(@/, '\c') != -1) ? '\c' : ''
   let l:search = match(@/, l:word.l:case) != -1
 
   let l:deleted = s:DeleteMatch(l:match, '==', l:word)
   if l:color
-    if a:mode == 'n' && s:GetMode(1, l:word)
-      call s:SetMode('>', '')
+    if a:mode == 'n' && s:GetFocusMode(1, l:word)
+      call s:SetFocusMode('>', '')
     else
-      let w:HiColor = l:color
-      call matchadd(s:Color.l:color, l:word, 0)
+      let s:Number = l:color
+      let l:group = s:Color.l:color
+      call matchadd(l:group, l:word, 0)
+      call s:UpdateSync('add', l:group, l:word)
       let s:Search = l:search
     endif
   else
@@ -185,10 +186,10 @@ function s:SetHighlight(cmd, mode, num)
       endif
     endif
     if !l:deleted
-      if a:mode != 'n' && s:GetMode('>', '')
+      if a:mode != 'n' && s:GetFocusMode('>', '')
         let s:HiMode['>'] = '<'
       endif
-      let s:Search = (s:SetMode('.', l:word) == '1') && l:search
+      let s:Search = (s:SetFocusMode('.', l:word) == '1') && l:search
     endif
   endif
 endfunction
@@ -204,7 +205,7 @@ function s:CheckRepeat(interval)
 endfunction
 
 function s:GetNextColor(num)
-  let l:next = a:num ? a:num : (v:count ? v:count : w:HiColor+1)
+  let l:next = a:num ? a:num : (v:count ? v:count : s:Number+1)
   return hlexists(s:Color.l:next) ? l:next : 1
 endfunction
 
@@ -225,7 +226,7 @@ function s:DeleteMatch(match, op, part)
   while l:i > 0
     let l:i -= 1
     let l:m = a:match[l:i]
-    if match(l:m.group, s:Color.'\d\{,2}\>') == 0
+    if match(l:m.group, s:Color.'\d\+') == 0
       let l:match = 0
       if a:op == '=='
         let l:match = a:part ==# l:m.pattern
@@ -240,7 +241,9 @@ function s:DeleteMatch(match, op, part)
         let l:match = match(a:part, l:m.pattern) != -1
       endif
       if l:match
-        return matchdelete(l:m.id) + 1
+        call matchdelete(l:m.id)
+        call s:UpdateSync('del', l:m.group, l:m.pattern)
+        return 1
       endif
     endif
   endwhile
@@ -257,7 +260,7 @@ function s:GetStringPart()
   return {'word':l:word, 'line': l:left.l:right}
 endfunction
 
-function s:GetMode(mode, word)
+function s:GetFocusMode(mode, word)
   if !exists("s:HiMode") | return | endif
   if a:mode == 1
     return !v:count && s:HiMode['>'] == '1' && s:HiMode['p'] == getpos('.') && s:HiMode['w'] ==# a:word
@@ -266,14 +269,14 @@ function s:GetMode(mode, word)
   endif
 endfunction
 
-" s:SetMode(cmd) actions
+" s:SetFocusMode(cmd) actions
 " |   mode  |   !   |  '1,<'  |   '>'   |
 " |   word  |   *   | !=   == | !=   == |
 " |-----+---|-------|---------|---------|  1:one-time
 " |     | . |   1   |  =   0  |  >   0  |  >:follow
 " | cmd | > |   >   |  >   >  |  >   >  |  =:update
 " |     | - |   0   |  0   0  |  0   0  |  0:off
-function s:SetMode(cmd, word)
+function s:SetFocusMode(cmd, word)
   if a:cmd == '.'
     if !exists("s:HiMode")
       let l:word = a:word
@@ -310,19 +313,62 @@ function s:SetMode(cmd, word)
   return l:op
 endfunction
 
-function s:SwitchMode(op)
+function s:SetWordMode(op)
   if a:op == '<>'
     let s:Word = s:Word == '<cword>' ? '<cWORD>' : '<cword>'
   elseif index(['<cword>', '<cWORD>'], a:op) != -1
     let s:Word = a:op
   else
-    echo ' Hi: no matching options: '.a:op
-    return
+    return s:NoOption(a:op)
   endif
   echo ' Hi '.s:Word
   if exists("s:HiMode") && s:HiMode['>'] == '>'
-    call s:SetMode('>', '')
+    call s:SetFocusMode('>', '')
   endif
+endfunction
+
+function s:SetSyncMode(op)
+  let l:op = index(['=', '=='], a:op)
+  if  l:op == -1 | return s:NoOption(a:op) | endif
+
+  echo ' Hi '.a:op.' '.['1', 'Sync'][l:op]
+  if l:op == exists("t:HiSync") | return | endif
+  if l:op
+    let s:Sync.tag += 1
+    let l:name = 'HiSync'.s:Sync.tag
+    let t:HiSync = l:name
+    let s:Sync.page[l:name] = map(filter(getmatches(), {i,v -> match(v.group, s:Color) == 0}),
+                                                     \ {i,v -> [v.group, v.pattern]})
+    let w:HiSync = 1
+  else
+    unlet s:Sync.page[t:HiSync]
+    unlet t:HiSync
+  endif
+  call s:SetHiSyncWin(l:op)
+endfunction
+
+function s:UpdateSync(op, group, pattern)
+  if !exists("t:HiSync") | return | endif
+  let l:match = s:Sync.page[t:HiSync]
+  let s:Sync[a:op] = [a:group, a:pattern]
+  if a:op == 'add'
+    call add(l:match, s:Sync[a:op])
+  elseif a:op == 'del'
+    if a:group == '*'
+      call remove(l:match, 0, -1)
+    else
+      for i in range(len(l:match))
+        if l:match[i][1] ==# a:pattern
+          call remove(l:match, i) | break
+        endif
+      endfor
+    endif
+  endif
+  call s:SetHiSyncWin(1)
+endfunction
+
+function s:NoOption(op)
+  echo ' Hi: no matching options: '.a:op
 endfunction
 
 " symbols: follow('>'), wait('_'), pos, timer, reltime, word
@@ -484,6 +530,45 @@ function s:InsertLeave()
   call s:LinkCursorEvent('')
 endfunction
 
+function s:SetHiSyncWin(op)
+  let l:win = winnr()
+  if a:op
+    noa windo call <SID>SetHiSync(l:win)
+  else
+    noa windo unlet w:HiSync
+  endif
+  noa exe l:win." wincmd w"
+  let s:Sync.add = ''
+  let s:Sync.del = ''
+endfunction
+
+function s:SetHiSync(win)
+  if winnr() == a:win | return | endif
+  if !exists("w:HiSync") || s:Sync.del[0] == '*'
+    for l:m in getmatches()
+      if match(l:m.group, s:Color) == 0
+        call matchdelete(l:m.id)
+      endif
+    endfor
+    for l:m in s:Sync.page[t:HiSync]
+      call matchadd(l:m[0], l:m[1], 0)
+    endfor
+  else
+    if !empty(s:Sync.del)
+      for l:m in getmatches()
+        if (match(l:m.group, s:Color) == 0) && (l:m.pattern ==# s:Sync.del[1])
+          call matchdelete(l:m.id) | break
+        endif
+      endfor
+    endif
+    let l:m = s:Sync.add
+    if !empty(l:m)
+      call matchadd(l:m[0], l:m[1], 0)
+    endif
+  endif
+  let w:HiSync = 1
+endfunction
+
 function s:SetHiFocusWin(hi)
   let l:win = winnr()
   noa windo call <SID>SetHiFocus(a:hi)
@@ -491,7 +576,7 @@ function s:SetHiFocusWin(hi)
 endfunction
 
 function s:SetHiFocus(hi)
-  if exists('w:HiFocus')
+  if exists("w:HiFocus")
     call matchdelete(w:HiFocus)
     unlet w:HiFocus
   endif
@@ -507,7 +592,7 @@ function s:SetHiFindWin(on, buf)
 endfunction
 
 function s:SetHiFind(on, buf)
-  if exists('w:HiFind')
+  if exists("w:HiFind")
     if a:on && w:HiFind.tag == s:Find.hi_tag | return | endif
     for m in w:HiFind.id
       call matchdelete(m)
@@ -538,14 +623,14 @@ function s:Find(mode)
   let l:cmd += s:Find.file
   call s:FindStop(0)
   call s:FindStart(l:input)
-  if exists('*job_start')
+  if exists("*job_start")
     let s:Find.job = job_start(l:cmd, {
         \ 'in_io': 'null',
         \ 'out_cb':  function('s:FindOut'),
         \ 'err_cb':  function('s:FindErr'),
         \ 'close_cb':function('s:FindClose'),
         \ })
-  elseif exists('*jobstart')
+  elseif exists("*jobstart")
     let s:Find.job = jobstart(l:cmd, {
         \ 'on_stdout': function('s:FindStdOut'),
         \ 'on_stderr': function('s:FindStdOut'),
@@ -568,7 +653,7 @@ function s:FindTool()
   if empty(l:tool)
     echo " No executable search tool, HiFindTool='".g:HiFindTool."'"
     return
-  elseif !exists('*job_start') && !exists('*jobstart')
+  elseif !exists("*job_start") && !exists("*jobstart")
     echo " channel - feature not found "
     return
   endif
@@ -821,16 +906,17 @@ function s:FindMatch(opt)
   if !empty(s:Find.exp)
     call add(a:opt._re, s:Find.exp)
   endif
+  let [l:bl, l:br] = a:opt._li ? ['\<', '\>'] : ['<', '>']
   for l:exp in a:opt._re
-    let l:exp = escape(l:exp, (a:opt._li ? '\' : '~@%&=<>'."'"))
     let [l:p, l:q] = ['', '']
-    if a:opt.case._ic | let l:p = '\c' | endif
+    let l:exp = escape(l:exp, (a:opt._li ? '\' : '~@%&=<>'."'"))
     if a:opt._wr
-      let l:p .= '<' | let l:q = '>'
+      let [l:p, l:q] = [l:bl, l:br]
     else
-      if l:exp[:1]  == '\b' | let l:exp = '<'.l:exp[2:]  | endif
-      if l:exp[-2:] == '\b' | let l:exp = l:exp[:-3].'>' | endif
+      if l:exp[:1]  == '\b' | let l:exp = l:bl.l:exp[2:]  | endif
+      if l:exp[-2:] == '\b' | let l:exp = l:exp[:-3].l:br | endif
     endif
+    if a:opt.case._ic | let l:p .= '\c' | endif
     let l:exp = (a:opt._li ? '\V' : '\v').l:p.l:exp.l:q
     call add(s:Find.hi_exp, l:exp)
   endfor
@@ -852,6 +938,7 @@ function s:FindStart(arg)
     setlocal buftype=nofile bh=hide noma noswapfile nofen ft=find
     let b:Status = ''
     let &l:statusline = '  Find | %<%{b:Status} %=%3.l / %L  '
+    let &l:wrap = 0
 
     nn <silent><buffer><C-C>         :call <SID>FindStop(1)<CR>
     nn <silent><buffer>r             :call <SID>FindRotate()<CR>
@@ -860,7 +947,7 @@ function s:FindStart(arg)
     nn <silent><buffer><2-LeftMouse> :call <SID>FindEdit('=')<CR>
 
     " airline
-    if exists('*airline#add_statusline_func')
+    if exists("*airline#add_statusline_func")
       call airline#add_statusline_func('highlighter#Airline')
       call airline#add_inactive_statusline_func('highlighter#Airline')
       wincmd p | wincmd p
@@ -913,20 +1000,23 @@ function s:FindOpen(...)
   if !s:FL.buf | return | endif
   let l:win = bufwinnr(s:FL.buf)
   if l:win == -1
+    let l:prev = winnr()
     let l:pos = a:0 ? a:1: 0
     exe (l:pos ? 'vert ' : '').['bel', 'abo', 'bel'][l:pos].' sb'.s:FL.buf
     if  !l:pos | exe "resize ".min([s:FL.height, winheight(0)]) | endif
     let s:FL.pos = l:pos
+    exe l:prev." wincmd w"
+    wincmd p
   else
-    exe l:win. " wincmd w"
+    exe l:win." wincmd w"
   endif
   return l:win
 endfunction
 
 function s:FindStop(op)
-  if     !exists('s:Find.job') | return
-  elseif  exists('*job_stop')  | call job_stop(s:Find.job)
-  elseif  exists('*jobstop')   | call jobstop(s:Find.job)
+  if     !exists("s:Find.job") | return
+  elseif  exists("*job_stop")  | call job_stop(s:Find.job)
+  elseif  exists("*jobstop")   | call jobstop(s:Find.job)
   endif
   call s:FindSet(['', '--- Search Interrupted ---', ''], '+')
   if a:op
@@ -955,7 +1045,8 @@ function s:FindSet(lines, op, ...)
     endif
   elseif l:n
     for l:line in a:lines
-      call add(s:FL.log.list, ' '.l:line)
+      let l:path = (index(['./', '.\'], l:line[:1]) == -1) ? 0 : 2
+      call add(s:FL.log.list, '  '.l:line[l:path:])
     endfor
     if !s:FL.lines
       let l:err += setbufline(s:FL.buf, 1, s:FL.log.list[-l:n:])
@@ -1020,7 +1111,7 @@ function s:FindSelect(line)
   let l:line = getbufline(s:FL.buf, a:line)[0]
   if len(l:line) < 2 | return | endif
 
-  let l:pos = 1
+  let l:pos = 2
   let l:file = matchstr(l:line, '\v[^:]*', l:pos)
   if filereadable(l:file)
     call setbufvar(s:FL.buf, '&ma', 1)
@@ -1032,7 +1123,7 @@ function s:FindSelect(line)
       let l:select = getbufline(s:FL.buf, s:FL.select)[0]
       call setbufline(s:FL.buf, s:FL.select, ' '.l:select[1:])
     endif
-    call setbufline(s:FL.buf, a:line, '|'.l:line[1:])
+    call setbufline(s:FL.buf, a:line, '| '.l:line[2:])
     call setbufvar(s:FL.buf, '&ma', 0)
   else
     return
@@ -1095,7 +1186,7 @@ function s:FindNextPrevious(op, num)
 endfunction
 
 function s:FindOlderNewer(op, n)
-  if exists('s:Find.job')
+  if exists("s:Find.job")
     echo ' searching in progress...' | return
   endif
   let l:logs = len(s:FL.logs) - empty(s:FL.log.list)
@@ -1152,8 +1243,12 @@ function s:BufHidden()
 endfunction
 
 function s:WinEnter()
-  if !exists("s:HiMode") | return | endif
-  call s:LinkCursorEvent('')
+  if exists("t:HiSync") && !exists("w:HiSync")
+    call s:SetHiSync(0)
+  endif
+  if exists("s:HiMode")
+    call s:LinkCursorEvent('')
+  endif
 endfunction
 
 function s:WinLeave()
@@ -1165,6 +1260,15 @@ function s:BufWinEnter()
   if bufname() ==# s:FL.name && !empty(s:Find.hi)
     call s:SetHiFindWin(1, s:FL.buf)
   endif
+endfunction
+
+function s:TabClosed()
+  let l:sync = map(gettabinfo(), {i,v -> get(v.variables, 'HiSync', '')})
+  for k in keys(s:Sync.page)
+    if (index(l:sync, k)) == -1
+      unlet s:Sync.page[k]
+    endif
+  endfor
 endfunction
 
 function s:ColorSchemePre()
@@ -1211,7 +1315,7 @@ function highlighter#Command(cmd, ...)
     if !s:Load() | return | endif
   endif
   let l:arg = split(a:cmd)
-  let l:cmd = get(l:arg, 0, '')
+  let l:cmd = substitute(get(l:arg, 0, ''), '^:', '', '')
   let l:num = a:0 ? a:1 : 0
   let s:Search = 0
 
@@ -1220,8 +1324,9 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '-'        | call s:SetHighlight('-', 'n', l:num)
   elseif l:cmd ==# '+x'       | call s:SetHighlight('+', 'x', l:num)
   elseif l:cmd ==# '-x'       | call s:SetHighlight('-', 'x', l:num)
-  elseif l:cmd ==# '>>'       | call s:SetMode('>', '')
-  elseif l:cmd =~# '<\w*>'    | call s:SwitchMode(l:cmd)
+  elseif l:cmd ==# '>>'       | call s:SetFocusMode('>', '')
+  elseif l:cmd =~# '^<\w*>'   | call s:SetWordMode(l:cmd)
+  elseif l:cmd =~# '^==\?'    | call s:SetSyncMode(l:cmd)
   elseif l:cmd ==# 'default'  | call s:SetColors(1)
   elseif l:cmd ==# '/'        | call s:Find('n')
   elseif l:cmd ==# '/x'       | call s:Find('x')
@@ -1231,7 +1336,7 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '/newer'   | call s:FindOlderNewer('+', l:num)
   elseif l:cmd ==# '/open'    | call s:FindOpen()
   elseif l:cmd ==# '/close'   | call s:FindCloseWin()
-  elseif l:cmd ==# 'clear'    | call s:SetHighlight('--', 'n', 0) | call s:SetMode('-', '') | call s:FindClear()
+  elseif l:cmd ==# 'clear'    | call s:SetHighlight('--', 'n', 0) | call s:SetFocusMode('-', '') | call s:FindClear()
   else
     echo ' Hi: no matching commands: '.l:cmd
   endif
