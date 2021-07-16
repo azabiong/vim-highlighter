@@ -1,19 +1,19 @@
 # Vim Highlighter
 
 > ```
-> Version 1.19   Add "Following Highlight" <cWORD> matching mode
+> Version 1.20   Add "Sync Mode"
 > ```
 
 ## Introduction
 
-  One of the things that are not easy for people, but an easy thing for computers would be finding symbols very quickly. This plugin provides an easy way to use Vim's highlighting function which helps quickly find the usage of words and easily check spelling of variables.
+  One of the things that are not easy for people, but an easy thing for computers would be finding symbols very quickly. This plugin provides an easy way to use Vim's highlighting function which helps you quickly find variables and easily compare spellings.
 
 #### Contents
   &nbsp; &nbsp;
-  [Key Map](#key-map) &nbsp; &nbsp;
-  [Visual Selection](#visual-selection) &nbsp; &nbsp;
-  [One Time Highlight](#one-time-highlight) &nbsp; &nbsp;
-  [Following Highlight](#following-highlight) &nbsp; &nbsp;
+  [Key Map](#key-map) &nbsp; &nbsp; &nbsp;
+  [Sync Mode](#sync-mode) &nbsp; &nbsp; &nbsp;
+  [One Time Highlight](#one-time-highlight) &nbsp; &nbsp; &nbsp;
+  [Following Highlight](#following-highlight) &nbsp; &nbsp; &nbsp;
   [Find in Files Highlight 🔎](#find-in-files-highlight-) <br> &nbsp; &nbsp;
   [Customizing Colors](#customizing-colors) <br> &nbsp; &nbsp;
   [Installation](#installation)
@@ -33,7 +33,7 @@
 
   <img width="600" src="https://user-images.githubusercontent.com/83812658/117490057-482a5600-afa9-11eb-8b4a-e2b5018ece5a.gif">
 
-## Visual Selection
+### Visual Selection
 
   In visual mode, the highlight is selected as a pattern from the selection, and applied to other words.
 
@@ -41,14 +41,26 @@
 
   You can also select the entire line and highlight it.
 
-  <img height="137" alt="visual_line" src="https://user-images.githubusercontent.com/83812658/125082608-6542e880-e102-11eb-9205-12836daa05bc.png">
+  <img width="296" alt="visual_line" src="https://user-images.githubusercontent.com/83812658/125556295-356322d3-4992-40fe-81f1-299ca5eb7007.png">
+
+## Sync Mode
+
+  You can synchronize highlighting of the current window with other windows with the command:
+  ```vim
+   :Hi == 
+  ```
+  and switch back to the default single window highlighting mode using: 
+  ```vim
+   :Hi = 
+  ```
+> '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.
 
 ## One Time Highlight
 
   The plugin provides an automatic feature that erases highlights after using. It would be useful when just one time quick scanning is needed at the cursor position.
 
   When the cursor is on a word that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'.  
-  The highlight stays on while the cursor is not moving, and then automatically turns off after the cursor moves.
+  The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
 
   <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif">
 
@@ -69,7 +81,7 @@
 
   The following command toggles between **`<cword>`** and **`<cWORD>`** options.
   ```vim
-    :Hi <>
+   :Hi <>
   ```
 
 ## Find in Files Highlight 🔎
@@ -100,7 +112,7 @@
 
     let HiFindTool = 'ggrep -EnrI --exclude-dir=.git'
  
-    let HiFindTool = 'git grep -EnrI --no-color --column'
+    let HiFindTool = 'git grep -EnI --no-color --column'
   ```
  </details>
 
@@ -192,20 +204,20 @@
 > </span>
 > in 256 or 24-bit colors mode.
 >
-> If the plugin is installed and working, copy the following lines one by one, then run it in the Vim's command window.
+> If the plugin is installed and working, copy the following lines one by one, and then run it in the Vim's command window.
 > ```vim
-> :hi HiColor21 ctermfg=20  ctermbg=159 guifg=#0000df guibg=#afffff
-> :hi HiColor22 ctermfg=228 ctermbg=129 guifg=#ffff87 guibg=#af00ff
+>  :hi HiColor21 ctermfg=20  ctermbg=159 guifg=#0000df guibg=#afffff
+>  :hi HiColor22 ctermfg=228 ctermbg=129 guifg=#ffff87 guibg=#af00ff
 > ```
-> Now, move the cursor to any word, then input the number `21` and `HiSet` key.
+> Now, move the cursor to any word, and then input the number `21` and `HiSet` key.
 > Does it work? if you press `HiSet` key again, the next `HiColor22` will be set.
 >
-> You can try some other values to change the color, and see the result instantly. You can use this format to save colors in the configuration file.
+> You can try some other values to change the color, and see the result instantly.  You can store colors in the configuration file using this format. 
 
 ### Example 2
 > The following command changes the color of '**Find in Files Highlight**'
 > ```vim
-> :hi HiFind ctermfg=52 ctermbg=182 guifg=#570707 guibg=#e7bfe7
+>  :hi HiFind ctermfg=52 ctermbg=182 guifg=#570707 guibg=#e7bfe7
 > ```
 
 ### Reference
@@ -217,7 +229,7 @@
 
   For more information about commands and options, please refer to:
   ```vim
-  :h Highlighter
+   :h Highlighter
   ```
 ## Installation
 
@@ -232,7 +244,7 @@
 > :Plug 'azabiong/vim-highlighter'
 > :PlugInstall
 > ```
-> copy the first line, then insert it between the following section in your configuration file.
+> copy the first line, and then insert it between the following section in your configuration file.
 > ```vim
 > call plug#begin()
 > call plug#end()
@@ -249,7 +261,7 @@
 > :NeoBundle 'azabiong/vim-highlighter'
 > :NeoBundleInstall
 > ```
-> copy the first line, then insert it between the following section in your configuration file.
+> copy the first line, and then insert it between the following section in your configuration file.
 > ```vim
 > call neobundle#begin()
 > call neobundle#end()
@@ -265,7 +277,7 @@
 > :Plugin 'azabiong/vim-highlighter'
 > :PluginInstall
 > ```
-> copy the first line, then insert it between the following section in your configuration file.
+> copy the first line, and then insert it between the following section in your configuration file.
 > ```vim
 > call vundle#begin()
 > call vundle#end()
@@ -283,7 +295,7 @@
 > ```
 > in your vimrc,
 > ```vim
-> packadd vim-highlighter
+> packadd! vim-highlighter
 > ```
 </details>
  
