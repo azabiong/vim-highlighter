@@ -1,7 +1,8 @@
 # Vim Highlighter
 
 > ```
-> Version 1.20   Add "Sync Mode"
+> Version 1.21   Improve options
+>                - fixed "Find" window rotation
 > ```
 
 ## Introduction
@@ -16,7 +17,8 @@
   [Following Highlight](#following-highlight) &nbsp; &nbsp; &nbsp;
   [Find in Files Highlight 🔎](#find-in-files-highlight-) <br> &nbsp; &nbsp;
   [Customizing Colors](#customizing-colors) <br> &nbsp; &nbsp;
-  [Installation](#installation)
+  [Installation](#installation)  
+  &nbsp;
 
 ## Key Map
 
@@ -41,7 +43,8 @@
 
   You can also select the entire line and highlight it.
 
-  <img width="296" alt="visual_line" src="https://user-images.githubusercontent.com/83812658/125556295-356322d3-4992-40fe-81f1-299ca5eb7007.png">
+  <img width="296" alt="visual_line" src="https://user-images.githubusercontent.com/83812658/125556295-356322d3-4992-40fe-81f1-299ca5eb7007.png"> <br>
+  &nbsp;
 
 ## Sync Mode
 
@@ -49,11 +52,12 @@
   ```vim
    :Hi == 
   ```
-  and switch back to the default single window highlighting mode using: 
+  and switch back to default single window highlighting mode using: 
   ```vim
    :Hi = 
   ```
-> '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.
+  '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.  
+  &nbsp;
 
 ## One Time Highlight
 
@@ -62,7 +66,7 @@
   When the cursor is on a word that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'.  
   The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
 
-  <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif">
+  <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif"> <br>   &nbsp; 
 
 ## Following Highlight
 
@@ -71,18 +75,16 @@
   Pressing `HiSet` key over '**One Time Highlight**' without moving the cursor sets '**Following Highlight**' mode.
   The highlight follows the cursor. Pressing `HiEarase` key turns off the mode.
 
-  <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/117488604-95a5c380-afa7-11eb-9625-b92efaa31817.gif">
+  <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/117488604-95a5c380-afa7-11eb-9625-b92efaa31817.gif"> <br>
 
 ### Matching option
 
-  Sometimes **`<cWORD>`** matching option of **Vim** can be useful to quickly compare variables consisting of characters and symbols.
-
-  <img width="420" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
-
-  The following command toggles between **`<cword>`** and **`<cWORD>`** options.
+  Sometimes **`<cWORD>`** matching option of **Vim** can be useful to quickly compare variables consisting of characters and symbols. The following command toggles between **`<cWORD>`** and default **`<cword>`** matching options:
   ```vim
    :Hi <>
   ```
+  <img width="420" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
+  &nbsp;
 
 ## Find in Files Highlight 🔎
 
@@ -225,12 +227,15 @@
 >
 > [xterm-color-table.vim](https://github.com/guns/xterm-color-table.vim)
 
+  <br>
+
 ## Help tags
 
   For more information about commands and options, please refer to:
   ```vim
    :h Highlighter
   ```
+
 ## Installation
 
   There are some options. Please choose your convenient way.

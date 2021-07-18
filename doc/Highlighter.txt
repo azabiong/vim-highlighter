@@ -14,7 +14,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                         *Highlighter*
-                                                                  `ver 1.20`
+                                                                  `ver 1.21`
          Introduction`...........................`|Hi-Introduction|
          Key Map`.....................................`|Hi-Key-Map|
          Sync Mode`.................................`|Hi-Sync-Mode|
@@ -65,7 +65,7 @@ You can synchronize highlighting of the current window with other windows with
 the command: >
     :Hi ==
 <
-and switch back to the default single window highlighting mode using: >
+and switch back to default single window highlighting mode using: >
     :Hi =
 <
 `SYNC MODE` applies to all windows in the current |tab-page|, and can be set
@@ -97,7 +97,12 @@ key turns off the mode.
 Matching mode ~
 
     Sometimes |<cWORD>| matching option of **Vim** can be useful to quickly
-    compare variables consisting of characters and symbols. For example:
+    compare variables consisting of characters and symbols. The following
+    command toggles between |<cWORD>| and default |<cword>| matching options:
+>
+      :Hi <>
+<
+    Example:
 >
         object.method         directory/file.ext
         item[index]           https://www.vim.org
@@ -105,21 +110,6 @@ Matching mode ~
         property:'value'      --long-option
         attribute="value"
 <
-    The following command toggles between |<cword>| and |<cWORD>| matching modes.
->
-      :Hi <>
-<
-keywords~
-
-    For better visual representation, `FOLLOWING HIGHLIGHT` skips moving on
-    well-known keywords defined in the `vim-highlighter/autoload/keywords`
-    directory.
-    If needed, you can store more keywords in the `vim-highlighter/keywords`
-    directory. The keywords are separated by spaces, and can be saved as a
-    plain text file using the 'filetype' as the filename.
-
-    You can also add additional search tool's options to the directory.
-
 ------------------------------------------------------------------------------
 FIND IN FILES HIGHLIGHT                            *Hi-Find-In-Files-Highlight*
 
@@ -277,11 +267,13 @@ commands using optional spaces.
     Erase highlight of the word or pattern, or set `ONE TIME HIGHLIGHT`
                                                                          *Hi==*
 :Hi == ~
-    Start `Sync mode`
-    Synchronize highlights of the current window with other windows
+    Synchronize highlighting of all windows in the current |tab-page|
                                                                           *Hi=*
 :Hi = ~
-    Switch back to the default single window highlighting mode
+    Switch back to default single window highlighting mode
+                                                                          *Hi=!*
+:Hi =!~
+    Toggle `SYNC MODE` of the current |tab-page|
 
 :Hi >> ~
     Set `FOLLOWING HIGHLIGHT` mode
@@ -343,7 +335,7 @@ OPTIONS                                                            *Hi-Options*
 
     Default: 320 (ms)
     Values:  260 ~ 520
-                                                                   *HiFindTool*
+                                                                    *HiFindTool*
 |HiFindTool| In this variable, you can set your preferred search tool and options
     to run when using `FIND IN FILES` function. For example,
     "grep": >
@@ -367,12 +359,25 @@ OPTIONS                                                            *Hi-Options*
 
     Default: 5
     Values:  2 ~ 10
+                                                                   *HiKeywords*
+|HiKeywords| specifies user-defined keywords directory.
+
+    For better visual representation, `FOLLOWING HIGHLIGHT` skips focusing on
+    frequently used keywords defined in the `vim-highlighter/autoload/keywords`
+    directory. If needed, you can add additional keywords files and set its
+    directory to this variable. For example:
+>
+        let HiKeywords = '$HOME/.vim/after/vim-highlighter'
+<
+    The keywords are separated by spaces, and can be saved as a plain text file
+    using the 'filetype' as the filename. You can also add additional search
+    tool options for using `FIND IN FILES` function in the directory.
 
 STATUS VARIABLES ~
                                                                   *HiFindLines*
 |HiFindLines|  `read-only`
     This variable represents the number of lines found as a result of `FIND`
-    `IN FILES` operation. You can use this variable to check if an item exists.
+    `IN FILES` operation, which can be used to check if an item exists.
 
 ------------------------------------------------------------------------------
 REFERENCE                                                        *Hi-Reference*
@@ -391,8 +396,13 @@ or comments or new features you would like to add.
 ------------------------------------------------------------------------------
 LOG                                                                    *Hi-Log*
 
+1.21~
+    Improve options
+      - fixed "Find" window rotation
+      - added "HiKeywords" option for user configurable keywords
+      - added "Sync Mode" toggle command
 1.20~
-    Add "Sync mode"
+    Add "Sync Mode"
     Improve grep output list
 1.19~
     Add "Following Highlight" <cWORD> matching mode
