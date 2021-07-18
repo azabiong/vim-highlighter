@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.20
+" Version: 1.21
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -11,23 +11,16 @@ endif
 let s:cpo_save = &cpo
 set cpo&vim
 
-if !exists("g:HiOneTimeWait")
-  let g:HiOneTimeWait = 260
-endif
-if !exists("g:HiFollowWait")
-  let g:HiFollowWait = 320
-endif
-if !exists("g:HiFindTool")
-  let g:HiFindTool = ''
-endif
-if !exists("g:HiFindHistory")
-  let g:HiFindHistory = 5
-endif
+if !exists("g:HiOneTimeWait") | let g:HiOneTimeWait = 260 | endif
+if !exists("g:HiFollowWait")  | let g:HiFollowWait = 320  | endif
+if !exists("g:HiFindHistory") | let g:HiFindHistory = 5   | endif
+if !exists("g:HiFindTool")    | let g:HiFindTool = ''     | endif
+if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.20'
+let s:Version   = '1.21'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
-let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords/', '.':[], 'usr': expand('<sfile>:h:h').'/keywords/'}
+let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', 'user': expand('<sfile>:h:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
 let s:FindList  = {'name':' Find *', 'height':8, 'buf':0, 'pos':0, 'lines':0, 'select':0, 'edit':0,
@@ -98,6 +91,14 @@ function s:Load()
   let s:Wait = [g:HiOneTimeWait, g:HiFollowWait]
   let s:WaitRange = [[0, 320], [260, 520]]
   let s:Word = '<cword>'
+  if !empty(g:HiKeywords)
+    let l:keyword = substitute(expand(g:HiKeywords), '[\\/]$', '', '')
+    if isdirectory(l:keyword)
+     let s:Keywords.user = l:keyword
+    else
+     echo " Path not found, HiKeywords = '".g:HiKeywords."'"
+    endif
+  endif
   call s:SetColors(0)
 
   aug Highlighter
@@ -328,11 +329,14 @@ function s:SetWordMode(op)
 endfunction
 
 function s:SetSyncMode(op)
-  let l:op = index(['=', '=='], a:op)
+  let l:op = index(['=', '==', '=!'], a:op)
   if  l:op == -1 | return s:NoOption(a:op) | endif
 
-  echo ' Hi '.a:op.' '.['1', 'Sync'][l:op]
-  if l:op == exists("t:HiSync") | return | endif
+  let l:sync = exists("t:HiSync")
+  if l:op == 2 | let l:op = !l:sync | endif
+  echo ' Hi '.['= 1', '== Sync'][l:op]
+  if l:op == l:sync | return | endif
+
   if l:op
     let s:Sync.tag += 1
     let l:name = 'HiSync'.s:Sync.tag
@@ -437,7 +441,7 @@ function s:GetKeywords()
   if !exists("s:Keywords['".l:ft."']")
     let s:Keywords[l:ft] = []
     let l:list = s:Keywords[l:ft]
-    for l:file in [s:Keywords.plug.l:ft, s:Keywords.usr.l:ft]
+    for l:file in [s:Keywords.plug.'/'.l:ft, s:Keywords.user.'/'.l:ft]
       if filereadable(l:file)
         for l:line in readfile(l:file)
           if l:line[0] == '#' | continue | endif
@@ -651,7 +655,7 @@ function s:FindTool()
     endif
   endfor
   if empty(l:tool)
-    echo " No executable search tool, HiFindTool='".g:HiFindTool."'"
+    echo " No executable search tool, HiFindTool = '".g:HiFindTool."'"
     return
   elseif !exists("*job_start") && !exists("*jobstart")
     echo " channel - feature not found "
@@ -662,7 +666,7 @@ function s:FindTool()
     let s:Find.tool = l:tool
     let s:Find.options = {'single':[], 'single!':[], 'with_value':[], 'with_value!':[], '_':[]}
     let s:Find.type = (l:tool =~ 'grep$') ? 'grep' : l:tool
-    for l:file in [s:Keywords.plug.'_'.s:Find.type, s:Keywords.usr.'_'.s:Find.type]
+    for l:file in [s:Keywords.plug.'/_'.s:Find.type, s:Keywords.user.'/_'.s:Find.type]
       let l:key = '_'
       if filereadable(l:file)
         for l:line in readfile(l:file)
@@ -1000,12 +1004,14 @@ function s:FindOpen(...)
   if !s:FL.buf | return | endif
   let l:win = bufwinnr(s:FL.buf)
   if l:win == -1
-    let l:prev = winnr()
+    let l:prev = win_getid()
     let l:pos = a:0 ? a:1: 0
-    exe (l:pos ? 'vert ' : '').['bel', 'abo', 'bel'][l:pos].' sb'.s:FL.buf
-    if  !l:pos | exe "resize ".min([s:FL.height, winheight(0)]) | endif
     let s:FL.pos = l:pos
-    exe l:prev." wincmd w"
+    exe ((l:pos % 2) ? 'vert ' : '').['bel', 'abo', 'abo', 'bel'][l:pos].' sb'.s:FL.buf
+    if !(l:pos % 2)
+      exe "resize ".min([s:FL.height, winheight(0)])
+    endif
+    call win_gotoid(l:prev)
     wincmd p
   else
     exe l:win." wincmd w"
@@ -1134,8 +1140,25 @@ endfunction
 
 function s:FindRotate()
   if winnr('$') == 1 | return | endif
+  let l:find = winnr()
+  let l:win = []
+  for w in ['k','l','j','h']    "   2
+    call add(l:win, winnr(w))   " 1 * 3
+  endfor                        "   0
+  let l:win += l:win
+  let l:pos = s:FL.pos
+  for i in range(4)
+    if l:win[l:pos] != l:find
+      break
+    endif
+    let l:pos += 1
+  endfor
+  let l:pivot = win_getid(l:win[l:pos])
+  let l:pos = (l:pos + 1) % 4
+  let l:pos += l:pos == 2
   close
-  call s:FindOpen((s:FL.pos + 1) % 3)
+  call win_gotoid(l:pivot)
+  call s:FindOpen(l:pos)
 endfunction
 
 function s:FindEdit(op)
@@ -1326,7 +1349,7 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '-x'       | call s:SetHighlight('-', 'x', l:num)
   elseif l:cmd ==# '>>'       | call s:SetFocusMode('>', '')
   elseif l:cmd =~# '^<\w*>'   | call s:SetWordMode(l:cmd)
-  elseif l:cmd =~# '^==\?'    | call s:SetSyncMode(l:cmd)
+  elseif l:cmd =~# '^=.\?'    | call s:SetSyncMode(l:cmd)
   elseif l:cmd ==# 'default'  | call s:SetColors(1)
   elseif l:cmd ==# '/'        | call s:Find('n')
   elseif l:cmd ==# '/x'       | call s:Find('x')
