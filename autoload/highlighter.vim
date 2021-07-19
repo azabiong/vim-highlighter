@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.22
+" Version: 1.23
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -18,7 +18,7 @@ if !exists("g:HiFindTool")    | let g:HiFindTool = ''     | endif
 if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.22'
+let s:Version   = '1.23'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', 'user': expand('<sfile>:h:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
@@ -1188,8 +1188,7 @@ function s:FindEdit(op)
     wincmd p
   endif
 
-  let l:name = bufname(l:file.name)
-  if !empty(l:name) && l:name ==# bufname()
+  if fnamemodify(bufname(), ':p') ==# fnamemodify(l:file.name, ':p')
     exe "normal! ".l:file.row.'G'
   else
     exe "edit +".l:file.row.' '.l:file.name
