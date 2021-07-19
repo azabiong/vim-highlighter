@@ -14,7 +14,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                         *Highlighter*
-                                                                  `ver 1.21`
+                                                                  `ver 1.22`
          Introduction`...........................`|Hi-Introduction|
          Key Map`.....................................`|Hi-Key-Map|
          Sync Mode`.................................`|Hi-Sync-Mode|
@@ -39,7 +39,7 @@ compare spellings.
 ------------------------------------------------------------------------------
 KEY-MAP                           *HiSet*  *HiErase*  *HiClear*  *HiFind*  *Hi-Key-Map*
 
-The plugin uses some key mappings which you can assign in the configuration
+The plugin uses several key mappings which you can assign in the configuration
 file.
 >
     let HiSet   = 'f<CR>'           " normal, visual
@@ -234,7 +234,7 @@ Example 1 ~
 <
     Now move the cursor to any word, and then input the number `21` and `HiSet`
     key. Does it work? If you press `HiSet` key again, the next color will be set.
-    You can try some other values to change the color, and see the result
+    You can try different values to change the color, and see the result
     instantly. You can store colors in the configuration file using this format.
 
 The highlighting colors are selected in order, or can be picked with the number.
@@ -396,6 +396,8 @@ or comments or new features you would like to add.
 ------------------------------------------------------------------------------
 LOG                                                                    *Hi-Log*
 
+1.22~
+    Improve focus switching to the "Find" window
 1.21~
     Improve options
       - fixed "Find" window rotation

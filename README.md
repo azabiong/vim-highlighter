@@ -1,10 +1,5 @@
 # Vim Highlighter
 
-> ```
-> Version 1.21   Improve options
->                - fixed "Find" window rotation
-> ```
-
 ## Introduction
 
   One of the things that are not easy for people, but an easy thing for computers would be finding symbols very quickly. This plugin provides an easy way to use Vim's highlighting function which helps you quickly find variables and easily compare spellings.
@@ -22,7 +17,7 @@
 
 ## Key Map
 
-  The plugin uses some key mappings which you can assign in the configuration file.
+  The plugin uses several key mappings which you can assign in the configuration file.
   ```vim
     let HiSet   = 'f<CR>'           " normal, visual
     let HiErase = 'f<BS>'           " normal, visual
@@ -214,7 +209,7 @@
 > Now, move the cursor to any word, and then input the number `21` and `HiSet` key.
 > Does it work? if you press `HiSet` key again, the next `HiColor22` will be set.
 >
-> You can try some other values to change the color, and see the result instantly.  You can store colors in the configuration file using this format. 
+> You can try different values to change the color, and see the result instantly.  You can store colors in the configuration file using this format. 
 
 ### Example 2
 > The following command changes the color of '**Find in Files Highlight**'
@@ -238,7 +233,7 @@
 
 ## Installation
 
-  There are some options. Please choose your convenient way.
+  There are several options. Please choose your convenient way.
 
 <details>
 <summary> vim-plug </summary>
