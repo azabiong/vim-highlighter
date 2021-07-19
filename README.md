@@ -1,5 +1,9 @@
 # Vim Highlighter
 
+> ```
+> Version 1.23   Fix - Jump to File
+> ```
+
 ## Introduction
 
   One of the things that are not easy for people, but an easy thing for computers would be finding symbols very quickly. This plugin provides an easy way to use Vim's highlighting function which helps you quickly find variables and easily compare spellings.

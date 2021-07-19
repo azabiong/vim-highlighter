@@ -14,7 +14,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                         *Highlighter*
-                                                                  `ver 1.22`
+                                                                  `ver 1.23`
          Introduction`...........................`|Hi-Introduction|
          Key Map`.....................................`|Hi-Key-Map|
          Sync Mode`.................................`|Hi-Sync-Mode|
@@ -396,6 +396,8 @@ or comments or new features you would like to add.
 ------------------------------------------------------------------------------
 LOG                                                                    *Hi-Log*
 
+1.23~
+    Fix - Jump to File
 1.22~
     Improve focus switching to the "Find" window
 1.21~
