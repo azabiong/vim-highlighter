@@ -1,7 +1,7 @@
 # Vim Highlighter
 
 > ```
-> Version 1.23   Fix - Jump to File
+> Version 1.24   Fix - correct focus switching to the "Find" window 
 > ```
 
 ## Introduction
