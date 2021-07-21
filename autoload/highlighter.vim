@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.23
+" Version: 1.24
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -18,7 +18,7 @@ if !exists("g:HiFindTool")    | let g:HiFindTool = ''     | endif
 if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.23'
+let s:Version   = '1.24'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', 'user': expand('<sfile>:h:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
@@ -952,9 +952,10 @@ function s:FindStart(arg)
 
     " airline
     if exists("*airline#add_statusline_func")
+      let l:win = winnr()
       call airline#add_statusline_func('highlighter#Airline')
       call airline#add_inactive_statusline_func('highlighter#Airline')
-      wincmd p | wincmd p
+      wincmd p | exe l:win. " wincmd w"
     endif
   endif
 
@@ -1011,8 +1012,9 @@ function s:FindOpen(...)
     if !(l:pos % 2)
       exe "resize ".min([s:FL.height, winheight(0)])
     endif
+    let l:win = winnr()
     call win_gotoid(l:prev)
-    wincmd p
+    exe l:win." wincmd w"
   else
     exe l:win." wincmd w"
   endif
@@ -1094,7 +1096,7 @@ function s:FindClose(ch)
     let l:msg .= ' * '.s:Find.hi_err
   endif
   echo l:msg
-  let l:win = winnr()
+  let l:win = bufwinnr(s:FL.buf)
   noa wincmd p
   call s:SetHiFindWin(1, s:FL.buf)
   noa exe l:win." wincmd w"
@@ -1165,9 +1167,9 @@ function s:FindEdit(op)
   let l:file = s:FindSelect(line('.'))
   if empty(l:file) | return | endif
 
+  let l:find = winnr()
   let l:edit = 0
   if a:op == '=' && winnr('$') > 1
-    let l:find = winnr()
     noa wincmd p
     let wins = extend([winnr()], range(winnr('$'),1, -1))
     for w in wins
@@ -1183,7 +1185,7 @@ function s:FindEdit(op)
     exe l:edit." wincmd w"
   else
     abo split
-    wincmd p
+    exe l:find. " wincmd w"
     exe "resize ".min([s:FL.height, winheight(0)])
     wincmd p
   endif
