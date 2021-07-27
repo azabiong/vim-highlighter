@@ -1,7 +1,9 @@
 # Vim Highlighter
 
+> &nbsp; Updating... &nbsp;  Version 1.25
 > ```
-> Version 1.25   Add commands - save, load highlights
+> [ ] Checking WinClosed event
+>
 > ```
 
 ## Introduction
