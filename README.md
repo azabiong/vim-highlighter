@@ -1,7 +1,7 @@
 # Vim Highlighter
 
 > ```
-> Version 1.24   Fix - correct focus switching to the "Find" window 
+> Version 1.25   Add commands - save, load highlights
 > ```
 
 ## Introduction
@@ -10,14 +10,14 @@
 
 #### Contents
   &nbsp; &nbsp;
-  [Key Map](#key-map) &nbsp; &nbsp; &nbsp;
-  [Sync Mode](#sync-mode) &nbsp; &nbsp; &nbsp;
-  [One Time Highlight](#one-time-highlight) &nbsp; &nbsp; &nbsp;
-  [Following Highlight](#following-highlight) &nbsp; &nbsp; &nbsp;
-  [Find in Files Highlight 🔎](#find-in-files-highlight-) <br> &nbsp; &nbsp;
+  [Key Map](#key-map) &nbsp; &nbsp; &nbsp; &nbsp;
+  [One Time Highlight](#one-time-highlight) &nbsp; &nbsp; &nbsp; &nbsp;
+  [Following Highlight](#following-highlight) &nbsp; &nbsp; &nbsp; &nbsp;
+  [Find in Files Highlight 🔎](#find-in-files-highlight-) &nbsp; &nbsp; &nbsp; 
+  [Commands](#commands) <br> &nbsp; &nbsp; 
   [Customizing Colors](#customizing-colors) <br> &nbsp; &nbsp;
   [Installation](#installation)  
-  &nbsp;
+  <br>
 
 ## Key Map
 
@@ -43,19 +43,6 @@
   You can also select the entire line and highlight it.
 
   <img width="296" alt="visual_line" src="https://user-images.githubusercontent.com/83812658/125556295-356322d3-4992-40fe-81f1-299ca5eb7007.png"> <br>
-  &nbsp;
-
-## Sync Mode
-
-  You can synchronize highlighting of the current window with other windows with the command:
-  ```vim
-   :Hi == 
-  ```
-  and switch back to default single window highlighting mode using: 
-  ```vim
-   :Hi = 
-  ```
-  '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.  
   &nbsp;
 
 ## One Time Highlight
@@ -188,6 +175,42 @@
 
   <br>
 
+## Commands
+
+### Sync Mode
+
+  You can synchronize highlighting of the current window with other windows with the command:
+  ```vim
+   :Hi == 
+  ```
+  and switch back to default single window highlighting mode using: 
+  ```vim
+   :Hi = 
+  ```
+  '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.  
+  &nbsp;  
+
+### Save & Load highlights
+
+  Sometimes when you want to save highlights and reload them next time, the `Hi:save` and `Hi:load` commands can be useful: 
+  ```vim
+   :Hi save
+  ```
+  When loading: 
+  ```vim
+   :Hi load
+  ```
+  Highlights of the current window are saved in the user configurable `HiKeywords` directory. You can also name the file when saving, and use tab-completion when loading. 
+  ```vim
+   :Hi save mark2
+   :Hi load <Tab>
+  ```
+  To browse and manage the list of highlight files, you can run **netrw** using the `Hi:ls` command:
+  ```vim
+   :Hi ls
+  ```
+  <br>
+
 ## Customizing Colors
 
   The plugin provides 14 + 3 default colors.
@@ -234,6 +257,7 @@
   ```vim
    :h Highlighter
   ```
+  <br>
 
 ## Installation
 
@@ -243,7 +267,7 @@
 <summary> vim-plug </summary>
   
 > &nbsp;  
-> in the Vim's command window,
+> in the Vim's command window:
 > ```vim
 > :Plug 'azabiong/vim-highlighter'
 > :PlugInstall
@@ -260,7 +284,7 @@
 <summary> neobundle </summary>
   
 > &nbsp;  
-> in the Vim's command window,
+> in the Vim's command window:
 > ```vim
 > :NeoBundle 'azabiong/vim-highlighter'
 > :NeoBundleInstall
@@ -276,7 +300,7 @@
 <summary> Vundle.vim </summary>
   
 > &nbsp;  
-> in the Vim's command window,
+> in the Vim's command window:
 > ```vim
 > :Plugin 'azabiong/vim-highlighter'
 > :PluginInstall
@@ -292,23 +316,33 @@
 <summary> Vim 8 native </summary>
   
 > &nbsp;  
-> in the terminal,
+> default install directory:
+>
+> |Linux, &nbsp; Mac| Windows &nbsp;|
+> |:--:|--|
+> |~/.vim| ~/vimfiles|
+>
+> in the terminal:
 > ```zsh
 > cd ~/.vim && git clone --depth=1 https://github.com/azabiong/vim-highlighter.git pack/azabiong/start/vim-highlighter
 > cd ~/.vim && vim -u NONE -c "helptags pack/azabiong/start/vim-highlighter/doc" -c q
 > ```
-> in your vimrc,
+> [Windows] in your vimrc:
 > ```vim
-> packadd! vim-highlighter
+> packadd  vim-highlighter
 > ```
 </details>
- 
+  <br>
+
 ## Tested
   ```
     Linux   Vim 8.2
     Windows gVim 8.2
     Mac     neovim 0.4.4  macVim 8.2
   ```
+## Issues
+
+  If you have any issues that need fixing, comments or new features you would like to add, please feel free to open an issue.
 
 ## License
   MIT
