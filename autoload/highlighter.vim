@@ -1,8 +1,8 @@
-" Vim Highlighter: Highlight words with configurable colors
+" Vim Highlighter: Highlight words and expressions
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.24
+" Version: 1.25
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -11,19 +11,19 @@ endif
 let s:cpo_save = &cpo
 set cpo&vim
 
+if !exists("g:HiFindTool")    | let g:HiFindTool = ''     | endif
+if !exists("g:HiFindHistory") | let g:HiFindHistory = 5   | endif
 if !exists("g:HiOneTimeWait") | let g:HiOneTimeWait = 260 | endif
 if !exists("g:HiFollowWait")  | let g:HiFollowWait = 320  | endif
-if !exists("g:HiFindHistory") | let g:HiFindHistory = 5   | endif
-if !exists("g:HiFindTool")    | let g:HiFindTool = ''     | endif
 if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.24'
+let s:Version   = '1.25'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
-let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', 'user': expand('<sfile>:h:h').'/keywords', '.':[]}
+let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
-let s:FindList  = {'name':' Find *', 'height':8, 'buf':0, 'pos':0, 'lines':0, 'select':0, 'edit':0,
+let s:FindList  = {'name':' Find *', 'height':8, 'buf':0, 'pos':0, 'lines':0, 'select':0, 'edit':0, 'resize':0,
                   \'logs':[{'list':[], 'status':'', 'hi':[]}], 'index':0, 'log':''}
 let s:FindOpts  = ['--literal', '_li', '--fixed-strings', '_li', '--smart-case', '_sc', '--ignore-case',  '_ic',
                   \'--word-regexp', '_wr', '--regexp', '_re']
@@ -91,13 +91,9 @@ function s:Load()
   let s:Wait = [g:HiOneTimeWait, g:HiFollowWait]
   let s:WaitRange = [[0, 320], [260, 520]]
   let s:Word = '<cword>'
-  if !empty(g:HiKeywords)
-    let l:keyword = substitute(expand(g:HiKeywords), '[\\/]$', '', '')
-    if isdirectory(l:keyword)
-     let s:Keywords.user = l:keyword
-    else
-     echo " Path not found, HiKeywords = '".g:HiKeywords."'"
-    endif
+  if empty(g:HiKeywords)
+    let l:keywords = fnamemodify(s:Keywords.plug, ":h:h").'/keywords'
+    let g:HiKeywords = isdirectory(l:keywords) ? l:keywords : ''
   endif
   call s:SetColors(0)
 
@@ -108,6 +104,7 @@ function s:Load()
     au BufHidden      * call <SID>BufHidden()
     au WinEnter       * call <SID>WinEnter()
     au WinLeave       * call <SID>WinLeave()
+    au WinClosed      * call <SID>WinClosed()
     au BufWinEnter    * call <SID>BufWinEnter()
     au TabClosed      * call <SID>TabClosed()
     au ColorSchemePre * call <SID>ColorSchemePre()
@@ -328,13 +325,15 @@ function s:SetWordMode(op)
   endif
 endfunction
 
-function s:SetSyncMode(op)
+function s:SetSyncMode(op, ...)
   let l:op = index(['=', '==', '=!'], a:op)
   if  l:op == -1 | return s:NoOption(a:op) | endif
 
   let l:sync = exists("t:HiSync")
   if l:op == 2 | let l:op = !l:sync | endif
-  echo ' Hi '.['= 1', '== Sync'][l:op]
+  if !a:0
+    echo ' Hi '.['= 1', '== Sync'][l:op]
+  endif
   if l:op == l:sync | return | endif
 
   if l:op
@@ -441,7 +440,7 @@ function s:GetKeywords()
   if !exists("s:Keywords['".l:ft."']")
     let s:Keywords[l:ft] = []
     let l:list = s:Keywords[l:ft]
-    for l:file in [s:Keywords.plug.'/'.l:ft, s:Keywords.user.'/'.l:ft]
+    for l:file in [s:Keywords.plug.'/'.l:ft, expand(g:HiKeywords).'/'.l:ft]
       if filereadable(l:file)
         for l:line in readfile(l:file)
           if l:line[0] == '#' | continue | endif
@@ -611,6 +610,91 @@ function s:SetHiFind(on, buf)
   endif
 endfunction
 
+function s:GetKeywordsPath(op)
+  if empty(g:HiKeywords)
+    let l:vim = (stridx(s:Keywords.plug, 'vimfiles') != -1) ? 'vimfiles' : '.vim'
+    let g:HiKeywords = expand('$HOME').'/'.l:vim.'/after/vim-highlighter'
+  else
+    let g:HiKeywords = expand(g:HiKeywords)
+  endif
+  if !isdirectory(g:HiKeywords)
+    if a:op == 'load'
+      return
+    elseif !mkdir(g:HiKeywords, 'p')
+      echo " * mkdir() failed, HiKeywords = '".g:HiKeywords."'"
+      return
+    endif
+  endif
+  return g:HiKeywords
+endfunction
+
+function s:SaveHighlight(file)
+  let l:path = s:GetKeywordsPath('save')
+  if empty(l:path) | return | endif
+  let l:file = empty(a:file) ? 'default.hl' : (a:file =~ '\.hl$' ? a:file : a:file.'.hl')
+  let l:path .= '/'.l:file
+  let l:info = fnamemodify(l:path, ':h')
+  if empty(glob(l:info, 0, 1))
+    echo " * path not found: ".l:info | return
+  endif
+  let l:list = ['# Highlighter Ver '.s:Version, '']
+  let l:list += map(filter(getmatches(), {i,v -> match(v.group, s:Color) == 0}),
+                                        \{i,v -> matchstr(v.group, '\d\+').':'.v.pattern})
+  let l:info = l:file.' ('.fnamemodify(l:path, ':~').')'
+  if writefile(l:list, l:path) == 0
+    echo  " Hi:save ".l:file
+  else
+    echo " * write error: ".l:info
+  endif
+endfunction
+
+function s:LoadHighlight(file)
+  let l:path = s:GetKeywordsPath('load')
+  if empty(l:path)
+    echo ' no files' | return
+  endif
+  let l:file = empty(a:file) ? 'default.hl' : (a:file =~ '\.hl$' ? a:file : a:file.'.hl')
+  let l:path .= '/'.l:file
+  let l:info = l:file.' ('.fnamemodify(l:path, ':~').')'
+  if empty(glob(l:path, 0, 1))
+    echo ' Not found: '.l:info | return
+  elseif !filereadable(l:path)
+    echo ' * read error: '.l:info | return
+  endif
+
+  echo  " Hi:load ".l:file
+  for l:m in getmatches()
+    if match(l:m.group, s:Color) == 0
+      call matchdelete(l:m.id)
+    endif
+  endfor
+  for l:line in readfile(l:path)
+    if l:line[0] == '#' | continue | endif
+    let l:exp = match(l:line, ':')
+    if l:exp > 0
+      let l:num = l:line[:l:exp-1]
+      call matchadd(s:Color.l:num, l:line[l:exp+1:], 0)
+    endif
+  endfor
+  if exists("t:HiSync")
+    call s:SetSyncMode('=', '*') | call s:SetSyncMode('==', '*')
+  endif
+endfunction
+
+function s:ListHighlight()
+  let l:path = s:GetKeywordsPath('load')
+  if empty(l:path) | return '' | endif
+  return join(map(glob(l:path.'/*.hl', 0, 1), {i,v -> fnamemodify(v, ':t:r')}), "\n")
+endfunction
+
+function s:ListFiles()
+  let l:path = s:GetKeywordsPath('load')
+  if empty(l:path)
+    echo ' no list' | return
+  endif
+  exe 'Sexplore' l:path
+endfunction
+
 function s:Find(mode)
   if !s:FindTool() | return | endif
 
@@ -658,7 +742,7 @@ function s:FindTool()
     echo " No executable search tool, HiFindTool = '".g:HiFindTool."'"
     return
   elseif !exists("*job_start") && !exists("*jobstart")
-    echo " channel - feature not found "
+    echo " * channel - feature not found "
     return
   endif
 
@@ -666,7 +750,7 @@ function s:FindTool()
     let s:Find.tool = l:tool
     let s:Find.options = {'single':[], 'single!':[], 'with_value':[], 'with_value!':[], '_':[]}
     let s:Find.type = (l:tool =~ 'grep$') ? 'grep' : l:tool
-    for l:file in [s:Keywords.plug.'/_'.s:Find.type, s:Keywords.user.'/_'.s:Find.type]
+    for l:file in [s:Keywords.plug.'/_'.s:Find.type, expand(g:HiKeywords).'/_'.s:Find.type]
       let l:key = '_'
       if filereadable(l:file)
         for l:line in readfile(l:file)
@@ -952,10 +1036,10 @@ function s:FindStart(arg)
 
     " airline
     if exists("*airline#add_statusline_func")
-      let l:win = winnr()
+      let l:find = win_getid()
       call airline#add_statusline_func('highlighter#Airline')
       call airline#add_inactive_statusline_func('highlighter#Airline')
-      wincmd p | exe l:win. " wincmd w"
+      wincmd p | call win_gotoid(l:find)
     endif
   endif
 
@@ -1002,7 +1086,7 @@ function s:FindStart(arg)
 endfunction
 
 function s:FindOpen(...)
-  if !s:FL.buf | return | endif
+  if !s:FL.buf | echo ' no list' | return | endif
   let l:win = bufwinnr(s:FL.buf)
   if l:win == -1
     let l:prev = win_getid()
@@ -1019,6 +1103,24 @@ function s:FindOpen(...)
     exe l:win." wincmd w"
   endif
   return l:win
+endfunction
+
+function s:FindResize(tid)
+  let l:find = bufwinnr(s:FL.buf)
+  if  l:find == -1 | return | endif
+  let l:height = getwininfo(win_getid(l:find))[0].height
+  if !a:tid
+    let s:FL.resize = l:height
+    call timer_start(0, function('s:FindResize'))
+  else
+    if s:FL.resize == l:height | return | endif
+    noa exe l:find." wincmd w"
+    if winnr('k') == l:find && winnr('j') == l:find | return | endif
+    if l:height > s:FL.height
+      exe "resize ".s:FL.height
+    endif
+    noa wincmd p
+  endif
 endfunction
 
 function s:FindStop(op)
@@ -1063,7 +1165,7 @@ function s:FindSet(lines, op, ...)
     endif
   endif
   if l:err
-    echoe " Find : Listing Error "
+    echo " * listing error "
     let s:Find.err += 1
   else
     let s:FL.lines += l:n
@@ -1158,7 +1260,7 @@ function s:FindRotate()
   let l:pivot = win_getid(l:win[l:pos])
   let l:pos = (l:pos + 1) % 4
   let l:pos += l:pos == 2
-  close
+  noa close
   call win_gotoid(l:pivot)
   call s:FindOpen(l:pos)
 endfunction
@@ -1184,8 +1286,9 @@ function s:FindEdit(op)
   if l:edit
     exe l:edit." wincmd w"
   else
+    let l:find = win_getid()
     abo split
-    exe l:find. " wincmd w"
+    call win_gotoid(l:find)
     exe "resize ".min([s:FL.height, winheight(0)])
     wincmd p
   endif
@@ -1210,6 +1313,7 @@ function s:FindNextPrevious(op, num)
 endfunction
 
 function s:FindOlderNewer(op, n)
+  if empty(s:FL.log) | return | endif
   if exists("s:Find.job")
     echo ' searching in progress...' | return
   endif
@@ -1278,6 +1382,11 @@ function s:WinLeave()
   call s:UnlinkCursorEvent(0)
 endfunction
 
+function s:WinClosed()
+  if !s:FL.buf || bufwinnr(s:FL.buf) == -1 | return | endif
+  call s:FindResize(0)
+endfunction
+
 function s:BufWinEnter()
   if bufname() ==# s:FL.name && !empty(s:Find.hi)
     call s:SetHiFindWin(1, s:FL.buf)
@@ -1332,13 +1441,23 @@ function highlighter#Airline(...)
   endif
 endfunction
 
+function highlighter#Complete(a, cmd, pos)
+  let l:cmd = matchstr(a:cmd, '\vHi\W+\zs\w+')
+  if l:cmd =~? '\v(save|load)'
+    return s:ListHighlight()
+  else
+    return "==\n>>\n\<>\n/next\n/previous\n/older\n/newer\n\/open\n/close\n:save\n:load\n:ls\n:default\n"
+  endif
+endfunction
+
 function highlighter#Command(cmd, ...)
   if !exists("s:Colors")
     if !s:Load() | return | endif
   endif
+  let l:num = a:0 ? a:1 : 0
   let l:arg = split(a:cmd)
   let l:cmd = substitute(get(l:arg, 0, ''), '^:', '', '')
-  let l:num = a:0 ? a:1 : 0
+  let l:val = get(l:arg, 1, '')
   let s:Search = 0
 
   if     l:cmd ==# ''         | echo ' Highlighter version '.s:Version
@@ -1349,7 +1468,6 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '>>'       | call s:SetFocusMode('>', '')
   elseif l:cmd =~# '^<\w*>'   | call s:SetWordMode(l:cmd)
   elseif l:cmd =~# '^=.\?'    | call s:SetSyncMode(l:cmd)
-  elseif l:cmd ==# 'default'  | call s:SetColors(1)
   elseif l:cmd ==# '/'        | call s:Find('n')
   elseif l:cmd ==# '/x'       | call s:Find('x')
   elseif l:cmd ==# '/next'    | call s:FindNextPrevious('+', l:num)
@@ -1358,7 +1476,11 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '/newer'   | call s:FindOlderNewer('+', l:num)
   elseif l:cmd ==# '/open'    | call s:FindOpen()
   elseif l:cmd ==# '/close'   | call s:FindCloseWin()
-  elseif l:cmd ==# 'clear'    | call s:SetHighlight('--', 'n', 0) | call s:SetFocusMode('-', '') | call s:FindClear()
+  elseif l:cmd ==? 'clear'    | call s:SetHighlight('--', 'n', 0) | call s:SetFocusMode('-', '') | call s:FindClear()
+  elseif l:cmd ==? 'default'  | call s:SetColors(1)
+  elseif l:cmd ==? 'save'     | call s:SaveHighlight(l:val)
+  elseif l:cmd ==? 'load'     | call s:LoadHighlight(l:val)
+  elseif l:cmd ==? 'ls'       | call s:ListFiles()
   else
     echo ' Hi: no matching commands: '.l:cmd
   endif
