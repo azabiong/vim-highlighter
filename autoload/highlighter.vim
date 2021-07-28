@@ -104,7 +104,6 @@ function s:Load()
     au BufHidden      * call <SID>BufHidden()
     au WinEnter       * call <SID>WinEnter()
     au WinLeave       * call <SID>WinLeave()
-    au WinClosed      * call <SID>WinClosed()
     au BufWinEnter    * call <SID>BufWinEnter()
     au TabClosed      * call <SID>TabClosed()
     au ColorSchemePre * call <SID>ColorSchemePre()
@@ -1105,13 +1104,13 @@ function s:FindOpen(...)
   return l:win
 endfunction
 
-function s:FindResize(tid)
+function s:FindResize(op)
   let l:find = bufwinnr(s:FL.buf)
   if  l:find == -1 | return | endif
   let l:height = getwininfo(win_getid(l:find))[0].height
-  if !a:tid
+
+  if a:op == -1
     let s:FL.resize = l:height
-    call timer_start(0, function('s:FindResize'))
   else
     if s:FL.resize == l:height | return | endif
     noa exe l:find." wincmd w"
@@ -1347,7 +1346,7 @@ endfunction
 function s:FindClear()
   if !empty(s:Find.hi)
     call s:SetHiFindWin(0, 0)
-    let s:Find.hi = ''
+    let s:Find.hi = []
   endif
 endfunction
 
@@ -1375,16 +1374,18 @@ function s:WinEnter()
   if exists("s:HiMode")
     call s:LinkCursorEvent('')
   endif
+  if bufwinnr(s:FL.buf) != -1
+    call s:FindResize(+1)
+  endif
 endfunction
 
 function s:WinLeave()
-  if !exists("s:HiMode") | return | endif
-  call s:UnlinkCursorEvent(0)
-endfunction
-
-function s:WinClosed()
-  if !s:FL.buf || bufwinnr(s:FL.buf) == -1 | return | endif
-  call s:FindResize(0)
+  if exists("s:HiMode")
+    call s:UnlinkCursorEvent(0)
+  endif
+  if bufwinnr(s:FL.buf) != -1
+    call s:FindResize(-1)
+  endif
 endfunction
 
 function s:BufWinEnter()
