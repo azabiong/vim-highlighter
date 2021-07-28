@@ -232,8 +232,8 @@ when loading. >
     :Hi save mark2
     :Hi load <Tab>
 <
-To browse and manage the list of highlight files, you can run |netrw| using the
-|Hi:ls| command:
+To browse and manage the list of highlight files, you can use |Hi:ls| command
+to open |netrw|.
 >
     :Hi ls
 <
@@ -309,7 +309,7 @@ commands using optional spaces.
  :Hi /older ~
  :Hi /newer ~
     Go to older | newer `Find` list in history
-    It would be also convenient to map these commands somewhere.
+    It would also be convenient to map these commands somewhere.
     To map `f <Left>` and `f <Right>` keys in normal mode:
 >
       :nn f<Left>    :Hi/older<CR>
@@ -401,18 +401,21 @@ OPTIONS                                                            *Hi-Options*
     Default: 320 (ms)
     Values:  260 ~ 520
                                                                     *HiKeywords*
-|HiKeywords| specifies user-defined keywords directory.
-
-    For better visual representation, `FOLLOWING HIGHLIGHT` skips focusing on
-    frequently used keywords defined in the `vim-highlighter/autoload/keywords`
-    directory. If needed, you can add additional keywords files and set its
-    directory to this variable. For example:
+|HiKeywords| specifies a directory where current highlights, optional keywords
+    for `FOLLOWING HIGHLIGHT` can be stored. The default setting is:
 >
         let HiKeywords = '$HOME/.vim/after/vim-highlighter'
 <
-    The keywords are separated by spaces, and can be saved as a plain text file
-    using the 'filetype' as the filename. You can also add additional search
-    tool options for using `FIND IN FILES` function in the directory.
+    The |Hi:ls| command opens |netrw| to browse the directory.
+
+    For better visual representation, `FOLLOWING HIGHLIGHT` skips focusing on
+    frequently used keywords defined in the `vim-highlighter/autoload/keywords`
+    directory. If needed, you can add additional keywords files using the
+    'filetype' as the filename. The keywords are separated by spaces, and
+    can be saved as a plain text file.
+
+    Additional search tool options for `FIND IN FILES` function can also be
+    stored in the directory.
 
 STATUS VARIABLES ~
                                                                    *HiFindLines*

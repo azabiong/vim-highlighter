@@ -1,9 +1,7 @@
 # Vim Highlighter
 
-> &nbsp; Updating... &nbsp;  Version 1.25
 > ```
-> [ ] Checking WinClosed event
->
+> Version 1.25   Add commands - save, load highlights
 > ```
 
 ## Introduction
@@ -207,7 +205,7 @@
    :Hi save mark2
    :Hi load <Tab>
   ```
-  To browse and manage the list of highlight files, you can run **netrw** using the `Hi:ls` command:
+  To browse and manage the list of highlight files, you can use `Hi:ls` command to open **netrw**.
   ```vim
    :Hi ls
   ```
