@@ -13,7 +13,7 @@
   [Key Map](#key-map) &nbsp; &nbsp; &nbsp; &nbsp;
   [One Time Highlight](#one-time-highlight) &nbsp; &nbsp; &nbsp; &nbsp;
   [Following Highlight](#following-highlight) &nbsp; &nbsp; &nbsp; &nbsp;
-  [Find in Files Highlight 🔎](#find-in-files-highlight-) &nbsp; &nbsp; &nbsp; 
+  [Find in Files Highlight](#find-in-files-highlight) &nbsp; &nbsp; &nbsp; 
   [Commands](#commands) <br> &nbsp; &nbsp; 
   [Customizing Colors](#customizing-colors) <br> &nbsp; &nbsp;
   [Installation](#installation)  
@@ -72,7 +72,7 @@
   <img width="420" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
   &nbsp;
 
-## Find in Files Highlight 🔎
+## Find in Files Highlight
 
   If you have installed hi-performance search tools such as **ag**, **rg**, **ack**, **sift**, or **grep**, the plugin can run it when looking for symbols based on the current directory. And when the given expression is simple, the plugin can highlight patterns to make them easier to find.
 
@@ -173,6 +173,12 @@
   |<kbd>s</kbd>                | Split and Jump to file |
   |<kbd>Enter</kbd>            | Jump to file |
 
+### Unicode
+
+  If Unicode characters are not displayed correctly, it may be useful to set the follwing option in your configuration file.
+  ```vim
+  set encoding=utf-8 
+  ```
   <br>
 
 ## Commands
@@ -329,7 +335,9 @@
 > ```
 > [Windows] in your vimrc:
 > ```vim
-> packadd  vim-highlighter
+> set encoding=utf-8    " recommended
+>
+> packadd vim-highlighter
 > ```
 </details>
   <br>
