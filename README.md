@@ -65,12 +65,15 @@
 
 ### Matching option
 
-  Sometimes **`<cWORD>`** matching option of **Vim** can be useful to quickly compare variables consisting of characters and symbols. The following command toggles between **`<cWORD>`** and default **`<cword>`** matching options:
+  Sometimes **`<cWORD>`** matching option of **Vim** can be useful to quickly compare variables consisting of characters and symbols. The following command toggles between **`<cWORD>`** and the default **`<cword>`** matching option:
   ```vim
    :Hi <>
   ```
   <img width="420" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
-  &nbsp;
+
+  Highlighting is applied to all windows in the current tab-page for easy comparison.
+
+  &nbsp; 
 
 ## Find in Files Highlight
 
@@ -335,7 +338,7 @@
 > ```
 > [Windows] in your vimrc:
 > ```vim
-> set encoding=utf-8    " recommended
+> set encoding=utf-8    " recommended for correct Unicode characters output
 >
 > packadd vim-highlighter
 > ```
@@ -348,6 +351,7 @@
     Windows gVim 8.2
     Mac     neovim 0.4.4  macVim 8.2
   ```
+
 ## Issues
 
   If you have any issues that need fixing, comments or new features you would like to add, please feel free to open an issue.

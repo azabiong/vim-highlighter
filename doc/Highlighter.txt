@@ -84,7 +84,7 @@ Matching mode ~
 
     Sometimes |<cWORD>| matching option of **Vim** can be useful to quickly
     compare variables consisting of characters and symbols. The following
-    command toggles between |<cWORD>| and default |<cword>| matching options:
+    command toggles between |<cWORD>| and the default |<cword>| matching option:
 >
       :Hi <>
 <
@@ -94,6 +94,8 @@ Matching mode ~
         item[index]        attribute="value"     AB:12:CD:34:EF:56
         function(param)    directory/file.ext    --long-option
 <
+Highlighting is applied to all windows in the current tab-page for easy comparison.
+
 ------------------------------------------------------------------------------
 FIND IN FILES HIGHLIGHT                             *Hi-Find-In-Files-Highlight*
 
