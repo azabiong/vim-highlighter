@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.25
+" Version: 1.26
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -18,12 +18,12 @@ if !exists("g:HiFollowWait")  | let g:HiFollowWait = 320  | endif
 if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.25'
+let s:Version   = '1.26'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
-let s:FindList  = {'name':' Find *', 'height':8, 'buf':0, 'pos':0, 'lines':0, 'select':0, 'edit':0, 'resize':0,
+let s:FindList  = {'name':' Find *', 'buf':0, 'pos':0, 'lines':0, 'select':0, 'edit':0, 'height':0,
                   \'logs':[{'list':[], 'status':'', 'hi':[]}], 'index':0, 'log':''}
 let s:FindOpts  = ['--literal', '_li', '--fixed-strings', '_li', '--smart-case', '_sc', '--ignore-case',  '_ic',
                   \'--word-regexp', '_wr', '--regexp', '_re']
@@ -869,15 +869,16 @@ function s:FindOptions(arg)
     let l:case._sc = max([l:case._sc, l:case.s])
   endif
   let l:o = max(l:case)
-  if  l:o && l:o == l:case._sc
-    if l:type == 'sift' && len(l:opt._re) > 1
-      call s:FindAdjust('-s', '--smart-case')
+  if l:o
+    if l:o == l:case._sc
+      if l:type == 'sift' && len(l:opt._re) > 1
+        call s:FindAdjust('-s', '--smart-case')
+      endif
+      let l:case._ic = 0
     else
-      let l:upper = l:opt._li ? '\v\u' : '\v^\u|[^\\]\u'
-      let l:case._ic = match(s:Find.exp, l:upper) == -1
+      let l:case._ic = (l:o == l:case._ic)
+      let l:case._sc = 0
     endif
-  elseif l:o != l:case._ic
-    let l:case._ic = 0
   endif
   " --word-regexp
   let l:opt._wr = max([l:opt._wr, l:opt.w])
@@ -993,6 +994,10 @@ function s:FindMatch(opt)
   if !empty(s:Find.exp)
     call add(a:opt._re, s:Find.exp)
   endif
+  if a:opt.case._sc
+    let l:upper = a:opt._li ? '\v\u' : '\v^\u|[^\\]\u'
+    let a:opt.case._ic = match(s:Find.exp, l:upper) == -1
+  endif
   let [l:bl, l:br] = a:opt._li ? ['\<', '\>'] : ['<', '>']
   for l:exp in a:opt._re
     let [l:p, l:q] = ['', '']
@@ -1093,7 +1098,7 @@ function s:FindOpen(...)
     let s:FL.pos = l:pos
     exe ((l:pos % 2) ? 'vert ' : '').['bel', 'abo', 'abo', 'bel'][l:pos].' sb'.s:FL.buf
     if !(l:pos % 2)
-      exe "resize ".min([s:FL.height, winheight(0)])
+      exe "resize ".(winheight(0)/4 + 1)
     endif
     let l:win = winnr()
     call win_gotoid(l:prev)
@@ -1110,14 +1115,12 @@ function s:FindResize(op)
   let l:height = getwininfo(win_getid(l:find))[0].height
 
   if a:op == -1
-    let s:FL.resize = l:height
+    let s:FL.height = l:height
   else
-    if s:FL.resize == l:height | return | endif
+    if s:FL.height == l:height | return | endif
     noa exe l:find." wincmd w"
     if winnr('k') == l:find && winnr('j') == l:find | return | endif
-    if l:height > s:FL.height
-      exe "resize ".s:FL.height
-    endif
+    exe "resize ".(winheight(0)/4 + 1)
     noa wincmd p
   endif
 endfunction
@@ -1268,9 +1271,9 @@ function s:FindEdit(op)
   let l:file = s:FindSelect(line('.'))
   if empty(l:file) | return | endif
 
-  let l:find = winnr()
   let l:edit = 0
   if a:op == '=' && winnr('$') > 1
+    let l:find = winnr()
     noa wincmd p
     let wins = extend([winnr()], range(winnr('$'),1, -1))
     for w in wins
@@ -1288,7 +1291,7 @@ function s:FindEdit(op)
     let l:find = win_getid()
     abo split
     call win_gotoid(l:find)
-    exe "resize ".min([s:FL.height, winheight(0)])
+    exe "resize ".(winheight(0)/4 + 1)
     wincmd p
   endif
 
@@ -1447,7 +1450,7 @@ function highlighter#Complete(a, cmd, pos)
   if l:cmd =~? '\v(save|load)'
     return s:ListHighlight()
   else
-    return "==\n>>\n\<>\n/next\n/previous\n/older\n/newer\n\/open\n/close\n:save\n:load\n:ls\n:default\n"
+    return "==\n>>\n\<>\n//\n/next\n/previous\n/older\n/newer\n\/open\n/close\n:save\n:load\n:ls\n:default\n"
   endif
 endfunction
 
@@ -1477,6 +1480,7 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '/newer'   | call s:FindOlderNewer('+', l:num)
   elseif l:cmd ==# '/open'    | call s:FindOpen()
   elseif l:cmd ==# '/close'   | call s:FindCloseWin()
+  elseif l:cmd ==# '//'       | call s:FindClear()
   elseif l:cmd ==? 'clear'    | call s:SetHighlight('--', 'n', 0) | call s:SetFocusMode('-', '') | call s:FindClear()
   elseif l:cmd ==? 'default'  | call s:SetColors(1)
   elseif l:cmd ==? 'save'     | call s:SaveHighlight(l:val)
