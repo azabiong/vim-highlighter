@@ -1,9 +1,9 @@
 # Vim Highlighter
 
 > ```
-> Version 1.25   Add commands - save, load highlights
+> Version 1.26   Improve "Find in Files"  - added "clear highlights" command
+>                                         - fixed --smart-case matching
 > ```
-
 ## Introduction
 
   One of the things that are not easy for people, but an easy thing for computers would be finding symbols very quickly. This plugin provides an easy way to use Vim's highlighting function which helps you quickly find variables and easily compare spellings.
@@ -159,10 +159,10 @@
 
   Key-mapping example: &nbsp;
   ```vim
-   :nn <silent>-  :Hi/next<CR>
-   :nn <silent>_  :Hi/previous<CR>
-   :nn f<Left>    :Hi/older<CR>
-   :nn f<Right>   :Hi/newer<CR>
+   :nn <silent>-  :<C-U> Hi/next<CR>
+   :nn <silent>_  :<C-U> Hi/previous<CR>
+   :nn f<Left>    :<C-U> Hi/older<CR>
+   :nn f<Right>   :<C-U> Hi/newer<CR>
   ```
 
 ### Find window

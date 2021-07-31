@@ -12,12 +12,12 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                   `ver 1.25`
+                                                                   `ver 1.26`
           Introduction`...........................`|Hi-Introduction|
           Key Map`.....................................`|Hi-Key-Map|
           One Time Highlight`...............`|Hi-One-Time-Highlight|
           Following Highlight`.............`|Hi-Following-Highlight|
-          Find in files Highlight`.....`|Hi-Find-In-Files-Highlight|
+          Find in Files Highlight`.....`|Hi-Find-In-Files-Highlight|
           Sync Mode`.................................`|Hi-Sync-Mode|
           Save & Load`...............................`|Hi-Save-Load|
           Customizing Colors`...............`|Hi-Customizing-Colors|
@@ -186,10 +186,10 @@ highlight patterns to make them easier to find.
 
     Key-mapping example:  `-` `_`  `f<Left>` `f<Right>`
 >
-      :nn <silent>-  :Hi/next<CR>
-      :nn <silent>_  :Hi/previous<CR>
-      :nn f<Left>    :Hi/older<CR>
-      :nn f<Right>   :Hi/newer<CR>
+      :nn <silent>-  :<C-U> Hi/next<CR>
+      :nn <silent>_  :<C-U> Hi/previous<CR>
+      :nn f<Left>    :<C-U> Hi/older<CR>
+      :nn f<Right>   :<C-U> Hi/newer<CR>
 <
 6.Find window ~
 
@@ -305,8 +305,8 @@ commands using optional spaces.
     It will be convenient to use shortcut keys to these commands to easily
     navigate the search list. For example, to map '-' and '_' keys in normal
     mode: >
-      :nn <silent>-  :Hi/next<CR>
-      :nn <silent>_  :Hi/previous<CR>
+      :nn <silent>-  :<C-U> Hi/next<CR>
+      :nn <silent>_  :<C-U> Hi/previous<CR>
 <                                                          *:Hi/older*  *:Hi/newer*
  :Hi /older ~
  :Hi /newer ~
@@ -314,12 +314,15 @@ commands using optional spaces.
     It would also be convenient to map these commands somewhere.
     To map `f <Left>` and `f <Right>` keys in normal mode:
 >
-      :nn f<Left>    :Hi/older<CR>
-      :nn f<Right>   :Hi/newer<CR>
+      :nn f<Left>    :<C-U> Hi/older<CR>
+      :nn f<Right>   :<C-U> Hi/newer<CR>
 <                                                           *:Hi/open*  *:Hi/close*
  :Hi /open ~
  :Hi /close ~
     Open | Close `Find` window
+                                                                         *:Hi//*
+ :Hi // ~
+    Clear highlights of the `Find` result
                                                                    *:Hi:default*
  :Hi :default ~
     Load the plugin default colors
@@ -442,6 +445,10 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.26~
+    Improve "Find in Files Highlight"
+      - added "clear highlights" command
+      - fixed --smart-case matching
 1.25~
     Add commands - save, load highlights
     Improve "Find" window split location
