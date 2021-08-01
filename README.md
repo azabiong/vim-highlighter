@@ -2,8 +2,7 @@
 
 > ```
 > Version 1.26    Improve "Find in Files" - added "clear highlights" command
->                                         - fixed default options for grep
->                                         - fixed --smart-case matching
+>                                         - fixed --smart-case matching, grep default options
 > ```
 ## Introduction
 
@@ -342,8 +341,6 @@
 > **Windows** &nbsp; In your vimrc:
 > ```vim
 > set encoding=utf-8    " recommended for correct Unicode characters output
->
-> packadd vim-highlighter
 > ```
 </details>
   <br>

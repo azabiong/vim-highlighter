@@ -21,9 +21,9 @@ CONTENTS                                                          *Highlighter*
           Sync Mode`.................................`|Hi-Sync-Mode|
           Save & Load`...............................`|Hi-Save-Load|
           Customizing Colors`...............`|Hi-Customizing-Colors|
-          Reference`.................................`|Hi-Reference|
           Commands`...................................`|Hi-Commands|
           Options`.....................................`|Hi-Options|
+          Reference`.................................`|Hi-Reference|
           Issues`.......................................`|Hi-Issues|
           Log`.............................................`|Hi-Log|
 
