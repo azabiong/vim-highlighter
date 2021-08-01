@@ -200,6 +200,13 @@ highlight patterns to make them easier to find.
        s      Split and Jump to file
     <Enter>   Jump to file
 
+Windows Unicode ~
+
+    If the output with Unicode characters is not displayed correctly, it may be
+    useful to set the following option in your configuration file:
+>
+      set encoding=utf-8
+<
 ------------------------------------------------------------------------------
 SYNC MODE                                                         *Hi-Sync-Mode*
 
@@ -448,6 +455,7 @@ LOG                                                                     *Hi-Log*
 1.26~
     Improve "Find in Files Highlight"
       - added "clear highlights" command
+      - fixed default options for grep
       - fixed --smart-case matching
 1.25~
     Add commands - save, load highlights

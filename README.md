@@ -1,7 +1,8 @@
 # Vim Highlighter
 
 > ```
-> Version 1.26   Improve "Find in Files"  - added "clear highlights" command
+> Version 1.26    Improve "Find in Files" - added "clear highlights" command
+>                                         - fixed default options for grep
 >                                         - fixed --smart-case matching
 > ```
 ## Introduction
@@ -175,10 +176,12 @@
   |<kbd>r</kbd>                | Rotate Find window |
   |<kbd>s</kbd>                | Split and Jump to file |
   |<kbd>Enter</kbd>            | Jump to file |
+    
+  &nbsp;
 
-### Unicode
+### Windows Unicode
 
-  If Unicode characters are not displayed correctly, it may be useful to set the follwing option in your configuration file.
+  If the output with Unicode characters is not displayed correctly, it may be useful to set the following option in your configuration file:
   ```vim
   set encoding=utf-8 
   ```
@@ -336,7 +339,7 @@
 > cd ~/.vim && git clone --depth=1 https://github.com/azabiong/vim-highlighter.git pack/azabiong/start/vim-highlighter
 > cd ~/.vim && vim -u NONE -c "helptags pack/azabiong/start/vim-highlighter/doc" -c q
 > ```
-> [Windows] in your vimrc:
+> **Windows** &nbsp; In your vimrc:
 > ```vim
 > set encoding=utf-8    " recommended for correct Unicode characters output
 >
