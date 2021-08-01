@@ -31,9 +31,9 @@ let s:FindTools = ['rg --color=never --no-heading --column --smart-case',
                   \'ag --nocolor --noheading --column --nobreak',
                   \'ack --nocolor --noheading --column --smart-case',
                   \'sift --no-color --line-number --column --binary-skip --git --smart-case',
-                  \'ggrep -EnrI--exclude-dir=.git',
-                  \'grep -EnI--exclude-dir=.git',
-                  \'git grep -EnrI --no-color --column']
+                  \'ggrep -EnrI --exclude-dir=.git',
+                  \'grep -EnrI --exclude-dir=.git',
+                  \'git grep -EnI --no-color --column']
 const s:FL = s:FindList
 
 function s:Load()
