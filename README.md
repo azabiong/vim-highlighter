@@ -21,7 +21,7 @@
 
 ## Key Map
 
-  The plugin uses several key mappings which you can assign in the configuration file.
+  The plugin uses the following default key mappings which you can assign in the configuration file.
   ```vim
     let HiSet   = 'f<CR>'           " normal, visual
     let HiErase = 'f<BS>'           " normal, visual
@@ -49,7 +49,7 @@
 
   The plugin provides an automatic feature that erases highlights after using. It would be useful when just one time quick scanning is needed at the cursor position.
 
-  When the cursor is on a word that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'.  
+  When the cursor is over a word that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'.  
   The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
 
   <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif"> <br>   &nbsp; 

@@ -38,8 +38,8 @@ compare spellings.
 ------------------------------------------------------------------------------
 KEY-MAP                            *HiSet*  *HiErase*  *HiClear*  *HiFind*  *Hi-Key-Map*
 
-The plugin uses several key mappings which you can assign in the configuration
-file.
+The plugin uses the following default key mappings which you can assign in the
+configuration file.
 >
     let HiSet   = 'f<CR>'           " normal, visual
     let HiErase = 'f<BS>'           " normal, visual
@@ -288,7 +288,7 @@ COMMANDS                                                 *:HI*  *:Hi*  *Hi-Comma
 Highlighter commands start with `Hi` or `HI`, and are combined with the following
 commands using optional spaces.
 
-1.Commands without default key mappings ~
+1.Commands with no default key mapping ~
 
  :Hi ~
     Print plugin version
