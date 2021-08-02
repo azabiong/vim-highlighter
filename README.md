@@ -69,7 +69,7 @@
   ```vim
    :Hi <>
   ```
-  <img width="420" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
+  <img width="422" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
 
   Highlighting is applied to all windows in the current tab-page for easy comparison.
 
@@ -266,7 +266,7 @@
 
   For more information about commands and options, please refer to:
   ```vim
-   :h Highlighter
+   :h HI
   ```
   <br>
 
@@ -289,7 +289,6 @@
 > call plug#end()
 > ```
 </details>
-
 
 <details>
 <summary> neobundle </summary>
@@ -338,12 +337,8 @@
 > cd ~/.vim && git clone --depth=1 https://github.com/azabiong/vim-highlighter.git pack/azabiong/start/vim-highlighter
 > cd ~/.vim && vim -u NONE -c "helptags pack/azabiong/start/vim-highlighter/doc" -c q
 > ```
-> **Windows** &nbsp; In your vimrc:
-> ```vim
-> set encoding=utf-8    " recommended for correct Unicode characters output
-> ```
 </details>
-  <br>
+<br>
 
 ## Tested
   ```

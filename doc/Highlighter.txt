@@ -283,7 +283,7 @@ Example 2 ~
       :hi HiFind ctermfg=52 ctermbg=182 guifg=#570707 guibg=#e7bfe7
 <
 ------------------------------------------------------------------------------
-COMMANDS                                                 *:Hi*  *:HI*  *Hi-Commands*
+COMMANDS                                                 *:HI*  *:Hi*  *Hi-Commands*
 
 Highlighter commands start with `Hi` or `HI`, and are combined with the following
 commands using optional spaces.
