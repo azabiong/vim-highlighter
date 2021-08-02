@@ -1,8 +1,8 @@
 # Vim Highlighter
 
+> &nbsp; Updating issue in version 1.26 ...
 > ```
-> Version 1.26    Improve "Find in Files" - added "clear highlights" command
->                                         - fixed --smart-case matching, grep default options
+> [ ] resizing invalid winnr()
 > ```
 ## Introduction
 
