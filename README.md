@@ -1,9 +1,9 @@
 # Vim Highlighter
 
-> &nbsp; Updating issue in version 1.26 ...
 > ```
-> [ ] resizing invalid winnr()
+> Version 1.27    Fix - incorrect window resizing
 > ```
+
 ## Introduction
 
   One of the things that are not easy for people, but an easy thing for computers would be finding symbols very quickly. This plugin provides an easy way to use Vim's highlighting function which helps you quickly find variables and easily compare spellings.

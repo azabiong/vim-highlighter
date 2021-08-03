@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.26
+" Version: 1.27
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -18,12 +18,12 @@ if !exists("g:HiFollowWait")  | let g:HiFollowWait = 320  | endif
 if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.26'
+let s:Version   = '1.27'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
-let s:FindList  = {'name':' Find *', 'buf':0, 'pos':0, 'lines':0, 'select':0, 'edit':0, 'height':0,
+let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'select':0, 'edit':0, 'tab':0, 'height':0,
                   \'logs':[{'list':[], 'status':'', 'hi':[]}], 'index':0, 'log':''}
 let s:FindOpts  = ['--literal', '_li', '--fixed-strings', '_li', '--smart-case', '_sc', '--ignore-case',  '_ic',
                   \'--word-regexp', '_wr', '--regexp', '_re']
@@ -1020,7 +1020,7 @@ endfunction
 
 function s:FindStart(arg)
   " buf variables: {Status}
-  if !s:FL.buf
+  if s:FL.buf == -1
     let s:FL.buf = bufadd(s:FL.name)
     let s:FL.lines = 0
     let g:HiFindLines = 0
@@ -1090,7 +1090,7 @@ function s:FindStart(arg)
 endfunction
 
 function s:FindOpen(...)
-  if !s:FL.buf | echo ' no list' | return | endif
+  if s:FL.buf == -1 | echo ' no list' | return | endif
   let l:win = bufwinnr(s:FL.buf)
   if l:win == -1
     let l:prev = win_getid()
@@ -1112,12 +1112,14 @@ endfunction
 function s:FindResize(op)
   let l:find = bufwinnr(s:FL.buf)
   if  l:find == -1 | return | endif
+  let l:tab = tabpagenr()
   let l:height = getwininfo(win_getid(l:find))[0].height
 
   if a:op == -1
+    let s:FL.tab = l:tab
     let s:FL.height = l:height
   else
-    if s:FL.height == l:height | return | endif
+    if s:FL.tab != l:tab || s:FL.height == l:height | return | endif
     noa exe l:find." wincmd w"
     if winnr('k') == l:find && winnr('j') == l:find | return | endif
     exe "resize ".(winheight(0)/4 + 1)
@@ -1339,7 +1341,7 @@ function s:FindOlderNewer(op, n)
 endfunction
 
 function s:FindCloseWin()
-  if !s:FL.buf | return | endif
+  if s:FL.buf == -1 | return | endif
   let l:win = bufwinnr(s:FL.buf)
   if l:win != -1
     exe l:win." wincmd q"

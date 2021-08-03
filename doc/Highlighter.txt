@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                   `ver 1.26`
+                                                                   `ver 1.27`
           Introduction`...........................`|Hi-Introduction|
           Key Map`.....................................`|Hi-Key-Map|
           One Time Highlight`...............`|Hi-One-Time-Highlight|
@@ -452,6 +452,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.27~
+    Fix - incorrect window resizing
 1.26~
     Improve "Find in Files Highlight"
       - added "clear highlights" command
