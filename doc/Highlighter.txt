@@ -60,9 +60,8 @@ useful. You can also select the entire line and highlight it.
 ------------------------------------------------------------------------------
 ONE TIME HIGHLIGHT                                       *Hi-One-Time-Highlight*
 
-The plugin provides an automatic feature that erases highlights after using.
-It would be useful when just one time quick scanning is needed at the cursor
-position.
+The plugin has an automatic feature to clear highlights after use. This can be
+useful when you only need one quick scan from the cursor position.
 
 When the cursor is over a word that is not highlighted, pressing `HiErase` key
 sets `ONE TIME HIGHLIGHT`, The highlight stays on while the cursor is not moving,
@@ -80,11 +79,13 @@ Pressing `HiSet` key over `ONE TIME HIGHLIGHT` without moving the cursor sets
 `FOLLOWING HIGHLIGHT` mode. The highlight follows the cursor. Pressing `HiErase`
 key turns off the mode.
 
-Matching mode ~
+Quick comparison ~
 
-    Sometimes |<cWORD>| matching option of **Vim** can be useful to quickly
-    compare variables consisting of characters and symbols. The following
-    command toggles between |<cWORD>| and the default |<cword>| matching option:
+    Sometimes Vim's |<cWORD>| matching option can be useful to quickly compare
+    variables consisting of letters and symbols between split windows.
+
+    The following command toggles between |<cWORD>| and the default |<cword>|
+    matching option:
 >
       :Hi <>
 <
@@ -93,8 +94,6 @@ Matching mode ~
         object.method      property:'value'      https://www.vim.org
         item[index]        attribute="value"     AB:12:CD:34:EF:56
         function(param)    directory/file.ext    --long-option
-<
-Highlighting is applied to all windows in the current tab-page for easy comparison.
 
 ------------------------------------------------------------------------------
 FIND IN FILES HIGHLIGHT                             *Hi-Find-In-Files-Highlight*
@@ -299,7 +298,7 @@ commands using optional spaces.
  :Hi = ~
     Switch back to default single window highlighting mode
                                                                          *:Hi=!*
- :Hi =!~
+ :Hi =! ~
     Toggle `SYNC MODE` of the current |tab-page|
                                                  *:Hi<>*  *:Hi<cword>*  *:Hi<cWORD>*
  :Hi <>  <cword>  <cWORD> ~
@@ -334,7 +333,8 @@ commands using optional spaces.
  :Hi :default ~
     Load the plugin default colors
                                                             *:Hi:save*  *:Hi:load*
- :Hi :save  :load  :Load ~
+ :Hi :save ~
+ :Hi :load ~
     Save | Load highlights of the current window in the user configurable
     |HiKeywords| directory
     You can use optional filename and tab-completion when saving and loading.

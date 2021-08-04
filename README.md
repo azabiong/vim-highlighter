@@ -1,9 +1,5 @@
 # Vim Highlighter
 
-> ```
-> Version 1.27    Fix - incorrect window resizing
-> ```
-
 ## Introduction
 
   One of the things that are not easy for people, but an easy thing for computers would be finding symbols very quickly. This plugin provides an easy way to use Vim's highlighting function which helps you quickly find variables and easily compare spellings.
@@ -47,7 +43,7 @@
 
 ## One Time Highlight
 
-  The plugin provides an automatic feature that erases highlights after using. It would be useful when just one time quick scanning is needed at the cursor position.
+  The plugin has an automatic feature to clear highlights after use. This can be useful when you only need one quick scan from the cursor position.
 
   When the cursor is over a word that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'.  
   The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
@@ -63,15 +59,15 @@
 
   <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/117488604-95a5c380-afa7-11eb-9625-b92efaa31817.gif"> <br>
 
-### Matching option
+### Quick comparison
 
-  Sometimes **`<cWORD>`** matching option of **Vim** can be useful to quickly compare variables consisting of characters and symbols. The following command toggles between **`<cWORD>`** and the default **`<cword>`** matching option:
+  Sometimes Vim's **`<cWORD>`** matching option can be useful to quickly compare variables consisting of letters and symbols between split windows.
+
+  The following command toggles between **`<cWORD>`** and the default **`<cword>`** matching option:
   ```vim
    :Hi <>
   ```
   <img width="422" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
-
-  Highlighting is applied to all windows in the current tab-page for easy comparison.
 
   &nbsp; 
 
