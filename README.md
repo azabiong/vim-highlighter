@@ -145,6 +145,11 @@
 >   Find  -F  'item[i+1].size() * 2'
 > ```
 
+#### Visual selection
+
+>  When searching for parts of a string in a file as is, visual selection would be useful.  
+>  After selecting the part, press `HiFind` key. The plugin will escape the pattern properly.
+
 ### Navigation
 
   After a search, it will be handy to use keyboard shortcuts to the following commands to easily navigate the results.

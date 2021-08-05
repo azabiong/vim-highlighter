@@ -163,16 +163,16 @@ highlight patterns to make them easier to find.
         Find  -F  'item[i+1].size() * 2'
 <
   --smart-case option ~
-    When this option is set to default, you can use option -s or -I to
+    When this option is set to the default, you can use option -s or -I to
     run a case-sensitive search:
 >
         ag,  rg         -s --case-sensitive
         ack, sift       -I --no-ignore-case
 <
   Visual selection ~
-    When searching for part of a string in the file as is, using visual
-    selection would be useful. After selecting the part, press |HiFind| key.
-    The plugin will escape the pattern properly.
+    When searching for parts of a string in a file as is, visual selection
+    would be useful. After selecting the part, press |HiFind| key. The plugin
+    will escape the pattern properly.
 
 5.Navigation ~
 
@@ -508,7 +508,7 @@ LOG                                                                     *Hi-Log*
     Upgrade "Following Highlight" with well-known keywords.
     Fix buffer switching error
 1.0~
-    First Release
+    Initial upload
 
 ------------------------------------------------------------------------------
 Vim:tw=80:ts=4:ft=help:nowrap:norl
