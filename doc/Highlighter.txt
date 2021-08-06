@@ -1,31 +1,31 @@
 *Highlighter.txt*  vim-highlighter
                                                                              ~
                                                                              ~
-             |   |_)       |     |_)       |     |                           ~
-             |   | |  _` | __ \  | |  _` | __ \  __|  _ \  __|               ~
-             ___ | | (   | | | | | | (   | | | | |    __/ |                  ~
-            _|  _|_|\__, |_| |_|_|_|\__, |_| |_|\__|\___|_|                  ~
-                     |___/           |___/                                   ~
+              |   |_)       |     |_)       |     |                          ~
+              |   | |  _` | __ \  | |  _` | __ \  __|  _ \  __|              ~
+              ___ | | (   | | | | | | (   | | | | |    __/ |                 ~
+             _|  _|_|\__, |_| |_|_|_|\__, |_| |_|\__|\___|_|                 ~
+                      |___/           |___/                                  ~
                                                                              ~
-                     Azabiong <azabiongc@gmail.com>                          ~
-                             Licence: MIT                                    ~
+                      Azabiong <azabiongc@gmail.com>                         ~
+                              Licence: MIT                                   ~
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
                                                                    `ver 1.27`
-          Introduction`...........................`|Hi-Introduction|
-          Key Map`.....................................`|Hi-Key-Map|
-          One Time Highlight`...............`|Hi-One-Time-Highlight|
-          Following Highlight`.............`|Hi-Following-Highlight|
-          Find in Files Highlight`.....`|Hi-Find-In-Files-Highlight|
-          Sync Mode`.................................`|Hi-Sync-Mode|
-          Save & Load`...............................`|Hi-Save-Load|
-          Customizing Colors`...............`|Hi-Customizing-Colors|
-          Commands`...................................`|Hi-Commands|
-          Options`.....................................`|Hi-Options|
-          Reference`.................................`|Hi-Reference|
-          Issues`.......................................`|Hi-Issues|
-          Log`.............................................`|Hi-Log|
+                       Introduction   |Hi-Introduction|
+                            Key Map   |Hi-Key-Map|
+                 One Time Highlight   |Hi-One-Time-Highlight|
+                Following Highlight   |Hi-Following-Highlight|
+            Find in Files Highlight   |Hi-Find-In-Files-Highlight|
+                          Sync Mode   |Hi-Sync-Mode|
+                        Save & Load   |Hi-Save-Load|
+                 Customizing Colors   |Hi-Customizing-Colors|
+                           Commands   |Hi-Commands|
+                            Options   |Hi-Options|
+                          Reference   |Hi-Reference|
+                             Issues   |Hi-Issues|
+                                Log   |Hi-Log|
 
 ------------------------------------------------------------------------------
 INTRODUCTION                                                   *Hi-Introduction*
