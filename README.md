@@ -61,13 +61,14 @@
 
 ### Quick comparison
 
-  Sometimes Vim's **`<cWORD>`** matching option can be useful to quickly compare variables consisting of letters and symbols between split windows.
+  Sometimes Vim's **`<cWORD>`** matching option can be useful when comparing variables consisting of letters and symbols.
+
+  <img width="422" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
 
   The following command toggles between **`<cWORD>`** and the default **`<cword>`** matching option:
   ```vim
    :Hi <>
   ```
-  <img width="422" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
 
   &nbsp; 
 

@@ -81,20 +81,18 @@ key turns off the mode.
 
 Quick comparison ~
 
-    Sometimes Vim's |<cWORD>| matching option can be useful to quickly compare
-    variables consisting of letters and symbols between split windows.
-
+    Sometimes Vim's |<cWORD>| matching option can be useful when comparing
+    variables consisting of letters and symbols.
+>
+      object.method      property:'value'      https://www.vim.org
+      item[index]        attribute="value"     AB:12:CD:34:EF:56
+      function(param)    directory/file.ext    --long-option
+<
     The following command toggles between |<cWORD>| and the default |<cword>|
     matching option:
 >
       :Hi <>
 <
-    |<cWORD>| matching example:
->
-        object.method      property:'value'      https://www.vim.org
-        item[index]        attribute="value"     AB:12:CD:34:EF:56
-        function(param)    directory/file.ext    --long-option
-
 ------------------------------------------------------------------------------
 FIND IN FILES HIGHLIGHT                             *Hi-Find-In-Files-Highlight*
 
@@ -395,14 +393,14 @@ OPTIONS                                                            *Hi-Options*
           let HiFindTool = 'git grep -EnI --no-color --column'
 <                                                                 *HiFindHistory*
 |HiFindHistory| specifies the number of most recently used `FIND IN FILES` lists to
-    keep in memory. You can use |Hi/older| and |Hi/newer| commands to navigate
-    the list.
+    keep in memory. You can use |Hi/older| and |Hi/newer| commands to navigate the
+    list.
 
     Default: 5
     Values:  2 ~ 10
                                                                  *HiOneTimeWait*
-|HiOneTimeWait| defines the wait time before turning off the highlights after
-    the cursor stopped in `ONE TIME HIGHLIGHT` mode.
+|HiOneTimeWait| defines the wait time before turning off the highlights after the
+    cursor stopped in `ONE TIME HIGHLIGHT` mode.
 
     Default: 260 (ms)
      Values: 0 ~ 320
@@ -413,21 +411,21 @@ OPTIONS                                                            *Hi-Options*
     Default: 320 (ms)
     Values:  260 ~ 520
                                                                     *HiKeywords*
-|HiKeywords| specifies a directory where current highlights, optional keywords
-    for `FOLLOWING HIGHLIGHT` can be stored. The default setting is:
+|HiKeywords| specifies a directory in which current highlights, optional keywords
+    for `FOLLOWING HIGHLIGHT`, and additional options for search tools can be
+    stored. The default setting is:
 >
         let HiKeywords = '$HOME/.vim/after/vim-highlighter'
 <
-    The |Hi:ls| command opens |netrw| to browse the directory.
+    The |Hi:ls| command opens |netrw| window for browsing and managing files in the
+    directory.
 
-    For better visual representation, `FOLLOWING HIGHLIGHT` skips focusing on
-    frequently used keywords defined in the `vim-highlighter/autoload/keywords`
-    directory. If needed, you can add additional keywords files using the
-    'filetype' as the filename. The keywords are separated by spaces, and
-    can be saved as a plain text file.
+    Keyword files can be used in `FOLLOWING HIGHLIGHT` mode to reduce highlight
+    changes for frequently used keywords. If needed, you can add additional
+    keyword files using the 'filetype' as the filename.
 
-    Additional search tool options for `FIND IN FILES` function can also be
-    stored in the directory.
+    Additional search tools options for `FIND IN FILES` can also be stored in the
+    directory.
 
 STATUS VARIABLES ~
                                                                    *HiFindLines*
