@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.27
+" Version: 1.28
 
 scriptencoding utf-8
 if exists("g:loaded_vim_highlighter")
@@ -29,7 +29,11 @@ function s:MapKeys()
   \ ]
   for l:map in l:key_map
     let l:key = get(g:, l:map[1], l:map[2])
-    exe l:map[0].' <silent> '.l:key.' :<C-U>if highlighter#Command("'.l:map[3].'") \| noh \| endif<CR>'
+    if l:map[3][0] == '/'
+      exe l:map[0].' '.l:key.' :<C-U><C-R>=highlighter#Find("'.l:map[3].'")<CR>'
+    else
+      exe l:map[0].' <silent> '.l:key.' :<C-U>if highlighter#Command("'.l:map[3].'") \| noh \| endif<CR>'
+    endif
   endfor
 endfunction
 
@@ -38,9 +42,14 @@ if !exists("g:HiMapKeys") || g:HiMapKeys
   let HiMapKeys = 1
 endif
 
-command! -complete=custom,highlighter#Complete -count -nargs=*
-         \ Hi if highlighter#Command(<q-args>, <count>) | noh | endif
+aug HiColorScheme
+  au!
+  au ColorSchemePre * call highlighter#ColorScheme('pre')
+  au ColorScheme    * call highlighter#ColorScheme('')
+aug END
 
+command! -complete=customlist,highlighter#Complete -count -nargs=*
+         \ Hi if highlighter#Command(<q-args>, <count>) | noh | endif
 ca HI Hi
 
 let &cpo = s:cpo_save

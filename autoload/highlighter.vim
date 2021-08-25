@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.27
+" Version: 1.28
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -18,7 +18,7 @@ if !exists("g:HiFollowWait")  | let g:HiFollowWait = 320  | endif
 if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.27'
+let s:Version   = '1.28'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
@@ -87,7 +87,6 @@ function s:Load()
   endif
   let s:Color = 'HiColor'
   let s:Number = 0
-  let s:SchemeRange = 64
   let s:Wait = [g:HiOneTimeWait, g:HiFollowWait]
   let s:WaitRange = [[0, 320], [260, 520]]
   let s:Word = '<cword>'
@@ -106,8 +105,6 @@ function s:Load()
     au WinLeave       * call <SID>WinLeave()
     au BufWinEnter    * call <SID>BufWinEnter()
     au TabClosed      * call <SID>TabClosed()
-    au ColorSchemePre * call <SID>ColorSchemePre()
-    au ColorScheme    * call <SID>ColorScheme()
   aug END
   return 1
 endfunction
@@ -629,34 +626,42 @@ endfunction
 
 function s:SaveHighlight(file)
   let l:path = s:GetKeywordsPath('save')
-  if empty(l:path) | return | endif
+  if empty(l:path)
+    return
+  elseif !empty(a:file) && isdirectory(l:path.'/'.a:file)
+    call feedkeys(":Hi:save ".a:file, 'n')
+    return
+  endif
   let l:file = empty(a:file) ? 'default.hl' : (a:file =~ '\.hl$' ? a:file : a:file.'.hl')
   let l:path .= '/'.l:file
-  let l:info = fnamemodify(l:path, ':h')
-  if empty(glob(l:info, 0, 1))
-    echo " * path not found: ".l:info | return
+  let l:dir = fnamemodify(l:path, ':h')
+  if empty(glob(l:dir, 0, 1))
+    echo " * path not found: ".l:dir | return
   endif
   let l:list = ['# Highlighter Ver '.s:Version, '']
   let l:list += map(filter(getmatches(), {i,v -> match(v.group, s:Color) == 0}),
                                         \{i,v -> matchstr(v.group, '\d\+').':'.v.pattern})
-  let l:info = l:file.' ('.fnamemodify(l:path, ':~').')'
   if writefile(l:list, l:path) == 0
     echo  " Hi:save ".l:file
   else
-    echo " * write error: ".l:info
+    echo " * write error: ".l:file.' ('.fnamemodify(l:path, ':~').')'
   endif
 endfunction
 
 function s:LoadHighlight(file)
   let l:path = s:GetKeywordsPath('load')
   if empty(l:path)
-    echo ' no files' | return
+    echo ' no files'
+    return
+  elseif !empty(a:file) && isdirectory(l:path.'/'.a:file)
+    call feedkeys(":Hi:load ".a:file, 'n')
+    return
   endif
   let l:file = empty(a:file) ? 'default.hl' : (a:file =~ '\.hl$' ? a:file : a:file.'.hl')
   let l:path .= '/'.l:file
   let l:info = l:file.' ('.fnamemodify(l:path, ':~').')'
   if empty(glob(l:path, 0, 1))
-    echo ' Not found: '.l:info | return
+    echo ' * Not found: '.l:info | return
   elseif !filereadable(l:path)
     echo ' * read error: '.l:info | return
   endif
@@ -680,12 +685,6 @@ function s:LoadHighlight(file)
   endif
 endfunction
 
-function s:ListHighlight()
-  let l:path = s:GetKeywordsPath('load')
-  if empty(l:path) | return '' | endif
-  return join(map(glob(l:path.'/*.hl', 0, 1), {i,v -> fnamemodify(v, ':t:r')}), "\n")
-endfunction
-
 function s:ListFiles()
   let l:path = s:GetKeywordsPath('load')
   if empty(l:path)
@@ -694,22 +693,17 @@ function s:ListFiles()
   exe 'Sexplore' l:path
 endfunction
 
-function s:Find(mode)
-  if !s:FindTool() | return | endif
-
-  let l:visual = (a:mode == 'x') ? '"'.escape(s:GetVisualLine(), '$^*()-+[]{}\|.?"').'"' : ''
-  call inputsave()
-  let l:input = input('  Find  ', l:visual)
-  call inputrestore()
-  if !s:FindArgs(l:input) | return | endif
-
+function s:Find(input)
+  if !s:FindTool() || !s:FindArgs(a:input)
+    return
+  endif
   let l:cmd = [s:Find.tool] + s:Find.opt
   if !empty(s:Find.exp)
     let l:cmd += [s:Find.exp]
   endif
   let l:cmd += s:Find.file
   call s:FindStop(0)
-  call s:FindStart(l:input)
+  call s:FindStart(a:input)
   if exists("*job_start")
     let s:Find.job = job_start(l:cmd, {
         \ 'in_io': 'null',
@@ -1408,33 +1402,6 @@ function s:TabClosed()
   endfor
 endfunction
 
-function s:ColorSchemePre()
-  let s:Current = []
-  for l:k in ['HiOneTime', 'HiFollow', 'HiFind']
-    let l:v = s:GetColor(l:k)
-    if !empty(l:v)
-      call add(s:Current, [l:k, l:v])
-    endif
-  endfor
-  for l:i in range(1, s:SchemeRange)
-    let l:k = s:Color.l:i
-    let l:v = s:GetColor(l:k)
-    if !empty(l:v)
-      call add(s:Current, [l:k, l:v])
-    endif
-  endfor
-endfunction
-
-function s:ColorScheme()
-  if !exists("s:Current")
-    return
-  endif
-  for l:c in s:Current
-    exe 'hi' l:c[0].' '.l:c[1]
-  endfor
-  unlet s:Current
-endfunction
-
 function highlighter#Status()
   return getbufvar(s:FL.buf, 'Status')
 endfunction
@@ -1447,13 +1414,88 @@ function highlighter#Airline(...)
   endif
 endfunction
 
-function highlighter#Complete(a, cmd, pos)
-  let l:cmd = matchstr(a:cmd, '\vHi\W+\zs\w+')
-  if l:cmd =~? '\v(save|load)'
-    return s:ListHighlight()
+function highlighter#ColorScheme(op)
+  if a:op == 'pre'
+    let s:Table = []
+    for l:key in ['HiOneTime', 'HiFollow', 'HiFind']
+      let l:value = s:GetColor(l:key)
+      if !empty(l:value)
+        call add(s:Table, [l:key, l:value])
+      endif
+    endfor
+    for i in range(1, 99)
+      let l:key = 'HiColor'.i
+      let l:value = s:GetColor(l:key)
+      if !empty(l:value)
+        call add(s:Table, [l:key, l:value])
+      endif
+    endfor
   else
-    return "==\n>>\n\<>\n//\n/next\n/previous\n/older\n/newer\n\/open\n/close\n:save\n:load\n:ls\n:default\n"
+    if exists("s:Table")
+      for [l:key, l:val] in s:Table
+        exe 'hi' l:key.' '.l:val
+      endfor
+      unlet s:Table
+    endif
   endif
+endfunction
+
+function highlighter#Complete(arg, line, pos)
+  let l:cursor = a:line[a:pos]
+  if !empty(l:cursor) && l:cursor != ' '| return [] | endif
+
+  let l:part = split(a:line[:a:pos])
+  let l:len = len(l:part)
+
+  if a:line =~? '\v^Hi *( |:)(save|load)'
+    let l:fields = 3 - (l:part[0] =~ 'Hi:')
+    if (l:len < l:fields) || (l:len == l:fields && !empty(a:arg))
+      let l:path = s:GetKeywordsPath('load')
+      if !empty(l:path)
+        let l:entry = len(l:path) + 1
+        return map(getcompletion(l:path.'/'.a:arg, 'file'), "v:val[l:entry:]")
+      endif
+    endif
+  elseif a:line =~# '^Hi/Find '
+    if  l:len == 1 | return | endif
+    if a:arg =~ '^--\w'  " long option
+      if empty(s:Find.options)
+        silent call s:FindTool()
+      endif
+      if !empty(s:Find.options)
+        let l:list = filter(s:Find.options.single + s:Find.options.with_value, "v:val =~ '^'.a:arg")
+        return l:list
+      endif
+    elseif l:len > 2  " path
+      if a:arg[0] == '$'
+        let l:list = getcompletion(a:arg[1:], 'environment')
+        if len(l:list) > 1
+          return map(l:list, "'$'.v:val")
+        endif
+      endif
+      return getcompletion(a:arg, 'file')
+    endif
+  else  " commands
+    let l:opt1 = ['==', '>>', '<>', '//', '/next', '/previous', '/older', '/newer', '/open', '/close']
+    let l:opt2 = [':save', ':load', ':ls', ':default']
+    if l:len == 1 && l:part[0] == 'Hi'
+      return l:opt1 + opt2
+    else
+      let l:fields = 2 - (l:part[0] =~ 'Hi\S')
+      if l:len == l:fields && !empty(a:arg)
+        let l:list = filter(l:opt1 + l:opt2, "v:val =~# '^'.a:arg")
+        if a:arg[0] =~ '\w'
+          let l:list += filter(map(l:opt2, "v:val[1:]"), "v:val =~? '^'.a:arg")
+        endif
+        return l:list
+      endif
+    endif
+  endif
+  return []
+endfunction
+
+function highlighter#Find(mode)
+  return 'Hi/Find  '.((a:mode == '/x') ? '"'.escape(s:GetVisualLine(), '$^*()-+[]{}\|.?"').'" ' : '')
 endfunction
 
 function highlighter#Command(cmd, ...)
@@ -1474,8 +1516,7 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '>>'       | call s:SetFocusMode('>', '')
   elseif l:cmd =~# '^<\w*>'   | call s:SetWordMode(l:cmd)
   elseif l:cmd =~# '^=.\?'    | call s:SetSyncMode(l:cmd)
-  elseif l:cmd ==# '/'        | call s:Find('n')
-  elseif l:cmd ==# '/x'       | call s:Find('x')
+  elseif l:cmd ==# '/Find'    | call s:Find(a:cmd[5:])
   elseif l:cmd ==# '/next'    | call s:FindNextPrevious('+', l:num)
   elseif l:cmd ==# '/previous'| call s:FindNextPrevious('-', l:num)
   elseif l:cmd ==# '/older'   | call s:FindOlderNewer('-', l:num)
