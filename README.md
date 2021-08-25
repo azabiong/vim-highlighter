@@ -49,8 +49,7 @@
 
   The plugin has an automatic feature to clear highlights after use. This can be useful when you only need one quick scan from the cursor position.
 
-  When the cursor is over a word that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'.  
-  The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
+  When the cursor is over a word or visual selection that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'. The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
 
   <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif"> <br>   &nbsp; 
 

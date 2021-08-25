@@ -63,9 +63,9 @@ ONE TIME HIGHLIGHT                                       *Hi-One-Time-Highlight*
 The plugin has an automatic feature to clear highlights after use. This can be
 useful when you only need one quick scan from the cursor position.
 
-When the cursor is over a word that is not highlighted, pressing `HiErase` key
-sets `ONE TIME HIGHLIGHT`, The highlight stays on while the cursor is not moving,
-and automatically turns off after the cursor moves.
+When the cursor is over a word or visual selection that is not highlighted,
+pressing |HiErase| key sets `ONE TIME HIGHLIGHT`, The highlight stays on while
+the cursor is not moving, and automatically turns off after the cursor moves.
 
 `ONE TIME HIGHLIGHT` shows all matching symbols in the current tab.
 
@@ -398,18 +398,6 @@ OPTIONS                                                            *Hi-Options*
 
     Default: 5
     Values:  2 ~ 10
-                                                                 *HiOneTimeWait*
-|HiOneTimeWait| defines the wait time before turning off the highlights after the
-    cursor stopped in `ONE TIME HIGHLIGHT` mode.
-
-    Default: 260 (ms)
-     Values: 0 ~ 320
-                                                                  *HiFollowWait*
-|HiFollowWait| defines the wait time before moving the highlights to the cursor
-    position after the cursor stopped in `FOLLOWING HIGHLIGHT` mode.
-
-    Default: 320 (ms)
-    Values:  260 ~ 520
                                                                     *HiKeywords*
 |HiKeywords| specifies a directory in which current highlights, optional keywords
     for `FOLLOWING HIGHLIGHT`, and additional options for search tools can be
@@ -426,6 +414,18 @@ OPTIONS                                                            *Hi-Options*
 
     Additional search tools options for `FIND IN FILES` can also be stored in the
     directory.
+                                                                 *HiOneTimeWait*
+|HiOneTimeWait| defines the wait time before turning off the highlights after the
+    cursor stopped in `ONE TIME HIGHLIGHT` mode.
+
+    Default: 260 (ms)
+     Values: 0 ~ 320
+                                                                  *HiFollowWait*
+|HiFollowWait| defines the wait time before moving the highlights to the cursor
+    position after the cursor stopped in `FOLLOWING HIGHLIGHT` mode.
+
+    Default: 320 (ms)
+    Values:  260 ~ 520
 
 STATUS VARIABLES ~
                                                                    *HiFindLines*
