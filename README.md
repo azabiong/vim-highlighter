@@ -1,5 +1,9 @@
 # Vim Highlighter
 
+> ```
+>  Version 1.28    Add command mode <Tab> key completion
+> ```
+
 ## Introduction
 
   One of the things that are not easy for people, but an easy thing for computers would be finding symbols very quickly. This plugin provides an easy way to use Vim's highlighting function which helps you quickly find variables and easily compare spellings.
@@ -78,7 +82,9 @@
 
   `HiFind` key brings up the **Find** command prompt.
 
-  <img width="760" alt="find" src="https://user-images.githubusercontent.com/83812658/123290729-77daf080-d54c-11eb-8181-949333013d71.gif">
+  <img width="760" alt="find" src="https://user-images.githubusercontent.com/83812658/123290729-77daf080-d54c-11eb-8181-949333013d71.gif"> <br>
+
+> The new version uses the `Hi/Find` command prompt with `Tab` key completion support.
 
 ### Search tool
 
@@ -108,8 +114,9 @@
 
   You can use general order of passing arguments to search tools:
   ```
-    Find  [options]  expression  [directories_or_files]
+   :Hi/Find  [options]  expression  [directories_or_files]
   ```
+  `Tab` key completion for long options, directory and file names is supported.
 
 ### Expression
 
@@ -119,19 +126,19 @@
 
 > searching for "red" or "blue":
 > ```
->   Find  red|blue
+>  :Hi/Find  red|blue
 > ```
 > pattern with spaces:
 > ```
->   Find  "pattern with spaces"
+>  :Hi/Find  "pattern with spaces"
 > ```
 > color codes such as: &nbsp; #e3d3b7, &nbsp; #AFD9D9
 > ```
->   Find  -i  #[A-F0-9]{6}
+>  :Hi/Find  -i  #[A-F0-9]{6}
 > ```
 > class types or variables that start with a capital letter A or S: &nbsp; Array, Set, String, Symbol
 > ```
->   Find  \b[AS]\w+
+>  :Hi/Find  \b[AS]\w+
 > ```
 
 #### Fixed string or Literal option
@@ -143,13 +150,13 @@
 > ```
 > Example: &nbsp; searching for `item[i+1].size() * 2`
 > ```
->   Find  -F  'item[i+1].size() * 2'
+>  :Hi/Find  -F  'item[i+1].size() * 2'
 > ```
 
-#### Visual selection
+### Visual selection
 
->  When searching for parts of a string in a file as is, visual selection would be useful.  
->  After selecting the part, press `HiFind` key. The plugin will escape the pattern properly.
+  When searching for parts of a string in a file as is, visual selection would be useful.  
+  After selecting the part, press `HiFind` key. The plugin will escape the pattern properly.
 
 ### Navigation
 
@@ -213,7 +220,7 @@
   ```vim
    :Hi load
   ```
-  Highlights of the current window are saved in the user configurable `HiKeywords` directory. You can also name the file when saving, and use tab-completion when loading. 
+  Highlights of the current window are saved to the user configurable `HiKeywords` directory. You can also name the file when saving, and use tab-completion when loading. For example:
   ```vim
    :Hi save mark2
    :Hi load <Tab>
