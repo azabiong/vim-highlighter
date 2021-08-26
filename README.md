@@ -22,12 +22,14 @@
 ## Key Map
 
   The plugin uses the following default key mappings which you can assign in the configuration file.
+
   ```vim
     let HiSet   = 'f<CR>'           " normal, visual
     let HiErase = 'f<BS>'           " normal, visual
     let HiClear = 'f<C-L>'          " normal
     let HiFind  = 'f<Tab>'          " normal, visual
   ```
+
 > The default key mappings are: `f Enter`, `f Backspace`, `f Ctrl+L` and `f Tab`
 
   In normal mode, `HiSet` and `HiErase` keys set or erase highlights of the word under the cursor. `HiClear` key clears all highlights.
@@ -36,7 +38,7 @@
 
 ### Visual Selection
 
-  In visual mode, the highlight is selected as a pattern from the selection, and applied to other words.
+  In visual mode, the highlight is selected as a pattern from the selection and applied to other words.
 
   <img width="290" alt="visual" src="https://user-images.githubusercontent.com/83812658/117488190-11534080-afa7-11eb-8731-bf382f71fd4e.png"> <br>
 
@@ -62,13 +64,14 @@
 
   <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/117488604-95a5c380-afa7-11eb-9625-b92efaa31817.gif"> <br>
 
-### Quick comparison
+### Matching option
 
-  Sometimes Vim's **`<cWORD>`** matching option can be useful when comparing variables consisting of letters and symbols.
+  Sometimes, when comparing variables consisting of letters and symbols, Vim's **`<cWORD>`** matching option can be useful.
 
   <img width="422" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
 
-  The following command toggles between **`<cWORD>`** and the default **`<cword>`** matching option:
+  The following command toggles between **`<cword>`** and **`<cWORD>`** matching option:
+
   ```vim
    :Hi <>
   ```
@@ -88,9 +91,11 @@
 ### Search tool
 
   If one of the tools listed above is found in the $PATH, the plugin can run it using default options. You can set your preferred tool and options in the `HiFindTool` variable. For example:
+
   ```vim
     let HiFindTool = 'grep -EnrI --exclude-dir=.git'
   ```
+
  <details>
  <summary> Tools </summary>
 
@@ -112,9 +117,11 @@
 ### Input
 
   You can use general order of passing arguments to search tools:
+
   ```
    :Hi/Find  [options]  expression  [directories_or_files]
   ```
+
   `Tab` key completion for long options, directory and file names is supported.
 
 ### Expression
@@ -165,7 +172,7 @@
 
   `Hi/older` and `Hi/newer` commands navigate the search history.
 
-  Key-mapping example: &nbsp;
+  Key-mapping example:
   ```vim
    :nn <silent>-  :<C-U> Hi/next<CR>
    :nn <silent>_  :<C-U> Hi/previous<CR>

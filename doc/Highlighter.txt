@@ -51,7 +51,7 @@ configuration file.
 In normal mode, `HiSet` and `HiErase` keys set or erase highlights of the word
 under the cursor. `HiClear` key clears all highlights.
 
-In visual mode, the highlight is selected as a pattern from the selection, and
+In visual mode, the highlight is selected as a pattern from the selection and
 applied to other words. To select the same pattern again, |gv| command would be
 useful. You can also select the entire line and highlight it.
 
@@ -79,17 +79,16 @@ Pressing |HiSet| key over `ONE TIME HIGHLIGHT` without moving the cursor sets
 `FOLLOWING HIGHLIGHT` mode. The highlight follows the cursor. Pressing |HiErase|
 key turns off the mode.
 
-Quick comparison ~
+Matching option ~
 
-    Sometimes Vim's |<cWORD>| matching option can be useful when comparing
-    variables consisting of letters and symbols.
+    Sometimes, when comparing variables consisting of letters and symbols,
+    Vim's |<cWORD>| matching option can be useful.
 >
       object.method      property:'value'      https://www.vim.org
       item[index]        attribute="value"     AB:12:CD:34:EF:56
       function(param)    directory/file.ext    --long-option
 <
-    The following command toggles between |<cWORD>| and the default |<cword>|
-    matching option:
+    The following command toggles between |<cword>| and |<cWORD>| matching option:
 >
       :Hi <>
 <
@@ -285,7 +284,7 @@ Example 2 ~
 ------------------------------------------------------------------------------
 COMMANDS                                                 *:HI*  *:Hi*  *Hi-Commands*
 
-Highlighter commands start with `Hi` or `HI`, and are combined with the following
+Highlighter commands begin with `Hi` or `HI`, and are combined with the following
 commands using optional spaces.
 
 1.Commands with no default key mapping ~
@@ -297,7 +296,7 @@ commands using optional spaces.
     Synchronize highlighting of all windows in the current |tab-page|
                                                                           *:Hi=*
  :Hi = ~
-    Switch back to default single window highlighting mode
+    Switch back to the default single window highlighting mode
                                                                          *:Hi=!*
  :Hi =! ~
     Toggle `SYNC MODE` of the current |tab-page|
@@ -330,9 +329,6 @@ commands using optional spaces.
                                                                          *:Hi//*
  :Hi // ~
     Clear highlights of the `Find` result
-                                                                   *:Hi:default*
- :Hi :default ~
-    Load the plugin default colors
                                                             *:Hi:save*  *:Hi:load*
  :Hi :save ~
  :Hi :load ~
@@ -345,6 +341,9 @@ commands using optional spaces.
 <                                                                        *:Hi:ls*
  :Hi :ls ~
     Open |netrw| to browse and manage the list of highlights files
+                                                                   *:Hi:default*
+ :Hi :default ~
+    Load the plugin default colors
 
 2.Commands with default key mappings ~
                                                                           *:Hi+*
@@ -409,8 +408,8 @@ OPTIONS                                                            *Hi-Options*
     directory.
 
     The optional Keyword files can be used in `FOLLOWING HIGHLIGHT` mode to reduce
-    highlight changes to frequently used keywords. If needed, you can define
-    more keywords and save using the 'filetype' as the filename.
+    highlight changes to frequently used keywords. If needed, you can define more
+    keywords and save it as a text file using the 'filetype' as the filename.
 
     Additional search tools options for `FIND IN FILES` can also be stored in the
     directory.
