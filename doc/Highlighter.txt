@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                  `ver 1.28`
+                                                                   `ver 1.29`
                       Introduction   |Hi-Introduction|
                            Key Map   |Hi-Key-Map|
                 One Time Highlight   |Hi-One-Time-Highlight|
@@ -46,7 +46,7 @@ configuration file.
     let HiClear = 'f<C-L>'          " normal
     let HiFind  = 'f<Tab>'          " normal, visual
 <
-    The default key mappings are: `f Enter`, `f Backspace`, `f Ctrl+L` and `f Tab`
+    Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L` and `f Tab`
 
 In normal mode, `HiSet` and `HiErase` keys set or erase highlights of the word
 under the cursor. `HiClear` key clears all highlights.
@@ -201,10 +201,10 @@ highlight patterns to make them easier to find.
 
 Windows Unicode ~
 
-    If the output with Unicode characters is not displayed correctly, it may be
-    useful to set the following option in your configuration file:
+    The following option can be useful for correctly displaying Unicode
+    characters output.
 >
-      set encoding=utf-8
+      :set encoding=utf-8
 <
 ------------------------------------------------------------------------------
 SYNC MODE                                                         *Hi-Sync-Mode*
@@ -224,26 +224,31 @@ differently for each |tab-page|.
 ------------------------------------------------------------------------------
 SAVE AND LOAD                                                     *Hi-Save-Load*
 
-Sometimes when you want to save highlights and reload them next time, |Hi:save|
-and |Hi:load| commands can be useful:
+Sometimes when you want to save highlights of the current window, and reload
+them next time, you can use:
 >
     :Hi save
 <
-When loading:
+and when loading:
 >
     :Hi load
 <
-Highlights of the current window are saved to the user configurable |HiKeywords|
-directory. You can also name the file when saving, and use <Tab> completion
-when loading. For example:
+You can name the file when saving, and use <Tab> completion when loading.
+For example:
 >
-    :Hi save mark2
+    :Hi save name
     :Hi load <Tab>
 <
-To browse and manage the list of highlight files, you can use |Hi:ls| command
-to open |netrw|.
+Highlight files are stored in a user configurable |HiKeywords| directory. To
+browse and manage files in the directory, you can open |netrw| using the command:
 >
     :Hi ls
+<
+You can also use relative paths. For example, to save and load a highlight file
+in the current directory:
+>
+    :Hi save ./name
+    :Hi load ./<Tab>
 <
 ------------------------------------------------------------------------------
 CUSTOMIZING COLORS                                       *Hi-Customizing-Colors*
@@ -332,15 +337,12 @@ commands using optional spaces.
                                                             *:Hi:save*  *:Hi:load*
  :Hi :save ~
  :Hi :load ~
-    Save | Load highlights of the current window in the user configurable
-    |HiKeywords| directory
-    You can use optional filename and <Tab> completion.
->
-      :Hi save todo3
-      :Hi load <Tab>
-<                                                                        *:Hi:ls*
+    Save | Load highlights of the current window to/from the user configurable
+    |HiKeywords| directory or relative path
+                                                                         *:Hi:ls*
  :Hi :ls ~
-    Open |netrw| to browse and manage the list of highlights files
+    Open the |HiKeywords| directory using |netrw| to browse and manage the list of
+    highlight files
                                                                    *:Hi:default*
  :Hi :default ~
     Load the plugin default colors
@@ -449,12 +451,17 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.29~
+    Improve usability
+      - relative path support for saving and loading highlights
+      - rename default.hl to _.hl
+      - runtime HiFindTool configuration
 1.28~
     Add command mode <Tab> key completion
       - grep long options, directory and file names
     Improve ColorScheme change handling
 1.27~
-    Fix - incorrect window resizing
+    Fix - incorrect window resizing, grep default options, --smart-case matching
 1.26~
     Improve "Find in Files Highlight"
       - added "clear highlights" command
@@ -491,7 +498,6 @@ LOG                                                                     *Hi-Log*
 1.17~
     Improve "Find in Files Highlight" input handling
       - added --fixed-strings  --literal option
-      - read more tools options
 1.16~
     Add "Find in Files Highlight" --smart-case option
 1.15~

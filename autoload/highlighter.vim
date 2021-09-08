@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.28
+" Version: 1.29
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -18,10 +18,10 @@ if !exists("g:HiFollowWait")  | let g:HiFollowWait = 320  | endif
 if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.28'
+let s:Version   = '1.29'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
-let s:Find      = {'tool':'', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
+let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
 let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'select':0, 'edit':0, 'tab':0, 'height':0,
                   \'logs':[{'list':[], 'status':'', 'hi':[]}], 'index':0, 'log':''}
@@ -625,15 +625,9 @@ function s:GetKeywordsPath(op)
 endfunction
 
 function s:SaveHighlight(file)
-  let l:path = s:GetKeywordsPath('save')
-  if empty(l:path)
-    return
-  elseif !empty(a:file) && isdirectory(l:path.'/'.a:file)
-    call feedkeys(":Hi:save ".a:file, 'n')
-    return
-  endif
-  let l:file = empty(a:file) ? 'default.hl' : (a:file =~ '\.hl$' ? a:file : a:file.'.hl')
-  let l:path .= '/'.l:file
+  let [l:path, l:file] = s:GetHiPathFile('save', a:file)
+  if empty(l:path) | return | endif
+
   let l:dir = fnamemodify(l:path, ':h')
   if empty(glob(l:dir, 0, 1))
     echo " * path not found: ".l:dir | return
@@ -649,16 +643,9 @@ function s:SaveHighlight(file)
 endfunction
 
 function s:LoadHighlight(file)
-  let l:path = s:GetKeywordsPath('load')
-  if empty(l:path)
-    echo ' no files'
-    return
-  elseif !empty(a:file) && isdirectory(l:path.'/'.a:file)
-    call feedkeys(":Hi:load ".a:file, 'n')
-    return
-  endif
-  let l:file = empty(a:file) ? 'default.hl' : (a:file =~ '\.hl$' ? a:file : a:file.'.hl')
-  let l:path .= '/'.l:file
+  let [l:path, l:file] = s:GetHiPathFile('load', a:file)
+  if empty(l:path) | return | endif
+
   let l:info = l:file.' ('.fnamemodify(l:path, ':~').')'
   if empty(glob(l:path, 0, 1))
     echo ' * Not found: '.l:info | return
@@ -683,6 +670,37 @@ function s:LoadHighlight(file)
   if exists("t:HiSync")
     call s:SetSyncMode('=', '*') | call s:SetSyncMode('==', '*')
   endif
+endfunction
+
+function s:GetHiPathFile(op, file)
+  if a:file =~ '\v^\.\.?\/' || a:file =~ '^\/'
+    if isdirectory(a:file)
+      call feedkeys(":Hi:".a:op." ".a:file, 'n')
+    else
+        let l:file = (a:file =~ '\.hl$' ? a:file : a:file.'.hl')
+        return [l:file, l:file]
+    endif
+  else
+    let l:path = s:GetKeywordsPath(a:op)
+    if empty(l:path)
+      if a:op == 'load' | echo ' no list' | endif
+    elseif !empty(a:file) && isdirectory(l:path.'/'.a:file)
+      call feedkeys(":Hi:".a:op." ".a:file, 'n')
+    else
+      if empty(a:file)
+        let l:file = '_.hl'
+        call rename(l:path.'/default.hl', l:path.'/'.l:file)
+      else
+        let l:file = (a:file =~ '\.hl$' ? a:file : a:file.'.hl')
+      endif
+      return [l:path.'/'.l:file, l:file]
+    endif
+  endif
+  return ['', '']
+endfunction
+
+function s:FilterHiFiles(path)
+  return filter(getcompletion(a:path, 'file'), {i,v -> isdirectory(v) || v =~ '\.hl$'})
 endfunction
 
 function s:ListFiles()
@@ -1450,16 +1468,21 @@ function highlighter#Complete(arg, line, pos)
   if a:line =~? '\v^Hi *( |:)(save|load)'
     let l:fields = 3 - (l:part[0] =~ 'Hi:')
     if (l:len < l:fields) || (l:len == l:fields && !empty(a:arg))
-      let l:path = s:GetKeywordsPath('load')
-      if !empty(l:path)
-        let l:entry = len(l:path) + 1
-        return map(getcompletion(l:path.'/'.a:arg, 'file'), "v:val[l:entry:]")
+      let l:arg = expand(a:arg)
+      if l:arg =~ '\v^\.\.?\/' || l:arg =~ '^\/'
+        return s:FilterHiFiles(l:arg)
+      else
+        let l:path = s:GetKeywordsPath('load')
+        if !empty(l:path)
+          let l:entry = len(l:path) + 1
+          return map(s:FilterHiFiles(l:path.'/'.l:arg), "v:val[l:entry:]")
+        endif
       endif
     endif
   elseif a:line =~# '^Hi/Find '
     if  l:len == 1 | return | endif
     if a:arg =~ '^--\w'  " long option
-      if empty(s:Find.options)
+      if s:Find.tool != matchstr(g:HiFindTool, '\v\S+')
         silent call s:FindTool()
       endif
       if !empty(s:Find.options)

@@ -1,7 +1,7 @@
 # Vim Highlighter
 
 > ```
->  Version 1.28    Add command mode <Tab> key completion
+>  Version 1.29    Improve usability — Save & Load highlights
 > ```
 
 ## Introduction
@@ -30,7 +30,7 @@
     let HiFind  = 'f<Tab>'          " normal, visual
   ```
 
-> The default key mappings are: `f Enter`, `f Backspace`, `f Ctrl+L` and `f Tab`
+> Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L` and `f Tab`
 
   In normal mode, `HiSet` and `HiErase` keys set or erase highlights of the word under the cursor. `HiClear` key clears all highlights.
 
@@ -195,9 +195,9 @@
 
 ### Windows Unicode
 
-  If the output with Unicode characters is not displayed correctly, it may be useful to set the following option in your configuration file:
+  The following option can be useful for correctly displaying Unicode characters output.
   ```vim
-  set encoding=utf-8 
+  :set encoding=utf-8 
   ```
   <br>
 
@@ -218,23 +218,29 @@
 
 ### Save & Load highlights
 
-  Sometimes when you want to save highlights and reload them next time, the `Hi:save` and `Hi:load` commands can be useful: 
+  Sometimes when you want to save highlights of the current window and reload them next time, you can use:
   ```vim
    :Hi save
   ```
-  When loading: 
+  and when loading: 
   ```vim
    :Hi load
   ```
-  Highlights of the current window are saved to the user configurable `HiKeywords` directory. You can also name the file when saving, and use tab-completion when loading. For example:
+  You can name the file when saving, and use tab-completion when loading. For example:
   ```vim
-   :Hi save mark2
+   :Hi save name
    :Hi load <Tab>
   ```
-  To browse and manage the list of highlight files, you can use `Hi:ls` command to open **netrw**.
+  Highlight files are stored in a user configurable `HiKeywords` directory. To browse and manage files in the directory, you can open **netrw** using the command:
   ```vim
    :Hi ls
   ```
+  You can also use relative paths. For example, to save and load a highlight file in the current directory:
+  ```vim
+   :Hi save ./name
+   :Hi load ./<Tab>
+  ```
+
   <br>
 
 ## Customizing Colors
