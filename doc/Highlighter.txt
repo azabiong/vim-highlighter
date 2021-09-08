@@ -13,19 +13,19 @@
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
                                                                    `ver 1.29`
-                      Introduction   |Hi-Introduction|
-                           Key Map   |Hi-Key-Map|
-                One Time Highlight   |Hi-One-Time-Highlight|
-               Following Highlight   |Hi-Following-Highlight|
-           Find in Files Highlight   |Hi-Find-In-Files-Highlight|
-                         Sync Mode   |Hi-Sync-Mode|
-                       Save & Load   |Hi-Save-Load|
-                Customizing Colors   |Hi-Customizing-Colors|
-                          Commands   |Hi-Commands|
-                           Options   |Hi-Options|
-                         Reference   |Hi-Reference|
-                            Issues   |Hi-Issues|
-                               Log   |Hi-Log|
+               Introduction             |Hi-Introduction|
+               Key Map                  |Hi-Key-Map|
+               One Time Highlight       |Hi-One-Time-Highlight|
+               Following Highlight      |Hi-Following-Highlight|
+               Find in Files Highlight  |Hi-Find-In-Files-Highlight|
+               Sync Mode                |Hi-Sync-Mode|
+               Save & Load              |Hi-Save-Load|
+               Customizing Colors       |Hi-Customizing-Colors|
+               Commands                 |Hi-Commands|
+               Options                  |Hi-Options|
+               Reference                |Hi-Reference|
+               Issues                   |Hi-Issues|
+               Log                      |Hi-Log|
 
 ------------------------------------------------------------------------------
 INTRODUCTION                                                   *Hi-Introduction*
