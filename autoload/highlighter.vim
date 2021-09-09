@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.29
+" Version: 1.29.1
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -18,7 +18,7 @@ if !exists("g:HiFollowWait")  | let g:HiFollowWait = 320  | endif
 if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.29'
+let s:Version   = '1.29.1'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
@@ -1340,7 +1340,7 @@ function s:FindOlderNewer(op, n)
   let l:index = min([max([0, s:FL.index + l:offset]), l:logs-1])
   echo '  List  '.(l:index + 1).' / '.l:logs
 
-  call s:FindOpen()
+  let l:find = s:FindOpen()
   if s:FL.index != l:index
     let s:FL.index = l:index
     let l:log = s:FL.logs[l:index]
@@ -1348,7 +1348,9 @@ function s:FindOlderNewer(op, n)
     let s:Find.hi_tag += 1
     call s:FindSet(l:log.list, '=', l:log.status)
     call s:FindSelect(1)
+    noa wincmd p
     call s:SetHiFindWin(1, s:FL.buf)
+    noa exe l:find." wincmd w"
   endif
 endfunction
 
