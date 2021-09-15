@@ -102,9 +102,9 @@ highlight patterns to make them easier to find.
 
 1.Search tool ~
 
-    If one of the tools listed above is found in the `$PATH`, the plugin can run
-    it using default options. You can set your preferred tool and options in
-    the |HiFindTool| variable. For example:
+    If one of the tools listed above is in the `$PATH`, the plugin can run it
+    using default options. You can set your preferred tool and options in the
+    |HiFindTool| variable. For example:
 >
         let HiFindTool = 'grep -EnrI --exclude-dir=.git'
 <
@@ -154,8 +154,8 @@ highlight patterns to make them easier to find.
     This option treats the input as a literal string, which is useful when
     searching for codes with symbols.
 >
-        ag,  rg,  grep  -F --fixed-strings
-        ack, sift       -Q --literal
+       ag,  rg,  grep,  git   -F --fixed-strings
+       ack, sift              -Q --literal
 <
     Example: searching for `item[i+1].size() * 2`
 >
@@ -165,8 +165,8 @@ highlight patterns to make them easier to find.
     When this option is set to the default, you can use option -s or -I to
     run a case-sensitive search:
 >
-        ag,  rg         -s --case-sensitive
-        ack, sift       -I --no-ignore-case
+       ag,  rg      -s --case-sensitive
+       ack, sift    -I --no-ignore-case
 <
 5.Visual selection ~
 
@@ -420,7 +420,7 @@ OPTIONS                                                            *Hi-Options*
     cursor stopped in `ONE TIME HIGHLIGHT` mode.
 
     Default: 260 (ms)
-     Values: 0 ~ 320
+    Values:  0 ~ 320
                                                                   *HiFollowWait*
 |HiFollowWait| defines the wait time before moving the highlights to the cursor
     position after the cursor stopped in `FOLLOWING HIGHLIGHT` mode.
@@ -451,6 +451,9 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.29.1~
+    Improve usability +
+      - focus switching after Hi/older commands
 1.29~
     Improve usability
       - relative path support for saving and loading highlights

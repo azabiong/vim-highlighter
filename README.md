@@ -90,7 +90,7 @@
 
 ### Search tool
 
-  If one of the tools listed above is found in the $PATH, the plugin can run it using default options. You can set your preferred tool and options in the `HiFindTool` variable. For example:
+  If one of the tools listed above is in the $PATH, the plugin can run it using default options. You can set your preferred tool and options in the `HiFindTool` variable. For example:
 
   ```vim
     let HiFindTool = 'grep -EnrI --exclude-dir=.git'
@@ -151,8 +151,8 @@
 
 > This option treats the input as a literal string, which is useful when searching for codes with symbols.
 > ```
->   ag,  rg,  grep    -F --fixed-strings
->   ack, sift         -Q --literal
+>   ag,  rg,  grep,  git   -F --fixed-strings
+>   ack, sift              -Q --literal
 > ```
 > Example: &nbsp; searching for `item[i+1].size() * 2`
 > ```
