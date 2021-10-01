@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                   `ver 1.29`
+                                                                   `ver 1.30`
                Introduction             |Hi-Introduction|
                Key Map                  |Hi-Key-Map|
                One Time Highlight       |Hi-One-Time-Highlight|
@@ -53,7 +53,7 @@ under the cursor. `HiClear` key clears all highlights.
 
 In visual mode, the highlight is selected as a pattern from the selection and
 applied to other words. To select the same pattern again, |gv| command would be
-useful. You can also select the entire line and highlight it.
+useful. You can also select an entire line and highlight it.
 
 `HiFind` key is the shortcut for `FIND IN FILES HIGHLIGHT`
 
@@ -140,7 +140,7 @@ highlight patterns to make them easier to find.
       :Hi/Find  -i  #[A-F0-9]{6}
 <
     * class types or variables that start with a capital letter A or S:
-      Array, Set, String, Symbol
+      Array, Set, String, Symbol...
 >
       :Hi/Find  \b[AS]\w+
 <
@@ -437,7 +437,7 @@ STATUS VARIABLES ~
 ------------------------------------------------------------------------------
 REFERENCE                                                         *Hi-Reference*
 
-    This tool would be helpful when editing colors.
+    This tool will be helpful when editing colors.
 
     `xterm-color-table.vim` (https://github.com/guns/xterm-color-table.vim)
 
@@ -451,8 +451,10 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.29.1~
-    Improve usability +
+1.30~
+    Improve "Find" results navigation
+      - preserving the index when switching lists
+      - optional count for Hi/next, Hi/previous
       - focus switching after Hi/older commands
 1.29~
     Improve usability

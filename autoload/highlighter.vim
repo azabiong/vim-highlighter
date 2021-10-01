@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.29.1
+" Version: 1.30
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -18,13 +18,13 @@ if !exists("g:HiFollowWait")  | let g:HiFollowWait = 320  | endif
 if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.29.1'
+let s:Version   = '1.30'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
-let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'select':0, 'edit':0, 'tab':0, 'height':0,
-                  \'logs':[{'list':[], 'status':'', 'hi':[]}], 'index':0, 'log':''}
+let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'edit':0, 'tab':0, 'height':0,
+                  \'logs':[{'list':[], 'status':'', 'select':0, 'hi':[]}], 'index':0, 'log':''}
 let s:FindOpts  = ['--literal', '_li', '--fixed-strings', '_li', '--smart-case', '_sc', '--ignore-case',  '_ic',
                   \'--word-regexp', '_wr', '--regexp', '_re']
 let s:FindTools = ['rg --color=never --no-heading --column --smart-case',
@@ -98,13 +98,13 @@ function s:Load()
 
   aug Highlighter
     au!
-    au BufEnter       * call <SID>BufEnter()
-    au BufLeave       * call <SID>BufLeave()
-    au BufHidden      * call <SID>BufHidden()
-    au WinEnter       * call <SID>WinEnter()
-    au WinLeave       * call <SID>WinLeave()
-    au BufWinEnter    * call <SID>BufWinEnter()
-    au TabClosed      * call <SID>TabClosed()
+    au BufEnter    * call <SID>BufEnter()
+    au BufLeave    * call <SID>BufLeave()
+    au BufHidden   * call <SID>BufHidden()
+    au WinEnter    * call <SID>WinEnter()
+    au WinLeave    * call <SID>WinLeave()
+    au BufWinEnter * call <SID>BufWinEnter()
+    au TabClosed   * call <SID>TabClosed()
   aug END
   return 1
 endfunction
@@ -1059,11 +1059,9 @@ function s:FindStart(arg)
     endif
   endif
 
-  if empty(s:FL.log)
-    let s:FL.log = s:FL.logs[0]
-  endif
+  let s:FL.log = s:FL.logs[-1]
   if !empty(s:FL.log.list)
-    call add(s:FL.logs, {'list':[], 'status':[], 'hi':[]})
+    call add(s:FL.logs, {'list':[], 'status':'', 'select':0, 'hi':[]})
   endif
   let l:logs = len(s:FL.logs)
   let g:HiFindHistory = min([max([2, g:HiFindHistory]), 10])
@@ -1076,6 +1074,7 @@ function s:FindStart(arg)
   let s:FL.index = l:index
   let s:FL.log = s:FL.logs[l:index]
   let s:FL.log.status = l:status
+  let s:FL.log.select = 0
   let s:FL.log.hi = []
   let s:Find.hi = []
   let s:Find.hi_tag += 1
@@ -1153,7 +1152,7 @@ function s:FindStop(op)
   sleep 250m
 endfunction
 
-function s:FindSet(lines, op, ...)
+function s:FindSet(lines, op)
   call setbufvar(s:FL.buf, '&ma', 1)
   let l:err = 0
   let l:n = len(a:lines)
@@ -1161,13 +1160,12 @@ function s:FindSet(lines, op, ...)
     silent let l:err += deletebufline(s:FL.buf, 1, '$')
     let g:HiFindLines = 0
     let s:FL.lines = 0
-    let s:FL.select = 0
     let s:FL.edit = 0
     if !empty(a:lines)
       let l:err += setbufline(s:FL.buf, 1, a:lines)
-      if a:0
-        call setbufvar(s:FL.buf, 'Status', a:1)
-      endif
+      call setbufvar(s:FL.buf, 'Status', s:FL.log.status)
+      let l:line = s:FL.log.select ? s:FL.log.select : 1
+      exe "normal! ".l:line.'G'
     endif
   elseif l:n
     for l:line in a:lines
@@ -1234,27 +1232,26 @@ function s:FindExit(job, code, type)
 endfunction
 
 function s:FindSelect(line)
-  let l:line = getbufline(s:FL.buf, a:line)[0]
+  let l:num = a:line ? a:line : (s:FL.log.select ? s:FL.log.select : 1)
+  let l:line = getbufline(s:FL.buf, l:num)[0]
   if len(l:line) < 2 | return | endif
 
   let l:pos = 2
   let l:file = matchstr(l:line, '\v[^:]*', l:pos)
-  if filereadable(l:file)
-    call setbufvar(s:FL.buf, '&ma', 1)
-    let l:pos += len(l:file) + 1
-    let l:row = matchstr(l:line, '\v\d*', l:pos)
-    let l:pos += len(l:row) + 1
-    let l:col = matchstr(l:line, '\v\d*', l:pos)
-    if s:FL.select
-      let l:select = getbufline(s:FL.buf, s:FL.select)[0]
-      call setbufline(s:FL.buf, s:FL.select, ' '.l:select[1:])
-    endif
-    call setbufline(s:FL.buf, a:line, '| '.l:line[2:])
-    call setbufvar(s:FL.buf, '&ma', 0)
-  else
-    return
+  if !filereadable(l:file) | return | endif
+
+  call setbufvar(s:FL.buf, '&ma', 1)
+  let l:pos += len(l:file) + 1
+  let l:row = matchstr(l:line, '\v\d*', l:pos)
+  let l:pos += len(l:row) + 1
+  let l:col = matchstr(l:line, '\v\d*', l:pos)
+  if s:FL.log.select && s:FL.log.select != l:num
+    let l:select = getbufline(s:FL.buf, s:FL.log.select)[0]
+    call setbufline(s:FL.buf, s:FL.log.select, ' '.l:select[1:])
   endif
-  let s:FL.select = a:line
+  call setbufline(s:FL.buf, l:num, '| '.l:line[2:])
+  call setbufvar(s:FL.buf, '&ma', 0)
+  let s:FL.log.select = l:num
   return {'name':l:file, 'row':l:row, 'col':l:col}
 endfunction
 
@@ -1262,11 +1259,11 @@ function s:FindRotate()
   if winnr('$') == 1 | return | endif
   let l:find = winnr()
   let l:win = []
-  for w in ['k','l','j','h']    "   2
-    call add(l:win, winnr(w))   " 1 * 3
-  endfor                        "   0
-  let l:win += l:win
-  let l:pos = s:FL.pos
+  for w in ['k','l','j','h']   "     2
+    call add(l:win, winnr(w))  "     ↓
+  endfor                       " 1 → * ← 3
+  let l:win += l:win           "     ↑
+  let l:pos = s:FL.pos         "     0
   for i in range(4)
     if l:win[l:pos] != l:find
       break
@@ -1315,15 +1312,20 @@ function s:FindEdit(op)
     exe "edit +".l:file.row.' '.l:file.name
   endif
   exe "normal! ".l:file.col.'|'
-  let s:FL.edit = s:FL.select
+  let s:FL.edit = s:FL.log.select
 
   call s:SetHiFind(1, 0)
 endfunction
 
 function s:FindNextPrevious(op, num)
   if !s:FindOpen() | return | endif
-  let l:offset = ((a:op == '+') ? 1 : -1) * (a:num ? a:num : (v:count ? v:count : 1))
-  let l:line = (!s:FL.edit && l:offset) ? 1 : max([1, s:FL.select + l:offset])
+  let l:sign = (a:op == '+') ? 1 : -1
+  let l:count = a:num ? a:num : v:count
+  if !l:count
+    let l:sign = s:FL.edit ? l:sign : 0
+    let l:count = 1
+  endif
+  let l:line = max([1, s:FL.log.select + l:sign * l:count])
   exe "normal! ".l:line.'G'
   call s:FindEdit('=')
 endfunction
@@ -1343,11 +1345,11 @@ function s:FindOlderNewer(op, n)
   let l:find = s:FindOpen()
   if s:FL.index != l:index
     let s:FL.index = l:index
-    let l:log = s:FL.logs[l:index]
-    let s:Find.hi = l:log.hi
+    let s:FL.log = s:FL.logs[l:index]
+    let s:Find.hi = s:FL.log.hi
     let s:Find.hi_tag += 1
-    call s:FindSet(l:log.list, '=', l:log.status)
-    call s:FindSelect(1)
+    call s:FindSet(s:FL.log.list, '=')
+    call s:FindSelect(0)
     noa wincmd p
     call s:SetHiFindWin(1, s:FL.buf)
     noa exe l:find." wincmd w"
@@ -1502,7 +1504,7 @@ function highlighter#Complete(arg, line, pos)
     endif
   else  " commands
     let l:opt1 = ['==', '>>', '<>', '//', '/next', '/previous', '/older', '/newer', '/open', '/close']
-    let l:opt2 = [':save', ':load', ':ls', ':default']
+    let l:opt2 = [':save ', ':load ', ':ls', ':default']
     if l:len == 1 && l:part[0] == 'Hi'
       return l:opt1 + opt2
     else

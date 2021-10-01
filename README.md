@@ -1,9 +1,5 @@
 # Vim Highlighter
 
-> ```
->  Version 1.29    Improve usability — Save & Load highlights
-> ```
-
 ## Introduction
 
   One of the things that are not easy for people, but an easy thing for computers would be finding symbols very quickly. This plugin provides an easy way to use Vim's highlighting function which helps you quickly find variables and easily compare spellings.
@@ -42,7 +38,7 @@
 
   <img width="290" alt="visual" src="https://user-images.githubusercontent.com/83812658/117488190-11534080-afa7-11eb-8731-bf382f71fd4e.png"> <br>
 
-  You can also select the entire line and highlight it.
+  You can also select an entire line and highlight it.
 
   <img width="296" alt="visual_line" src="https://user-images.githubusercontent.com/83812658/125556295-356322d3-4992-40fe-81f1-299ca5eb7007.png"> <br>
   &nbsp;
@@ -142,7 +138,7 @@
 > ```
 >  :Hi/Find  -i  #[A-F0-9]{6}
 > ```
-> class types or variables that start with a capital letter A or S: &nbsp; Array, Set, String, Symbol
+> class types or variables that start with a capital letter A or S: &nbsp; Array, Set, String, Symbol...
 > ```
 >  :Hi/Find  \b[AS]\w+
 > ```
@@ -277,7 +273,7 @@
 > ```
 
 ### Reference
-> This tool would be helpful when editing colors.
+> This tool will be helpful when editing colors.
 >
 > [xterm-color-table.vim](https://github.com/guns/xterm-color-table.vim)
 
