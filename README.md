@@ -66,7 +66,7 @@
 
   <img width="422" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
 
-  The following command toggles between **`<cword>`** and **`<cWORD>`** matching option:
+  The following command toggles between the default **`<cword>`** and **`<cWORD>`** matching options:
 
   ```vim
    :Hi <>
@@ -89,7 +89,7 @@
   If one of the tools listed above is in the $PATH, the plugin can run it using default options. You can set your preferred tool and options in the `HiFindTool` variable. For example:
 
   ```vim
-    let HiFindTool = 'grep -EnrI --exclude-dir=.git'
+    let HiFindTool = 'grep -H -EnrI --exclude-dir=.git'
   ```
 
  <details>
@@ -98,13 +98,13 @@
   ```vim
     let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
 
-    let HiFindTool = 'rg --color=never --no-heading --column --smart-case'
+    let HiFindTool = 'rg -H --color=never --no-heading --column --smart-case'
 
-    let HiFindTool = 'ack --nocolor --noheading --column --smart-case'
+    let HiFindTool = 'ack -H --nocolor --noheading --column --smart-case'
 
     let HiFindTool = 'sift --no-color --line-number --column --binary-skip --git --smart-case'
 
-    let HiFindTool = 'ggrep -EnrI --exclude-dir=.git'
+    let HiFindTool = 'ggrep -H -EnrI --exclude-dir=.git'
  
     let HiFindTool = 'git grep -EnI --no-color --column'
   ```

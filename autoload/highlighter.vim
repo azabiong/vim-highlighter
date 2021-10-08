@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.30
+" Version: 1.31
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -18,7 +18,7 @@ if !exists("g:HiFollowWait")  | let g:HiFollowWait = 320  | endif
 if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.30'
+let s:Version   = '1.31'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
@@ -27,12 +27,12 @@ let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'edit':0, 'ta
                   \'logs':[{'list':[], 'status':'', 'select':0, 'hi':[]}], 'index':0, 'log':''}
 let s:FindOpts  = ['--literal', '_li', '--fixed-strings', '_li', '--smart-case', '_sc', '--ignore-case',  '_ic',
                   \'--word-regexp', '_wr', '--regexp', '_re']
-let s:FindTools = ['rg --color=never --no-heading --column --smart-case',
+let s:FindTools = ['rg -H --color=never --no-heading --column --smart-case',
                   \'ag --nocolor --noheading --column --nobreak',
-                  \'ack --nocolor --noheading --column --smart-case',
+                  \'ack -H --nocolor --noheading --column --smart-case',
                   \'sift --no-color --line-number --column --binary-skip --git --smart-case',
-                  \'ggrep -EnrI --exclude-dir=.git',
-                  \'grep -EnrI --exclude-dir=.git',
+                  \'ggrep -H -EnrI --exclude-dir=.git',
+                  \'grep -H -EnrI --exclude-dir=.git',
                   \'git grep -EnI --no-color --column']
 const s:FL = s:FindList
 
@@ -278,8 +278,7 @@ function s:SetFocusMode(cmd, word)
     else
       let l:action = ['=0', '>0'][s:HiMode['>'] == '>']
       let l:word = empty(a:word) ? s:GetCurrentWord().word : a:word
-      let l:op = l:word =~# s:HiMode['w'] && s:HiMode['w'] =~# l:word
-      let l:op = l:action[l:op]
+      let l:op = l:action[l:word ==# s:HiMode['w']]
     endif
   elseif a:cmd == '>'
     let l:word = empty(a:word) ? s:GetCurrentWord().word : a:word
@@ -1503,8 +1502,8 @@ function highlighter#Complete(arg, line, pos)
       return getcompletion(a:arg, 'file')
     endif
   else  " commands
-    let l:opt1 = ['==', '>>', '<>', '//', '/next', '/previous', '/older', '/newer', '/open', '/close']
-    let l:opt2 = [':save ', ':load ', ':ls', ':default']
+    let l:opt1 = ['==', '>>', '<>', '//']
+    let l:opt2 = ['/next', '/previous', '/older', '/newer', '/open', '/close', ':save ', ':load ', ':ls', ':default']
     if l:len == 1 && l:part[0] == 'Hi'
       return l:opt1 + opt2
     else
@@ -1531,7 +1530,7 @@ function highlighter#Command(cmd, ...)
   endif
   let l:num = a:0 ? a:1 : 0
   let l:arg = split(a:cmd)
-  let l:cmd = substitute(get(l:arg, 0, ''), '^:', '', '')
+  let l:cmd = substitute(get(l:arg, 0, ''), '\v^[:/]', '', '')
   let l:val = get(l:arg, 1, '')
   let s:Search = 0
 
@@ -1543,14 +1542,14 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '>>'       | call s:SetFocusMode('>', '')
   elseif l:cmd =~# '^<\w*>'   | call s:SetWordMode(l:cmd)
   elseif l:cmd =~# '^=.\?'    | call s:SetSyncMode(l:cmd)
-  elseif l:cmd ==# '/Find'    | call s:Find(a:cmd[5:])
-  elseif l:cmd ==# '/next'    | call s:FindNextPrevious('+', l:num)
-  elseif l:cmd ==# '/previous'| call s:FindNextPrevious('-', l:num)
-  elseif l:cmd ==# '/older'   | call s:FindOlderNewer('-', l:num)
-  elseif l:cmd ==# '/newer'   | call s:FindOlderNewer('+', l:num)
-  elseif l:cmd ==# '/open'    | call s:FindOpen()
-  elseif l:cmd ==# '/close'   | call s:FindCloseWin()
-  elseif l:cmd ==# '//'       | call s:FindClear()
+  elseif l:cmd ==# 'Find'     | call s:Find(a:cmd[5:])
+  elseif l:cmd ==# 'next'     | call s:FindNextPrevious('+', l:num)
+  elseif l:cmd ==# 'previous' | call s:FindNextPrevious('-', l:num)
+  elseif l:cmd ==# 'older'    | call s:FindOlderNewer('-', l:num)
+  elseif l:cmd ==# 'newer'    | call s:FindOlderNewer('+', l:num)
+  elseif l:cmd ==# 'open'     | call s:FindOpen()
+  elseif l:cmd ==# 'close'    | call s:FindCloseWin()
+  elseif l:cmd ==# '/'        | call s:FindClear()
   elseif l:cmd ==? 'clear'    | call s:SetHighlight('--', 'n', 0) | call s:SetFocusMode('-', '') | call s:FindClear()
   elseif l:cmd ==? 'default'  | call s:SetColors(1)
   elseif l:cmd ==? 'save'     | call s:SaveHighlight(l:val)

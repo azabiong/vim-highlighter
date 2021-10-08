@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                   `ver 1.30`
+                                                                   `ver 1.31`
                Introduction             |Hi-Introduction|
                Key Map                  |Hi-Key-Map|
                One Time Highlight       |Hi-One-Time-Highlight|
@@ -88,7 +88,8 @@ Matching option ~
       item[index]        attribute="value"     AB:12:CD:34:EF:56
       function(param)    directory/file.ext    --long-option
 <
-    The following command toggles between |<cword>| and |<cWORD>| matching option:
+    The following command toggles between the default |<cword>| and |<cWORD>|
+    matching options:
 >
       :Hi <>
 <
@@ -106,7 +107,7 @@ highlight patterns to make them easier to find.
     using default options. You can set your preferred tool and options in the
     |HiFindTool| variable. For example:
 >
-        let HiFindTool = 'grep -EnrI --exclude-dir=.git'
+        let HiFindTool = 'grep -H -EnrI --exclude-dir=.git'
 <
     Please refer to the |HiFindTool| section for more options.
 
@@ -379,17 +380,17 @@ OPTIONS                                                            *Hi-Options*
 |HiFindTool| In this variable, you can set your preferred search tool and options
     to run when using `FIND IN FILES` function. For example,
     "grep": >
-          let HiFindTool = 'grep -EnrI --exclude-dir=.git'
+          let HiFindTool = 'grep -H -EnrI --exclude-dir=.git'
 <    "ag": >
           let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
 <    "rg": >
-          let HiFindTool = 'rg --color=never --no-heading --column --smart-case'
+          let HiFindTool = 'rg -H --color=never --no-heading --column --smart-case'
 <    "ack": >
-          let HiFindTool = 'ack --nocolor --noheading --column --smart-case'
+          let HiFindTool = 'ack -H --nocolor --noheading --column --smart-case'
 <    "sift:" >
           let HiFindTool = 'sift --no-color --line-number --column --binary-skip --git --smart-case'
 <    "ggrep": >
-          let HiFindTool = 'ggrep -EnrI --exclude-dir=.git'
+          let HiFindTool = 'ggrep -H -EnrI --exclude-dir=.git'
 <    "git grep": >
           let HiFindTool = 'git grep -EnI --no-color --column'
 <                                                                 *HiFindHistory*
@@ -451,6 +452,11 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.31~
+    Improve usability
+      - "Hi" command <Tab> completion
+      - "Following Highlight" turning off operation
+      - grep default options
 1.30~
     Improve "Find" results navigation
       - preserving the index when switching lists
