@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.31
+" Version: 1.32
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -18,7 +18,7 @@ if !exists("g:HiFollowWait")  | let g:HiFollowWait = 320  | endif
 if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.31'
+let s:Version   = '1.32'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
@@ -1320,11 +1320,15 @@ function s:FindNextPrevious(op, num)
   if !s:FindOpen() | return | endif
   let l:sign = (a:op == '+') ? 1 : -1
   let l:count = a:num ? a:num : v:count
-  if !l:count
-    let l:sign = s:FL.edit ? l:sign : 0
-    let l:count = 1
+  if l:count == 1
+    let l:line = 1
+  else
+    if !l:count
+      let l:sign = s:FL.edit ? l:sign : 0
+      let l:count = 1
+    endif
+    let l:line = max([1, s:FL.log.select + l:sign * l:count])
   endif
-  let l:line = max([1, s:FL.log.select + l:sign * l:count])
   exe "normal! ".l:line.'G'
   call s:FindEdit('=')
 endfunction

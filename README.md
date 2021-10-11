@@ -163,7 +163,7 @@
 
 ### Navigation
 
-  After a search, it will be handy to use keyboard shortcuts to the following commands to easily navigate the results.
+  It will be handy to use keyboard shortcuts to the following commands to easily navigate the search results.
 
   `Hi/next` and `Hi/previous` commands jump to the file.
 
@@ -176,6 +176,10 @@
    :nn f<Left>    :<C-U> Hi/older<CR>
    :nn f<Right>   :<C-U> Hi/newer<CR>
   ```
+
+#### 🍏 &nbsp;Tip
+
+> Pressing the number `1` before the `Hi/next` command invokes a special function that jumps to the first item in the search results. For example, in the mapping above, entering `1-` will jump to the first item.
 
 ### Find window
 
