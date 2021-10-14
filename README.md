@@ -3,7 +3,7 @@
   <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
   <h3> Introduction </h3>
   
-  Highlighting keywords or lines can be useful when analyzing code or reviewing summaries. This plugin extends Vim's highlighting capabilities by providing features such as saving and loading highlights, finding variables, and customizing colors.
+  Highlighting keywords or lines can be useful when analyzing code, reviewing summaries, and quickly comparing spellings. This plugin extends Vim's highlighting capabilities by providing features such as saving and loading highlights, finding variables, and customizing colors.
 
 ### Contents
 
