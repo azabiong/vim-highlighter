@@ -8,11 +8,12 @@
 ### Contents
 
   &nbsp; &nbsp;
-  [Key Map](#key-map) &nbsp; &nbsp; &nbsp; &nbsp;
+  [Key Map](#key-map) <br> &nbsp; &nbsp;
+  [Sync Mode](#sync-mode) <br> &nbsp; &nbsp; 
+  [Save & Load Highlights](#save--load-highlights) &nbsp; &nbsp; &nbsp; &nbsp;
   [One Time Highlight](#one-time-highlight) &nbsp; &nbsp; &nbsp; &nbsp;
   [Following Highlight](#following-highlight) &nbsp; &nbsp; &nbsp; &nbsp;
-  [Find in Files Highlight](#find-in-files-highlight) &nbsp; &nbsp; &nbsp; 
-  [Commands](#commands) <br> &nbsp; &nbsp; 
+  [Find in Files Highlight](#find-in-files-highlight) <br> &nbsp; &nbsp;
   [Customizing Colors](#customizing-colors) <br> &nbsp; &nbsp;
   [Installation](#installation)  
   <br>
@@ -45,13 +46,53 @@
   <img width="296" alt="visual_line" src="https://user-images.githubusercontent.com/83812658/125556295-356322d3-4992-40fe-81f1-299ca5eb7007.png"> <br>
   &nbsp;
 
+## Sync Mode
+
+  You can synchronize highlighting of the current window with other split windows with the command:
+  ```vim
+   :Hi == 
+  ```
+  and switch back to default single window highlighting mode using: 
+  ```vim
+   :Hi = 
+  ```
+  '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.  
+  &nbsp;  
+
+## Save & Load highlights
+
+  Sometimes when you want to save highlights of the current window and reload them next time, you can use:
+  ```vim
+   :Hi save
+  ```
+  and when loading: 
+  ```vim
+   :Hi load
+  ```
+  You can name the file when saving, and use tab-completion when loading. For example:
+  ```vim
+   :Hi save name
+   :Hi load <Tab>
+  ```
+  Highlight files are stored in a user configurable `HiKeywords` directory. To browse and manage files in the directory, you can open **netrw** using the command:
+  ```vim
+   :Hi ls
+  ```
+  You can also use relative paths. For example, to save and load a highlight file in the current directory:
+  ```vim
+   :Hi save ./name
+   :Hi load ./<Tab>
+  ```
+  <br>
+
 ## One Time Highlight
 
   The plugin has an automatic feature to clear highlights after use. This can be useful when you only need one quick scan from the cursor position.
 
   When the cursor is over a word or visual selection that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'. The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
 
-  <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif"> <br>   &nbsp; 
+  <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif"> <br><br>
+
 
 ## Following Highlight
 
@@ -73,8 +114,7 @@
   ```vim
    :Hi <>
   ```
-
-  &nbsp; 
+  <br>
 
 ## Find in Files Highlight
 
@@ -95,7 +135,7 @@
   ```
 
  <details>
- <summary> Tools </summary>
+ <summary><b>Tools</b></summary> 
 
   ```vim
     let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
@@ -201,48 +241,6 @@
   ```vim
   :set encoding=utf-8 
   ```
-  <br>
-
-## Commands
-
-### Sync Mode
-
-  You can synchronize highlighting of the current window with other windows with the command:
-  ```vim
-   :Hi == 
-  ```
-  and switch back to default single window highlighting mode using: 
-  ```vim
-   :Hi = 
-  ```
-  '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.  
-  &nbsp;  
-
-### Save & Load highlights
-
-  Sometimes when you want to save highlights of the current window and reload them next time, you can use:
-  ```vim
-   :Hi save
-  ```
-  and when loading: 
-  ```vim
-   :Hi load
-  ```
-  You can name the file when saving, and use tab-completion when loading. For example:
-  ```vim
-   :Hi save name
-   :Hi load <Tab>
-  ```
-  Highlight files are stored in a user configurable `HiKeywords` directory. To browse and manage files in the directory, you can open **netrw** using the command:
-  ```vim
-   :Hi ls
-  ```
-  You can also use relative paths. For example, to save and load a highlight file in the current directory:
-  ```vim
-   :Hi save ./name
-   :Hi load ./<Tab>
-  ```
-
   <br>
 
 ## Customizing Colors

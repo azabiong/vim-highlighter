@@ -15,11 +15,11 @@ CONTENTS                                                          *Highlighter*
                                                                    `ver 1.32`
                Introduction             |Hi-Introduction|
                Key Map                  |Hi-Key-Map|
+               Sync Mode                |Hi-Sync-Mode|
+               Save & Load              |Hi-Save-Load|
                One Time Highlight       |Hi-One-Time-Highlight|
                Following Highlight      |Hi-Following-Highlight|
                Find in Files Highlight  |Hi-Find-In-Files-Highlight|
-               Sync Mode                |Hi-Sync-Mode|
-               Save & Load              |Hi-Save-Load|
                Customizing Colors       |Hi-Customizing-Colors|
                Commands                 |Hi-Commands|
                Options                  |Hi-Options|
@@ -57,6 +57,50 @@ useful. You can also select an entire line and highlight it.
 
 `HiFind` key is the shortcut for `FIND IN FILES HIGHLIGHT`
 
+------------------------------------------------------------------------------
+SYNC MODE                                                         *Hi-Sync-Mode*
+
+You can synchronize highlighting of the current window with other split windows
+with the command: >
+
+    :Hi ==
+<
+and switch back to default single window highlighting mode using: >
+
+    :Hi =
+<
+`SYNC MODE` applies to all windows in the current |tab-page|, and can be set
+differently for each |tab-page|.
+
+------------------------------------------------------------------------------
+SAVE AND LOAD                                                     *Hi-Save-Load*
+
+Sometimes when you want to save highlights of the current window, and reload
+them next time, you can use:
+>
+    :Hi save
+<
+and when loading:
+>
+    :Hi load
+<
+You can name the file when saving, and use <Tab> completion when loading.
+For example:
+>
+    :Hi save name
+    :Hi load <Tab>
+<
+Highlight files are stored in a user configurable |HiKeywords| directory. To
+browse and manage files in the directory, you can open |netrw| using the command:
+>
+    :Hi ls
+<
+You can also use relative paths. For example, to save and load a highlight file
+in the current directory:
+>
+    :Hi save ./name
+    :Hi load ./<Tab>
+<
 ------------------------------------------------------------------------------
 ONE TIME HIGHLIGHT                                       *Hi-One-Time-Highlight*
 
@@ -210,50 +254,6 @@ Windows Unicode ~
     characters output.
 >
       :set encoding=utf-8
-<
-------------------------------------------------------------------------------
-SYNC MODE                                                         *Hi-Sync-Mode*
-
-You can synchronize highlighting of the current window with other windows with
-the command: >
-
-    :Hi ==
-<
-and switch back to default single window highlighting mode using: >
-
-    :Hi =
-<
-`SYNC MODE` applies to all windows in the current |tab-page|, and can be set
-differently for each |tab-page|.
-
-------------------------------------------------------------------------------
-SAVE AND LOAD                                                     *Hi-Save-Load*
-
-Sometimes when you want to save highlights of the current window, and reload
-them next time, you can use:
->
-    :Hi save
-<
-and when loading:
->
-    :Hi load
-<
-You can name the file when saving, and use <Tab> completion when loading.
-For example:
->
-    :Hi save name
-    :Hi load <Tab>
-<
-Highlight files are stored in a user configurable |HiKeywords| directory. To
-browse and manage files in the directory, you can open |netrw| using the command:
->
-    :Hi ls
-<
-You can also use relative paths. For example, to save and load a highlight file
-in the current directory:
->
-    :Hi save ./name
-    :Hi load ./<Tab>
 <
 ------------------------------------------------------------------------------
 CUSTOMIZING COLORS                                       *Hi-Customizing-Colors*
