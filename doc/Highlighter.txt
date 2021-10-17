@@ -32,8 +32,8 @@ INTRODUCTION                                                   *Hi-Introduction*
 
 Highlighting keywords or lines can be useful when analyzing code, reviewing
 summaries, and quickly comparing spellings. This plugin extends Vim's highlighting
-capabilities by providing features such as saving and loading highlights, finding
-variables, and customizing colors.
+capabilities with additional features such as saving and loading highlights,
+finding variables, and customizing colors.
 
 ------------------------------------------------------------------------------
 KEY-MAP                            *HiSet*  *HiErase*  *HiClear*  *HiFind*  *Hi-Key-Map*
@@ -163,6 +163,8 @@ highlight patterns to make them easier to find.
       :Hi/Find  [options]  expression  [directories_or_files]
 <
     <Tab> key completion for long options, directory and file names is supported.
+  Tip ~
+     To enter the current file name, typing `% Tab` would be convenient.
 
 3.Expression ~
 
