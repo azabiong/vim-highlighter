@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                   `ver 1.32`
+                                                                   `ver 1.33`
                Introduction             |Hi-Introduction|
                Key Map                  |Hi-Key-Map|
                Sync Mode                |Hi-Sync-Mode|
@@ -252,7 +252,7 @@ highlight patterns to make them easier to find.
 
 Windows Unicode ~
 
-    The following option can be useful for correctly displaying Unicode
+    The following option may be useful for correctly displaying Unicode
     characters output.
 >
       :set encoding=utf-8
@@ -306,7 +306,7 @@ commands using optional spaces.
                                                                          *:Hi==*
  :Hi == ~
     Synchronize highlighting of all windows in the current |tab-page|
-                                                                          *:Hi=*
+                                                                         *:Hi=*
  :Hi = ~
     Switch back to the default single window highlighting mode
                                                                          *:Hi=!*
@@ -458,6 +458,11 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.33~
+    Improve "Find" results navigation
+      - center the cursor line when switching buffers
+      - window resizing
+      - fixed handling option '--'
 1.32~
     Improve "Find" results navigation
       - jumping to the first item using number key combination

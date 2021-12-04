@@ -241,7 +241,7 @@
 
 ### Windows Unicode
 
-  The following option can be useful for correctly displaying Unicode characters output.
+  The following option may be useful for correctly displaying Unicode characters output.
   ```vim
   :set encoding=utf-8 
   ```

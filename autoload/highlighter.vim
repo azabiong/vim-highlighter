@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.32
+" Version: 1.33
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -18,12 +18,12 @@ if !exists("g:HiFollowWait")  | let g:HiFollowWait = 320  | endif
 if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
 let g:HiFindLines = 0
 
-let s:Version   = '1.32'
+let s:Version   = '1.33'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
-let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'edit':0, 'tab':0, 'height':0,
+let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'edit':0,
                   \'logs':[{'list':[], 'status':'', 'select':0, 'hi':[]}], 'index':0, 'log':''}
 let s:FindOpts  = ['--literal', '_li', '--fixed-strings', '_li', '--smart-case', '_sc', '--ignore-case',  '_ic',
                   \'--word-regexp', '_wr', '--regexp', '_re']
@@ -822,7 +822,7 @@ function s:FindOptions(arg)
     if empty(l:key)
       if     l:c == ' '
       elseif l:c == '-'
-        if l:args[i:i+3] == '-- '
+        if l:args[i:i+2] == '-- '
           call add(s:Find.opt, '--') | let i += 3 | break
         endif
         let l:key = l:c
@@ -1110,6 +1110,7 @@ function s:FindOpen(...)
     if !(l:pos % 2)
       exe "resize ".(winheight(0)/4 + 1)
     endif
+    setl wfh
     let l:win = winnr()
     call win_gotoid(l:prev)
     exe l:win." wincmd w"
@@ -1117,24 +1118,6 @@ function s:FindOpen(...)
     exe l:win." wincmd w"
   endif
   return l:win
-endfunction
-
-function s:FindResize(op)
-  let l:find = bufwinnr(s:FL.buf)
-  if  l:find == -1 | return | endif
-  let l:tab = tabpagenr()
-  let l:height = getwininfo(win_getid(l:find))[0].height
-
-  if a:op == -1
-    let s:FL.tab = l:tab
-    let s:FL.height = l:height
-  else
-    if s:FL.tab != l:tab || s:FL.height == l:height | return | endif
-    noa exe l:find." wincmd w"
-    if winnr('k') == l:find && winnr('j') == l:find | return | endif
-    exe "resize ".(winheight(0)/4 + 1)
-    noa wincmd p
-  endif
 endfunction
 
 function s:FindStop(op)
@@ -1300,8 +1283,11 @@ function s:FindEdit(op)
   else
     let l:find = win_getid()
     abo split
+    let l:height = winheight(0)/4 + 1
     call win_gotoid(l:find)
-    exe "resize ".(winheight(0)/4 + 1)
+    if winheight(0) > l:height
+      exe "resize ".l:height
+    endif
     wincmd p
   endif
 
@@ -1309,6 +1295,7 @@ function s:FindEdit(op)
     exe "normal! ".l:file.row.'G'
   else
     exe "edit +".l:file.row.' '.l:file.name
+    normal! zz
   endif
   exe "normal! ".l:file.col.'|'
   let s:FL.edit = s:FL.log.select
@@ -1398,17 +1385,11 @@ function s:WinEnter()
   if exists("s:HiMode")
     call s:LinkCursorEvent('')
   endif
-  if bufwinnr(s:FL.buf) != -1
-    call s:FindResize(+1)
-  endif
 endfunction
 
 function s:WinLeave()
   if exists("s:HiMode")
     call s:UnlinkCursorEvent(0)
-  endif
-  if bufwinnr(s:FL.buf) != -1
-    call s:FindResize(-1)
   endif
 endfunction
 
