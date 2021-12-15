@@ -1,3 +1,5 @@
+<!-- https://github.com/azabiong/vim-highlighter -->
+
 # Vim Highlighter
 
   <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
@@ -184,7 +186,7 @@
 > ```
 >  :Hi/Find  -i  #[A-F0-9]{6}
 > ```
-> class types or variables that start with a capital letter A or S: &nbsp; Array, Set, String, Symbol...
+> class types or variables that start with an uppercase letter A or S: &nbsp; Array, Set, String, Symbol...
 > ```
 >  :Hi/Find  \b[AS]\w+
 > ```
@@ -208,7 +210,7 @@
 
 ### Navigation
 
-  It will be handy to use keyboard shortcuts to the following commands to easily navigate the search results.
+  It will be handy to use keyboard shortcuts for the following commands to easily navigate the search results.
 
   `Hi/next` and `Hi/previous` commands jump to the file.
 
@@ -216,10 +218,10 @@
 
   Key-mapping example:
   ```vim
-   :nn <silent>-  :<C-U> Hi/next<CR>
-   :nn <silent>_  :<C-U> Hi/previous<CR>
-   :nn f<Left>    :<C-U> Hi/older<CR>
-   :nn f<Right>   :<C-U> Hi/newer<CR>
+    nn <silent>-  :<C-U> Hi/next<CR>
+    nn <silent>_  :<C-U> Hi/previous<CR>
+    nn f<Left>    :<C-U> Hi/older<CR>
+    nn f<Right>   :<C-U> Hi/newer<CR>
   ```
 
 #### 🍏 &nbsp;Tip

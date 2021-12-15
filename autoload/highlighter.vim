@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.33
+" Version: 1.34
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -11,14 +11,15 @@ endif
 let s:cpo_save = &cpo
 set cpo&vim
 
-if !exists("g:HiFindTool")    | let g:HiFindTool = ''     | endif
-if !exists("g:HiFindHistory") | let g:HiFindHistory = 5   | endif
-if !exists("g:HiOneTimeWait") | let g:HiOneTimeWait = 260 | endif
-if !exists("g:HiFollowWait")  | let g:HiFollowWait = 320  | endif
-if !exists("g:HiKeywords")    | let g:HiKeywords = ''     | endif
+let g:HiFindTool = get(g:, 'HiFindTool', '')
+let g:HiFindHistory = get(g:, 'HiFindHistory', 5)
+let g:HiOneTimeWait = get(g:, 'HiOneTimeWait', 260)
+let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
+let g:HiKeywords = get(g:, 'HiKeywords', '')
+let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.33'
+let s:Version   = '1.34'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
@@ -631,6 +632,10 @@ function s:SaveHighlight(file)
   if empty(glob(l:dir, 0, 1))
     echo " * path not found: ".l:dir | return
   endif
+  if g:HiBackup && !empty(glob(l:path, 0, 1))
+    let l:backup = l:path.'.o'
+    call rename(l:path, l:backup)
+  endif
   let l:list = ['# Highlighter Ver '.s:Version, '']
   let l:list += map(filter(getmatches(), {i,v -> match(v.group, s:Color) == 0}),
                                         \{i,v -> matchstr(v.group, '\d\+').':'.v.pattern})
@@ -688,9 +693,8 @@ function s:GetHiPathFile(op, file)
     else
       if empty(a:file)
         let l:file = '_.hl'
-        call rename(l:path.'/default.hl', l:path.'/'.l:file)
       else
-        let l:file = (a:file =~ '\.hl$' ? a:file : a:file.'.hl')
+        let l:file = (a:file =~ '\.hl$') ? a:file : a:file.'.hl'
       endif
       return [l:path.'/'.l:file, l:file]
     endif
@@ -1295,7 +1299,8 @@ function s:FindEdit(op)
     exe "normal! ".l:file.row.'G'
   else
     exe "edit +".l:file.row.' '.l:file.name
-    normal! zz
+    let l:offset = (winline() >= winheight(0)/2) ? (winheight(0)/12)."\<C-E>" : ''
+    exe "normal! zz".l:offset
   endif
   exe "normal! ".l:file.col.'|'
   let s:FL.edit = s:FL.log.select
