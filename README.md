@@ -17,6 +17,7 @@
   [Following Highlight](#following-highlight) &nbsp; &nbsp; &nbsp; &nbsp;
   [Find in Files Highlight](#find-in-files-highlight) <br> &nbsp; &nbsp;
   [Customizing Colors](#customizing-colors) <br> &nbsp; &nbsp;
+  [Configuration](#configuration) <br> &nbsp; &nbsp;
   [Installation](#installation)  
   <br>
 
@@ -286,6 +287,31 @@
 > This tool will be helpful when editing colors.
 >
 > [xterm-color-table.vim](https://github.com/guns/xterm-color-table.vim)
+
+  <br>
+
+## Configuration
+
+<details>
+<summary><b> Example </b></summary>
+  
+> ```vim
+> " highlights
+> hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
+> hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
+> hi HiColor30 ctermfg=none cterm=bold guifg=none gui=bold
+> 
+> " command abbreviation
+> ca HL Hi:load
+> ca HS Hi:save
+> 
+> " find
+> nn <silent>- :<C-U> Hi/next<CR>
+> nn <silent>_ :<C-U> Hi/previous<CR>
+> nn f<Left>   :<C-U> Hi/older<CR>
+> nn f<Right>  :<C-U> Hi/newer<CR>
+> ```
+</details>
 
   <br>
 
