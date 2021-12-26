@@ -111,7 +111,7 @@ When the cursor is over a word or visual selection that is not highlighted,
 pressing |HiErase| key sets `ONE TIME HIGHLIGHT`, The highlight stays on while
 the cursor is not moving, and automatically turns off after the cursor moves.
 
-`ONE TIME HIGHLIGHT` shows all matching symbols in the current tab.
+`ONE TIME HIGHLIGHT` displays matches in all windows of the current |tab-page|.
 
 ------------------------------------------------------------------------------
 FOLLOWING HIGHLIGHT                                     *Hi-Following-Highlight*

@@ -94,7 +94,11 @@
 
   When the cursor is over a word or visual selection that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'. The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
 
-  <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif"> <br><br>
+  <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif"> <br> 
+
+> '**One Time Highlight**' displays matches in all windows of the current tab-page.
+
+  <br>
 
 
 ## Following Highlight
@@ -296,16 +300,25 @@
 <summary><b> Example </b></summary>
   
 > ```vim
-> " highlights
+> " highlight colors
 > hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
 > hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
 > hi HiColor30 ctermfg=none cterm=bold guifg=none gui=bold
 > 
-> " command abbreviation
+> " command abbreviations
 > ca HL Hi:load
 > ca HS Hi:save
 > 
-> " find
+> " directory to store highlight files 
+> " let HiKeywords = '~/.vim/after/vim-highlighter'
+>
+> " default key mappings
+> " let HiSet   = 'f<CR>'
+> " let HiErase = 'f<BS>'
+> " let HiClear = 'f<C-L>'
+> " let HiFind  = 'f<Tab>'
+>
+> " find key mappings
 > nn <silent>- :<C-U> Hi/next<CR>
 > nn <silent>_ :<C-U> Hi/previous<CR>
 > nn f<Left>   :<C-U> Hi/older<CR>
