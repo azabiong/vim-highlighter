@@ -61,12 +61,12 @@ useful. You can also select an entire line and highlight it.
 SYNC MODE                                                         *Hi-Sync-Mode*
 
 You can synchronize highlighting of the current window with other split windows
-with the command: >
-
+with the command:
+>
     :Hi ==
 <
-and switch back to default single window highlighting mode using: >
-
+and switch back to single window highlighting mode using:
+>
     :Hi =
 <
 `SYNC MODE` applies to all windows in the current |tab-page|, and can be set
@@ -137,6 +137,8 @@ Matching option ~
 >
       :Hi <>
 <
+`FOLLOWING HIGHLIGHT` displays matches in all windows of the current |tab-page|.
+
 ------------------------------------------------------------------------------
 FIND IN FILES HIGHLIGHT                             *Hi-Find-In-Files-Highlight*
 
@@ -164,7 +166,8 @@ highlight patterns to make them easier to find.
 <
     <Tab> key completion for long options, directory and file names is supported.
   Tip ~
-     To enter the current file name, typing `% Tab` would be convenient.
+     To enter the filename of the current buffer, typing `% Tab` would be convenient.
+     To enter the previous search, the `Up` key will be useful.
 
 3.Expression ~
 
@@ -230,7 +233,7 @@ highlight patterns to make them easier to find.
 
     |Hi/older| and |Hi/newer| commands navigate the search history.
 
-    Key-mapping example:  `-` `_`  `f<Left>` `f<Right>`
+    Key-mapping example:
 >
       nn <silent>-  :<C-U> Hi/next<CR>
       nn <silent>_  :<C-U> Hi/previous<CR>
@@ -277,10 +280,10 @@ Example 1 ~
 <
     Now move the cursor to any word, and then input the number `21` and |HiSet|
     key. Does it work? If you press |HiSet| key again, the next color will be set.
-    You can try different values to change the color, and see the result
-    instantly. You can store colors in the configuration file using this format.
+    You can try different values while seeing the results immediately, and store
+    colors in the configuration file using this format.
 
-The highlighting colors are selected in order, or can be picked with the number.
+The highlight colors are selected in order, or can be picked with the number.
 If the next color is not defined, the first one is selected.
 
 `HiOneTime` is the color of `ONE TIME HIGHLIGHT`
@@ -299,7 +302,7 @@ COMMANDS                                                 *:HI*  *:Hi*  *Hi-Comma
 Highlighter commands start with `Hi` or `HI`, and are combined with the following
 commands using optional spaces.
 
-1.Commands with no default key mapping ~
+1.Commands without default key mapping ~
 
  :Hi ~
     Print the plugin version
@@ -316,16 +319,26 @@ commands using optional spaces.
  :Hi <>  <cword>  <cWORD> ~
     Set word matching mode in `FOLLOWING HIGHLIGHT`
     <> toggle between two modes
+                                                            *:Hi:save*  *:Hi:load*
+ :Hi :save ~
+ :Hi :load ~
+    Save | Load highlights of the current window to/from the user configurable
+    |HiKeywords| directory or relative path
+                                                                        *:Hi:ls*
+ :Hi :ls ~
+    Open the |HiKeywords| directory using |netrw| to browse and manage the list of
+    highlight files
                                                         *:Hi/next*  *:Hi/previous*
  :Hi /next ~
  :Hi /previous ~
     Jump to the next | previous item in the `Find` list
     It will be convenient to use keyboard shortcuts for these commands to easily
-    navigate the search list. For example, to map '-' and '_' keys in normal
-    mode: >
+    navigate the search list. For example:
+>
       nn <silent>-  :<C-U> Hi/next<CR>
       nn <silent>_  :<C-U> Hi/previous<CR>
-<                                                          *:Hi/older*  *:Hi/newer*
+<
+                                                          *:Hi/older*  *:Hi/newer*
  :Hi /older ~
  :Hi /newer ~
     Go to older | newer `Find` list in history
@@ -341,15 +354,6 @@ commands using optional spaces.
                                                                          *:Hi//*
  :Hi // ~
     Clear highlights of the `Find` result
-                                                            *:Hi:save*  *:Hi:load*
- :Hi :save ~
- :Hi :load ~
-    Save | Load highlights of the current window to/from the user configurable
-    |HiKeywords| directory or relative path
-                                                                         *:Hi:ls*
- :Hi :ls ~
-    Open the |HiKeywords| directory using |netrw| to browse and manage the list of
-    highlight files
                                                                    *:Hi:default*
  :Hi :default ~
     Load the plugin default colors
@@ -358,8 +362,10 @@ commands using optional spaces.
                                                                           *:Hi+*
  :Hi +  +x ~
     |HiSet| key function in normal mode (+), visual mode (+x)
-    Set highlight of the word under the cursor
-                                                                          *:Hi-*
+    Set highlight of the word under the cursor with optional color number
+>
+      :[number] Hi+
+<                                                                         *:Hi-*
  :Hi -  -x~
     |HiErase| key function in normal mode (-), visual mode (-x)
     Erase highlight of the word or pattern, or set `ONE TIME HIGHLIGHT`
@@ -376,11 +382,32 @@ commands using optional spaces.
     visual mode
 
 ------------------------------------------------------------------------------
-OPTIONS                                                            *Hi-Options*
-                                                                    *HiMapKeys*
+OPTIONS                                                             *Hi-Options*
+                                                                     *HiMapKeys*
 |HiMapKeys| option enables key mapping on load.
 
-    Default: 1 (enable)
+    Default: 1 `(enable)`
+    Values:  0, 1
+                                                                    *HiKeywords*
+|HiKeywords| specifies the directory in which to save the highlights of the
+    current window to a file. The default setting is:
+>
+        let HiKeywords = '$HOME/.vim/after/vim-highlighter'
+<
+    The |Hi:ls| command opens |netrw| window for browsing and managing files in
+    the directory.
+
+    If necessary, optional keyword files to skip focusing in `FOLLOWING HIGHLIGHT`
+    mode can be stored in the directory using the 'filetype' as the filename.
+
+    Additional search tool options for `FIND IN FILES` can also be stored in the
+    directory.
+                                                                      *HiBackup*
+|HiBackup| option sets the plugin to create a backup file when an existing
+    highlight file is overwritten. The plugin adds a '.o' extension to the
+    backup file.
+
+    Default: 1 `(on)`
     Values:  0, 1
                                                                     *HiFindTool*
 |HiFindTool| In this variable, you can set your preferred search tool and options
@@ -401,41 +428,21 @@ OPTIONS                                                            *Hi-Options*
           let HiFindTool = 'git grep -EnI --no-color --column'
 <                                                                 *HiFindHistory*
 |HiFindHistory| specifies the number of recent `FIND IN FILES` lists to keep in
-    memory. You can use |Hi/older| and |Hi/newer| commands to navigate the list.
+    memory. |Hi/older| and |Hi/newer| commands can be used to navigate the list.
 
     Default: 5
     Values:  2 ~ 10
-                                                                    *HiKeywords*
-|HiKeywords| specifies the directory where the current highlights or optional
-    keywords for `FOLLOWING HIGHLIGHT` can be saved. The default setting is:
->
-        let HiKeywords = '$HOME/.vim/after/vim-highlighter'
-<
-    The |Hi:ls| command opens |netrw| window for browsing and managing files in the
-    directory.
-
-    If necessary, you can add optional keyword files to skip highlighting
-    change in `FOLLOWING HIGHLIGHT` mode using the 'filetype' as the file name.
-
-    Additional search tool options for `FIND IN FILES` can also be stored in this
-    directory.
-                                                                      *HiBackup*
-|HiBackup| option allows the plugin to create a backup file when overwriting an
-    existing highlight file. The plugin adds the '.o' extension to the backup file.
-
-    Default: 1 (on)
-    Values:  0, 1
                                                                  *HiOneTimeWait*
 |HiOneTimeWait| defines the wait time before turning off the highlights after the
     cursor stopped in `ONE TIME HIGHLIGHT` mode.
 
-    Default: 260 (ms)
+    Default: 260 `(ms)`
     Values:  0 ~ 320
                                                                   *HiFollowWait*
 |HiFollowWait| defines the wait time before moving the highlights to the cursor
     position after the cursor stopped in `FOLLOWING HIGHLIGHT` mode.
 
-    Default: 320 (ms)
+    Default: 320 `(ms)`
     Values:  260 ~ 520
 
 STATUS VARIABLES ~
@@ -447,7 +454,7 @@ STATUS VARIABLES ~
 ------------------------------------------------------------------------------
 REFERENCE                                                         *Hi-Reference*
 
-    This tool will be helpful when editing colors.
+    The following tool will be useful when editing colors.
 
     `xterm-color-table.vim` (https://github.com/guns/xterm-color-table.vim)
 
@@ -462,7 +469,7 @@ like to add, please feel free to open an issue.
 LOG                                                                     *Hi-Log*
 
 1.34~
-    Add 'HiBackup' option to back up highlight files when overwritten.
+    Add |HiBackup| option to back up highlight files when overwritten.
 1.33~
     Improve "Find" results navigation
       - center the cursor line when switching buffers

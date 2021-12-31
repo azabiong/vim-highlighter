@@ -55,7 +55,7 @@
   ```vim
    :Hi == 
   ```
-  and switch back to default single window highlighting mode using: 
+  and switch back to single window highlighting mode using: 
   ```vim
    :Hi = 
   ```
@@ -96,7 +96,7 @@
 
   <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif"> <br> 
 
-> '**One Time Highlight**' displays matches in all windows of the current tab-page.
+  '**One Time Highlight**' displays matches in all windows of the current tab-page.
 
   <br>
 
@@ -121,6 +121,9 @@
   ```vim
    :Hi <>
   ```
+
+  '**Following Highlight**' displays matches in all windows of the current tab-page.
+
   <br>
 
 ## Find in Files Highlight
@@ -171,7 +174,7 @@
 
 #### 🍏 &nbsp;Tip
 
-> To enter the current file name, typing `%` `Tab` would be convenient.
+> To enter the filename of the current buffer, typing `%` `Tab` would be convenient.  
 
 ### Expression
 
@@ -279,7 +282,7 @@
 > Now, move the cursor to any word, and then input the number `21` and `HiSet` key.
 > Does it work? if you press `HiSet` key again, the next `HiColor22` will be set.
 >
-> You can try different values to change the color, and see the result instantly.  You can store colors in the configuration file using this format. 
+> You can try different values while seeing the results immediately, and store colors in the configuration file using this format.
 
 ### Example 2
 > The following command changes the color of '**Find in Files Highlight**'
@@ -288,7 +291,7 @@
 > ```
 
 ### Reference
-> This tool will be helpful when editing colors.
+> The following tool will be useful when editing colors.
 >
 > [xterm-color-table.vim](https://github.com/guns/xterm-color-table.vim)
 
@@ -300,6 +303,7 @@
 <summary><b> Example </b></summary>
   
 > ```vim
+>
 > " highlight colors
 > hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
 > hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
@@ -326,7 +330,7 @@
 > ```
 </details>
 
-  <br>
+<br>
 
 ## Help tags
 
