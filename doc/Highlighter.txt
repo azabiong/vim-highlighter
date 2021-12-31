@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                   `ver 1.34`
+                                                                   `ver 1.35`
                Introduction             |Hi-Introduction|
                Key Map                  |Hi-Key-Map|
                Sync Mode                |Hi-Sync-Mode|
@@ -338,6 +338,7 @@ commands using optional spaces.
       nn <silent>-  :<C-U> Hi/next<CR>
       nn <silent>_  :<C-U> Hi/previous<CR>
 <
+    You can also define multifunction keys using |HiFind()| function.
                                                           *:Hi/older*  *:Hi/newer*
  :Hi /older ~
  :Hi /newer ~
@@ -387,6 +388,11 @@ OPTIONS                                                             *Hi-Options*
 |HiMapKeys| option enables key mapping on load.
 
     Default: 1 `(enable)`
+    Values:  0, 1
+                                                                    *HiSyncMode*
+|HiSyncMode| specifies whether to turn on |Hi-Sync-Mode| by default.
+
+    Default: 0 `(off)`
     Values:  0, 1
                                                                     *HiKeywords*
 |HiKeywords| specifies the directory in which to save the highlights of the
@@ -450,6 +456,24 @@ STATUS VARIABLES ~
 |HiFindLines|  `read-only`
     This variable represents the number of lines found as a result of `FIND`
     `IN FILES` operation, which can be used to check if an item exists.
+                                                                      *HiFind()*
+|HiFind()|
+    This function indicates whether the Find window is visible`(1)` or not`(0)`,
+    which can be used when defining multifunction keys. For example:
+>
+        nn <silent>_  :<C-U> call <SID>HiOptional('previous', '_')<CR>
+        nn <silent>f- :<C-U> call <SID>HiOptional('close', 'f-')<CR>
+
+        function s:HiOptional(cmd, key)
+          if HiFind()
+            exe "Hi ".a:cmd
+          else
+            exe "norm! ".a:key
+          endif
+        endfunction
+<
+    Now `_` and `f-` keys run |Hi| command while the Find window is visible,
+    otherwise execute the original function.
 
 ------------------------------------------------------------------------------
 REFERENCE                                                         *Hi-Reference*
@@ -468,6 +492,10 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.35~
+    Add options
+      - |HiSyncMode| for the default |Hi-Sync-Mode|
+      - |HiFind()| function to support multifunction keys
 1.34~
     Add |HiBackup| option to back up highlight files when overwritten.
 1.33~

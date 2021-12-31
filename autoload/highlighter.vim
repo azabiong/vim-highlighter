@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.34
+" Version: 1.35
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -11,15 +11,16 @@ endif
 let s:cpo_save = &cpo
 set cpo&vim
 
+let g:HiKeywords = get(g:, 'HiKeywords', '')
+let g:HiSyncMode = get(g:, 'HiSyncMode', 0)
 let g:HiFindTool = get(g:, 'HiFindTool', '')
 let g:HiFindHistory = get(g:, 'HiFindHistory', 5)
 let g:HiOneTimeWait = get(g:, 'HiOneTimeWait', 260)
 let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
-let g:HiKeywords = get(g:, 'HiKeywords', '')
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.34'
+let s:Version   = '1.35'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
@@ -321,33 +322,51 @@ function s:SetWordMode(op)
   endif
 endfunction
 
+function s:GetSyncMode()
+  if !exists("t:HiSync")
+    call s:SetSyncPage(g:HiSyncMode)
+  endif
+  return !empty(t:HiSync)
+endfunction
+
 function s:SetSyncMode(op, ...)
   let l:op = index(['=', '==', '=!'], a:op)
   if  l:op == -1 | return s:NoOption(a:op) | endif
 
-  let l:sync = exists("t:HiSync")
-  if l:op == 2 | let l:op = !l:sync | endif
+  let l:sync = s:GetSyncMode()
+  if l:op == 2
+    let l:op = !l:sync
+  endif
   if !a:0
     echo ' Hi '.['= 1', '== Sync'][l:op]
   endif
   if l:op == l:sync | return | endif
 
   if l:op
-    let s:Sync.tag += 1
-    let l:name = 'HiSync'.s:Sync.tag
-    let t:HiSync = l:name
-    let s:Sync.page[l:name] = map(filter(getmatches(), {i,v -> match(v.group, s:Color) == 0}),
-                                                     \ {i,v -> [v.group, v.pattern]})
-    let w:HiSync = 1
+    call s:SetSyncPage(1)
+    let s:Sync.page[t:HiSync] = map(filter(getmatches(), {i,v -> match(v.group, s:Color) == 0}),
+                                                       \ {i,v -> [v.group, v.pattern]})
   else
-    unlet s:Sync.page[t:HiSync]
-    unlet t:HiSync
+    let s:Sync.page[t:HiSync] = []
+    let t:HiSync = ''
   endif
+  let w:HiSync = 1
   call s:SetHiSyncWin(l:op)
 endfunction
 
+function s:SetSyncPage(op)
+  if a:op
+    let s:Sync.tag += 1
+    let l:name = 'HiSync'.s:Sync.tag
+    let t:HiSync = l:name
+    let s:Sync.page[l:name] = []
+  else
+    let t:HiSync = ''
+  endif
+endfunction
+
 function s:UpdateSync(op, group, pattern)
-  if !exists("t:HiSync") | return | endif
+  if !s:GetSyncMode() | return | endif
   let l:match = s:Sync.page[t:HiSync]
   let s:Sync[a:op] = [a:group, a:pattern]
   if a:op == 'add'
@@ -363,6 +382,7 @@ function s:UpdateSync(op, group, pattern)
       endfor
     endif
   endif
+  let w:HiSync = 1
   call s:SetHiSyncWin(1)
 endfunction
 
@@ -671,7 +691,7 @@ function s:LoadHighlight(file)
       call matchadd(s:Color.l:num, l:line[l:exp+1:], 0)
     endif
   endfor
-  if exists("t:HiSync")
+  if s:GetSyncMode()
     call s:SetSyncMode('=', '*') | call s:SetSyncMode('==', '*')
   endif
 endfunction
@@ -1384,7 +1404,7 @@ function s:BufHidden()
 endfunction
 
 function s:WinEnter()
-  if exists("t:HiSync") && !exists("w:HiSync")
+  if s:GetSyncMode() && !exists("w:HiSync")
     call s:SetHiSync(0)
   endif
   if exists("s:HiMode")

@@ -175,6 +175,7 @@
 #### 🍏 &nbsp;Tip
 
 > To enter the filename of the current buffer, typing `%` `Tab` would be convenient.  
+> To enter the previous search, the `Up` key will be useful.
 
 ### Expression
 
@@ -303,6 +304,8 @@
 <summary><b> Example </b></summary>
   
 > ```vim
+> " Unicode
+> set encoding=utf-8
 >
 > " highlight colors
 > hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
@@ -330,6 +333,28 @@
 > ```
 </details>
 
+<details>
+<summary><b> Multifunction keys </b></summary>
+
+> &nbsp;  
+> Some find keys can be defined as multifunctional using the `HiFind()` function.
+>
+> The `HiFind()` function returns whether the tool window is visible, and can be used to define optional actions based on its state. The following example defines the `_` and `f-` keys to execute the **Hi** command while the **Find** window is visible, otherwise execute the original function.
+>
+> ```vim
+> " find key mappings
+> nn <silent>_  :<C-U> call <SID>HiOptional('previous', '_')<CR>
+> nn <silent>f- :<C-U> call <SID>HiOptional('close', 'f-')<CR>
+>
+> function s:HiOptional(cmd, key)
+>   if HiFind()
+>     exe "Hi ".a:cmd
+>   else
+>     exe "normal! ".a:key
+>   endif
+> endfunction
+> ```
+</details>
 <br>
 
 ## Help tags
