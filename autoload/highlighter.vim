@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.35
+" Version: 1.35.1
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -1464,7 +1464,9 @@ function highlighter#ColorScheme(op)
   else
     if exists("s:Table")
       for [l:key, l:val] in s:Table
-        exe 'hi' l:key.' '.l:val
+        if empty(s:GetColor(l:key))
+          exe 'hi' l:key.' '.l:val
+        endif
       endfor
       unlet s:Table
     endif
