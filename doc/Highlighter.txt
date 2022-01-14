@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                   `ver 1.35`
+                                                                   `ver 1.36`
                Introduction             |Hi-Introduction|
                Key Map                  |Hi-Key-Map|
                Sync Mode                |Hi-Sync-Mode|
@@ -246,10 +246,10 @@ highlight patterns to make them easier to find.
 
 7.Find window ~
 
-    The following keys and functions are available in the Find window.
+    The following keys and functions are available in the `Find` window.
 
      CTRL-C   Stop searching
-       r      Rotate Find window
+       r      Rotate `Find` window
        s      Split and Jump to file
     <Enter>   Jump to file
 
@@ -280,15 +280,7 @@ Example 1 ~
 <
     Now move the cursor to any word, and then input the number `21` and |HiSet|
     key. Does it work? If you press |HiSet| key again, the next color will be set.
-    You can try different values while seeing the results immediately, and store
-    colors in the configuration file using this format.
-
-The highlight colors are selected in order, or can be picked with the number.
-If the next color is not defined, the first one is selected.
-
-`HiOneTime` is the color of `ONE TIME HIGHLIGHT`
-`HiFollow`  is the color of `FOLLOWING HIGHLIGHT`
-`HiFind`    is the color of `FIND IN FILES HIGHLIGHT`
+    You can try different values while seeing the results immediately.
 
 Example 2 ~
 
@@ -296,6 +288,11 @@ Example 2 ~
 >
       :hi HiFind ctermfg=52 ctermbg=182 guifg=#570707 guibg=#e7bfe7
 <
+Saving colors ~
+
+    Highlight colors can be saved in the configuration file or in a separate
+    color scheme file using the format above.
+
 ------------------------------------------------------------------------------
 COMMANDS                                                 *:HI*  *:Hi*  *Hi-Commands*
 
@@ -457,9 +454,12 @@ STATUS VARIABLES ~
     This variable represents the number of lines found as a result of `FIND`
     `IN FILES` operation, which can be used to check if an item exists.
                                                                       *HiFind()*
-|HiFind()|
-    This function indicates whether the Find window is visible`(1)` or not`(0)`,
-    which can be used when defining multifunction keys. For example:
+|HiFind()| This function returns whether the `Find` window is visible`(1)` or not`(0)`,
+    which can be used to define multifunction keys.
+
+    For example, the following configuration defines the `_` and `f-` keys
+    to execute the |Hi| command while the `Find` window is visible, otherwise
+    execute the original function.
 >
         nn <silent>_  :<C-U> call <SID>HiOptional('previous', '_')<CR>
         nn <silent>f- :<C-U> call <SID>HiOptional('close', 'f-')<CR>
@@ -472,9 +472,6 @@ STATUS VARIABLES ~
           endif
         endfunction
 <
-    Now `_` and `f-` keys run |Hi| command while the Find window is visible,
-    otherwise execute the original function.
-
 ------------------------------------------------------------------------------
 REFERENCE                                                         *Hi-Reference*
 
@@ -492,6 +489,10 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.36~
+    Supprot color scheme
+      - auto loading default colors for dark and light modes
+    Fix "Find" loading path starting with drive letter in Windows
 1.35~
     Add options
       - |HiSyncMode| for the default |Hi-Sync-Mode|

@@ -4,14 +4,14 @@
 
   <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
   <h3> Introduction </h3>
-  
+
   Highlighting keywords or lines can be useful when analyzing code, reviewing summaries, and quickly comparing spellings. This plugin extends Vim's highlighting capabilities with additional features such as saving and loading highlights, finding variables, and customizing colors.
 
 ### Contents
 
   &nbsp; &nbsp;
   [Key Map](#key-map) <br> &nbsp; &nbsp;
-  [Sync Mode](#sync-mode) <br> &nbsp; &nbsp; 
+  [Sync Mode](#sync-mode) <br> &nbsp; &nbsp;
   [Save & Load Highlights](#save--load-highlights) &nbsp; &nbsp; &nbsp; &nbsp;
   [One Time Highlight](#one-time-highlight) &nbsp; &nbsp; &nbsp; &nbsp;
   [Following Highlight](#following-highlight) &nbsp; &nbsp; &nbsp; &nbsp;
@@ -53,14 +53,14 @@
 
   You can synchronize highlighting of the current window with other split windows with the command:
   ```vim
-   :Hi == 
+   :Hi ==
   ```
-  and switch back to single window highlighting mode using: 
+  and switch back to single window highlighting mode using:
   ```vim
-   :Hi = 
+   :Hi =
   ```
   '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.  
-  &nbsp;  
+  <br>
 
 ## Save & Load highlights
 
@@ -68,7 +68,7 @@
   ```vim
    :Hi save
   ```
-  and when loading: 
+  and when loading:
   ```vim
    :Hi load
   ```
@@ -94,7 +94,7 @@
 
   When the cursor is over a word or visual selection that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'. The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
 
-  <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif"> <br> 
+  <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif"> <br>
 
   '**One Time Highlight**' displays matches in all windows of the current tab-page.
 
@@ -145,7 +145,7 @@
   ```
 
  <details>
- <summary><b>Tools</b></summary> 
+ <summary><b>Tools</b></summary>
 
   ```vim
     let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
@@ -157,7 +157,7 @@
     let HiFindTool = 'sift --no-color --line-number --column --binary-skip --git --smart-case'
 
     let HiFindTool = 'ggrep -H -EnrI --exclude-dir=.git'
- 
+
     let HiFindTool = 'git grep -EnI --no-color --column'
   ```
  </details>
@@ -244,7 +244,7 @@
   |key|function|
   |:--:|--|
   |<kbd>Ctrl</kbd>+<kbd>C</kbd>| Stop searching |
-  |<kbd>r</kbd>                | Rotate Find window |
+  |<kbd>r</kbd>                | Rotate **Find** window |
   |<kbd>s</kbd>                | Split and Jump to file |
   |<kbd>Enter</kbd>            | Jump to file |
 
@@ -254,7 +254,7 @@
 
   The following option may be useful for correctly displaying Unicode characters output.
   ```vim
-  :set encoding=utf-8 
+  :set encoding=utf-8
   ```
   <br>
 
@@ -262,11 +262,11 @@
 
   The plugin provides 14 + 3 default colors.
   <div style="display:inline-block">
-  <img width="190" alt="default_light" src="https://user-images.githubusercontent.com/83812658/123291069-bcff2280-d54c-11eb-83af-0ea1b5e63b7b.png">
-  <img width="190" alt="default_dark"  src="https://user-images.githubusercontent.com/83812658/123291402-08193580-d54d-11eb-82a4-653d6e44bd4d.png">
+  <img width="200" alt="default_light" src="https://user-images.githubusercontent.com/83812658/149505344-0d95b744-b7d5-4878-8573-04e768b46482.png">
+  <img width="200" alt="default_dark"  src="https://user-images.githubusercontent.com/83812658/149505365-d6565c08-1a64-4497-9473-87740c3c4749.png">
   </div><br>
 
-  You can add, change, reorder, and save colors using Vim's native **hi** command, and see the changes in real time.
+  You can add, change, reorder, and save colors using Vim's native **`hi`** command, and see the changes in real time.
 
 ### Example 1
 > This example adds two custom colors
@@ -281,9 +281,7 @@
 >  :hi HiColor22 ctermfg=228 ctermbg=129 guifg=#ffff87 guibg=#af00ff
 > ```
 > Now, move the cursor to any word, and then input the number `21` and `HiSet` key.
-> Does it work? if you press `HiSet` key again, the next `HiColor22` will be set.
->
-> You can try different values while seeing the results immediately, and store colors in the configuration file using this format.
+> Does it work? if you press `HiSet` key again, the next `HiColor22` will be set. You can try different values while seeing the results immediately.
 
 ### Example 2
 > The following command changes the color of '**Find in Files Highlight**'
@@ -295,6 +293,10 @@
 > The following tool will be useful when editing colors.
 >
 > [xterm-color-table.vim](https://github.com/guns/xterm-color-table.vim)
+>
+
+### Saving colors
+  Highlight colors can be saved in the configuration file or in a separate color scheme file using the format above.  
 
   <br>
 
@@ -302,7 +304,7 @@
 
 <details>
 <summary><b> Example </b></summary>
-  
+
 > ```vim
 > " Unicode
 > set encoding=utf-8
@@ -311,12 +313,12 @@
 > hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
 > hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
 > hi HiColor30 ctermfg=none cterm=bold guifg=none gui=bold
-> 
+>
 > " command abbreviations
 > ca HL Hi:load
 > ca HS Hi:save
-> 
-> " directory to store highlight files 
+>
+> " directory to store highlight files
 > " let HiKeywords = '~/.vim/after/vim-highlighter'
 >
 > " default key mappings
@@ -334,12 +336,31 @@
 </details>
 
 <details>
+<summary><b>Color scheme</b></summary>
+
+> &nbsp;  
+> Highlight colors can also be included in a color scheme theme or saved as a separate file in your **colors** directory. `~/.vim/colors` &nbsp;or&nbsp; `~/vimfiles/colors`  
+> &nbsp;  
+> For example, you can create a '**sample.vim**' file in the **colors** directory, and store some colors:
+> ```vim
+> hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
+> hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
+> hi HiColor30 ctermfg=none cterm=bold guifg=none gui=bold
+> ```
+>   
+> You can now load colors using the **`colorscheme`** command:
+> ```vim
+> :colorscheme sample
+> ```
+</details>
+
+<details>
 <summary><b> Multifunction keys </b></summary>
 
 > &nbsp;  
 > Some find keys can be defined as multifunctional using the `HiFind()` function.
 >
-> The `HiFind()` function returns whether the tool window is visible, and can be used to define optional actions based on its state. The following example defines the `_` and `f-` keys to execute the **Hi** command while the **Find** window is visible, otherwise execute the original function.
+> The `HiFind()` function returns whether the **Find** window is visible, and can be used to define optional actions based on its state. The following example defines the `_` and `f-` keys to execute the **Hi** command while the **Find** window is visible, otherwise execute the original function.
 >
 > ```vim
 > " find key mappings
@@ -371,7 +392,7 @@
 
 <details>
 <summary> vim-plug </summary>
-  
+
 > &nbsp;  
 > in the Vim's command window:
 > ```vim
@@ -387,7 +408,7 @@
 
 <details>
 <summary> neobundle </summary>
-  
+
 > &nbsp;  
 > in the Vim's command window:
 > ```vim
@@ -403,7 +424,7 @@
 
 <details>
 <summary> Vundle.vim </summary>
-  
+
 > &nbsp;  
 > in the Vim's command window:
 > ```vim
@@ -419,7 +440,7 @@
 
 <details>
 <summary> Vim 8 native </summary>
-  
+
 > &nbsp;  
 > default install directory:
 >

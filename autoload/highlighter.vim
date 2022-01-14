@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.35.1
+" Version: 1.36
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -20,7 +20,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.35'
+let s:Version   = '1.36'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
@@ -55,12 +55,30 @@ function s:Load()
       return
     endif
   endif
-  if s:Check >= 256
-    let s:Colors = [
+  let s:ColorsDark = [
+    \ ['HiOneTime', 'ctermfg=233 ctermbg=152 cterm=none guifg=#001020 guibg=#a8d2d8 gui=none'],
+    \ ['HiFollow',  'ctermfg=233 ctermbg=151 cterm=none guifg=#002f00 guibg=#a8d0b8 gui=none'],
+    \ ['HiFind',    'ctermfg=52  ctermbg=187 cterm=none guifg=#470000 guibg=#d0c8b2 gui=none'],
+    \ ['HiColor1',  'ctermfg=234 ctermbg=113 cterm=none guifg=#001737 guibg=#82c85a gui=none'],
+    \ ['HiColor2',  'ctermfg=52  ctermbg=179 cterm=none guifg=#500000 guibg=#e6b058 gui=none'],
+    \ ['HiColor3',  'ctermfg=225 ctermbg=90  cterm=none guifg=#f8dff6 guibg=#8f2f8f gui=none'],
+    \ ['HiColor4',  'ctermfg=195 ctermbg=68  cterm=none guifg=#dffcfc guibg=#5783c7 gui=none'],
+    \ ['HiColor5',  'ctermfg=18  ctermbg=152 cterm=bold guifg=#000098 guibg=#b8c8e8 gui=bold'],
+    \ ['HiColor6',  'ctermfg=89  ctermbg=182 cterm=bold guifg=#780047 guibg=#e8b8e8 gui=bold'],
+    \ ['HiColor7',  'ctermfg=52  ctermbg=180 cterm=bold guifg=#570000 guibg=#dfb787 gui=bold'],
+    \ ['HiColor8',  'ctermfg=223 ctermbg=130 cterm=bold guifg=#f0d7a7 guibg=#af5f17 gui=bold'],
+    \ ['HiColor9',  'ctermfg=230 ctermbg=59  cterm=bold guifg=#eeeece guibg=#606060 gui=bold'],
+    \ ['HiColor10', 'ctermfg=195 ctermbg=23  cterm=none guifg=#cfefef guibg=#206838 gui=none'],
+    \ ['HiColor11', 'ctermfg=22  ctermbg=187 cterm=bold guifg=#004700 guibg=#c8d6b8 gui=bold'],
+    \ ['HiColor12', 'ctermfg=232 ctermbg=186 cterm=none guifg=#200000 guibg=#d8d880 gui=none'],
+    \ ['HiColor13', 'ctermfg=52  ctermbg=213 cterm=none guifg=#470023 guibg=#ec96ec gui=none'],
+    \ ['HiColor14', 'ctermfg=17  ctermbg=153 cterm=none guifg=#000047 guibg=#a0d0ec gui=none'],
+    \ ]
+  let s:ColorsLight = [
     \ ['HiOneTime', 'ctermfg=234 ctermbg=152 cterm=none guifg=#001727 guibg=#afd9d9 gui=none'],
-    \ ['HiFollow',  'ctermfg=234 ctermbg=151 cterm=none guifg=#002f00 guibg=#afdfaf gui=none'],
+    \ ['HiFollow',  'ctermfg=234 ctermbg=151 cterm=none guifg=#002f00 guibg=#b3dfb4 gui=none'],
     \ ['HiFind',    'ctermfg=52  ctermbg=187 cterm=none guifg=#471707 guibg=#e3d3b7 gui=none'],
-    \ ['HiColor1',  'ctermfg=17  ctermbg=112 cterm=none guifg=#001767 guibg=#8fd757 gui=none'],
+    \ ['HiColor1',  'ctermfg=17  ctermbg=113 cterm=none guifg=#001767 guibg=#8fd757 gui=none'],
     \ ['HiColor2',  'ctermfg=52  ctermbg=221 cterm=none guifg=#570000 guibg=#fcd757 gui=none'],
     \ ['HiColor3',  'ctermfg=225 ctermbg=90  cterm=none guifg=#ffdff7 guibg=#8f2f8f gui=none'],
     \ ['HiColor4',  'ctermfg=195 ctermbg=68  cterm=none guifg=#dffcfc guibg=#5783c7 gui=none'],
@@ -75,8 +93,7 @@ function s:Load()
     \ ['HiColor13', 'ctermfg=53  ctermbg=219 cterm=none guifg=#570027 guibg=#fcb7fc gui=none'],
     \ ['HiColor14', 'ctermfg=17  ctermbg=153 cterm=none guifg=#000057 guibg=#afd7fc gui=none'],
     \ ]
-  else
-    let s:Colors = [
+  let s:Colors16 = [
     \ ['HiOneTime', 'ctermfg=darkBlue ctermbg=lightCyan' ],
     \ ['HiFollow',  'ctermfg=darkBlue ctermbg=lightGreen'],
     \ ['HiFind',    'ctermfg=yellow ctermbg=darkGray'    ],
@@ -86,7 +103,7 @@ function s:Load()
     \ ['HiColor4',  'ctermfg=white ctermbg=darkYellow'   ],
     \ ['HiColor5',  'ctermfg=black ctermbg=lightYellow'  ],
     \ ]
-  endif
+  let s:Colors = (s:Check < 256) ? s:Colors16 : s:ColorsDark
   let s:Color = 'HiColor'
   let s:Number = 0
   let s:Wait = [g:HiOneTimeWait, g:HiFollowWait]
@@ -112,6 +129,9 @@ function s:Load()
 endfunction
 
 function s:SetColors(default)
+  if s:Colors != s:Colors16
+    let s:Colors = (&background == 'dark') ? s:ColorsDark : s:ColorsLight
+  endif
   for l:c in s:Colors
     if a:default || empty(s:GetColor(l:c[0]))
       exe 'hi' l:c[0].' '.l:c[1]
@@ -1244,6 +1264,9 @@ function s:FindSelect(line)
 
   let l:pos = 2
   let l:file = matchstr(l:line, '\v[^:]*', l:pos)
+  if !filereadable(l:file)
+    let l:file .= ':'.matchstr(l:line, '\v[^:]*', l:pos + len(l:file) + 1)
+  endif
   if !filereadable(l:file) | return | endif
 
   call setbufvar(s:FL.buf, '&ma', 1)
@@ -1447,28 +1470,49 @@ endfunction
 
 function highlighter#ColorScheme(op)
   if a:op == 'pre'
-    let s:Table = []
-    for l:key in ['HiOneTime', 'HiFollow', 'HiFind']
-      let l:value = s:GetColor(l:key)
-      if !empty(l:value)
-        call add(s:Table, [l:key, l:value])
-      endif
-    endfor
-    for i in range(1, 99)
+    let s:Custom = []
+    let l:begin = 1
+    if exists("s:Colors")
+      let s:Default = []
+      for l:color in s:Colors
+        let l:value = s:GetColor(l:color[0])
+        call add(s:Default, [l:color[0], l:value])
+      endfor
+      let l:begin = 15
+    endif
+    for i in range(l:begin, 99)
       let l:key = 'HiColor'.i
       let l:value = s:GetColor(l:key)
       if !empty(l:value)
-        call add(s:Table, [l:key, l:value])
+        call add(s:Custom, [l:key, l:value])
       endif
     endfor
   else
-    if exists("s:Table")
-      for [l:key, l:val] in s:Table
+    if exists("s:Default")
+      let l:next = (&background == 'dark') ? s:ColorsDark : s:ColorsLight
+      let l:tune = (s:Colors != s:Colors16) && (s:Colors != l:next)
+      let l:code = (has('gui_running') || (has('termguicolors') && &termguicolors)) ? 'guibg=\S\+' : 'ctermbg=\S\+'
+      let i = 0
+      while i < len(s:Default)
+        let [l:key, l:val] = s:Default[i]
+        if empty(s:GetColor(l:key))
+          if l:tune && matchstr(l:val, l:code) ==# matchstr(s:Colors[i][1], l:code)
+            let l:val = l:next[i][1]
+          endif
+          exe 'hi' l:key.' '.l:val
+        endif
+        let i += 1
+      endwhile
+      unlet s:Default
+      let s:Colors = l:next
+    endif
+    if exists("s:Custom")
+      for [l:key, l:val] in s:Custom
         if empty(s:GetColor(l:key))
           exe 'hi' l:key.' '.l:val
         endif
       endfor
-      unlet s:Table
+      unlet s:Custom
     endif
   endif
 endfunction

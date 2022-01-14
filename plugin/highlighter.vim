@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.35
+" Version: 1.36
 
 scriptencoding utf-8
 if exists("g:loaded_vim_highlighter")
