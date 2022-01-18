@@ -191,10 +191,6 @@
 > ```
 >  :Hi/Find  "pattern with spaces"
 > ```
-> color codes such as: &nbsp; #e3d3b7, &nbsp; #AFD9D9
-> ```
->  :Hi/Find  -i  #[A-F0-9]{6}
-> ```
 > class types or variables that start with an uppercase letter A or S: &nbsp; Array, Set, String, Symbol...
 > ```
 >  :Hi/Find  \b[AS]\w+
@@ -290,13 +286,15 @@
 > ```
 
 ### Reference
-> The following tool will be useful when editing colors.
+> The following tools will be useful when editing colors.
 >
 > [xterm-color-table.vim](https://github.com/guns/xterm-color-table.vim)
 >
+> [vim-hexokinase](https://github.com/RRethy/vim-hexokinase)
+>
 
 ### Saving colors
-  Highlight colors can be saved in the configuration file or in a separate color scheme file using the format above.  
+  Highlight colors can be saved in the configuration file or color scheme file using the format above.  
 
   <br>
 
@@ -309,17 +307,17 @@
 > " Unicode
 > set encoding=utf-8
 >
-> " highlight colors
-> hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
-> hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
-> hi HiColor30 ctermfg=none cterm=bold guifg=none gui=bold
->
 > " command abbreviations
 > ca HL Hi:load
 > ca HS Hi:save
 >
 > " directory to store highlight files
 > " let HiKeywords = '~/.vim/after/vim-highlighter'
+>
+> " highlight colors
+> " hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
+> " hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
+> " hi HiColor30 ctermfg=none cterm=bold guifg=none gui=bold
 >
 > " default key mappings
 > " let HiSet   = 'f<CR>'
@@ -339,7 +337,7 @@
 <summary><b>Color scheme</b></summary>
 
 > &nbsp;  
-> Highlight colors can also be included in a color scheme theme or saved as a separate file in your **colors** directory. `~/.vim/colors` &nbsp;or&nbsp; `~/vimfiles/colors`  
+> Highlight colors can also be included in a unified color scheme theme or saved as a separate file in your **colors** directory. `~/.vim/colors` &nbsp;or&nbsp; `~/vimfiles/colors`  
 > &nbsp;  
 > For example, you can create a '**sample.vim**' file in the **colors** directory, and store some colors:
 > ```vim
