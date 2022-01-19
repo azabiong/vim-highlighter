@@ -174,8 +174,8 @@
 
 #### 🍏 &nbsp;Tip
 
-> To enter the filename of the current buffer, typing `%` `Tab` would be convenient.  
-> To enter the previous search, the `Up` key will be useful.
+> You can easily select the previous command using the `Up` key at the `Hi/Find` prompt.
+
 
 ### Expression
 
