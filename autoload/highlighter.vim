@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.36
+" Version: 1.36.1
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -20,7 +20,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.36'
+let s:Version   = '1.36.1'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
@@ -845,7 +845,11 @@ function s:FindArgs(arg)
     let l:exp = s:FindUnescape(l:exp.next)
     call add(s:Find.file, l:exp.str)
   endwhile
-  if empty(s:Find.file) | let s:Find.file = ['.'] | endif
+  if empty(s:Find.file)
+    let s:Find.file = ['.']
+  else
+    call map(s:Find.file, {i,v -> expand(v)})
+  endif
   call s:FindMatch(l:opt)
   return 1
 endfunction
@@ -1318,7 +1322,7 @@ function s:FindEdit(op)
     let wins = extend([winnr()], range(winnr('$'),1, -1))
     for w in wins
       noa exe w. " wincmd w"
-      if empty(&buftype)
+      if empty(&buftype) || bufnr() == bufnr(l:file.name)
         let l:edit = w | break
       endif
     endfor
