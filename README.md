@@ -172,11 +172,6 @@
 
   `Tab` key completion for long options, directory and file names is supported.
 
-#### 🍏 &nbsp;Tip
-
-> You can easily select the previous command using the `Up` key at the `Hi/Find` prompt.
-
-
 ### Expression
 
   Among various regular expression options in **Vim**, the plugin uses "very magic" style syntax which uses the standard regex syntax with fewer escape sequences.

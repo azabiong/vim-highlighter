@@ -165,9 +165,6 @@ highlight patterns to make them easier to find.
       :Hi/Find  [options]  expression  [directories_or_files]
 <
     <Tab> key completion for long options, directory and file names is supported.
-  Tip ~
-     To enter the filename of the current buffer, typing `% Tab` would be convenient.
-     To enter the previous search, the `Up` key will be useful.
 
 3.Expression ~
 
@@ -185,18 +182,10 @@ highlight patterns to make them easier to find.
      or
       :Hi/Find  pattern\ with\ spaces
 <
-    * color codes such as: #e3d3b7, #AFD9D9
->
-      :Hi/Find  -i  #[A-F0-9]{6}
-<
     * class types or variables that start with an uppercase letter A or S:
       Array, Set, String, Symbol...
 >
       :Hi/Find  \b[AS]\w+
-<
-    * strings that looks like a URL:
->
-      :Hi/Find  https?://[^"'\ ()]+
 <
 4.Options ~
 
@@ -223,6 +212,13 @@ highlight patterns to make them easier to find.
     When searching for parts of a string in a file as is, visual selection
     would be useful. After selecting the part, press |HiFind| key. The plugin
     will escape the pattern properly.
+
+  Tip ~
+    You can use the `Up` key to select a previously entered command at the
+    `Hi/Find` command prompt.
+
+    Typing `% Tab` in the directory field enters the file name of the currently
+    focused buffer.
 
 6.Navigation ~
 
@@ -290,8 +286,8 @@ Example 2 ~
 <
 Saving colors ~
 
-    Highlight colors can be saved in the configuration file or in a separate
-    color scheme file using the format above.
+    Highlight colors can be saved in the configuration file or color scheme file
+    using the format above.
 
 ------------------------------------------------------------------------------
 COMMANDS                                                 *:HI*  *:Hi*  *Hi-Commands*
@@ -475,9 +471,11 @@ STATUS VARIABLES ~
 ------------------------------------------------------------------------------
 REFERENCE                                                         *Hi-Reference*
 
-    The following tool will be useful when editing colors.
+    The following tools will be useful when editing colors.
 
     `xterm-color-table.vim` (https://github.com/guns/xterm-color-table.vim)
+
+    `vim-hexokinase` (https://github.com/RRethy/vim-hexokinase)
 
 ------------------------------------------------------------------------------
 ISSUES                                                               *Hi-Issues*
