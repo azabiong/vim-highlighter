@@ -17,7 +17,7 @@
   [Following Highlight](#following-highlight) &nbsp; &nbsp; &nbsp; &nbsp;
   [Find in Files Highlight](#find-in-files-highlight) <br> &nbsp; &nbsp;
   [Customizing Colors](#customizing-colors) <br> &nbsp; &nbsp;
-  [Configuration](#configuration) <br> &nbsp; &nbsp;
+  [Configuration](#configuration-examples) <br> &nbsp; &nbsp;
   [Installation](#installation)  
   <br>
 
@@ -62,7 +62,7 @@
   '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.  
   <br>
 
-## Save & Load highlights
+## Save & Load Highlights
 
   Sometimes when you want to save highlights of the current window and reload them next time, you can use:
   ```vim
@@ -100,7 +100,6 @@
 
   <br>
 
-
 ## Following Highlight
 
   When you need automatic matching based on cursor movement, '**Following Highlight**' mode can be useful.
@@ -110,7 +109,11 @@
 
   <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/117488604-95a5c380-afa7-11eb-9625-b92efaa31817.gif"> <br>
 
-### Matching option
+  '**Following Highlight**' displays matches in all windows of the current tab-page.  
+
+
+ <details>
+ <summary><b> cWORD &nbsp;matching </b></summary> 
 
   Sometimes, when comparing variables consisting of letters and symbols, Vim's **`<cWORD>`** matching option can be useful.
 
@@ -121,10 +124,8 @@
   ```vim
    :Hi <>
   ```
-
-  '**Following Highlight**' displays matches in all windows of the current tab-page.
-
-  <br>
+</details>
+<br>
 
 ## Find in Files Highlight
 
@@ -210,13 +211,11 @@
 
 ### Navigation
 
-  It will be handy to use keyboard shortcuts for the following commands to easily navigate the search results.
-
-  `Hi/next` and `Hi/previous` commands jump to the file.
+  `Hi/next` and `Hi/previous` commands jump to files from search results.
 
   `Hi/older` and `Hi/newer` commands navigate the search history.
 
-  Key-mapping example:
+  It will be handy to use keyboard shortcuts for these commands to easily navigate the search results. For example:
   ```vim
     nn <silent>-  :<C-U> Hi/next<CR>
     nn <silent>_  :<C-U> Hi/previous<CR>
@@ -251,7 +250,7 @@
 
 ## Customizing Colors
 
-  The plugin provides 14 + 3 default colors.
+  The plugin provides two sets of 14 + 3 basic colors.
   <div style="display:inline-block">
   <img width="200" alt="default_light" src="https://user-images.githubusercontent.com/83812658/149505344-0d95b744-b7d5-4878-8573-04e768b46482.png">
   <img width="200" alt="default_dark"  src="https://user-images.githubusercontent.com/83812658/149505365-d6565c08-1a64-4497-9473-87740c3c4749.png">
@@ -293,14 +292,26 @@
 
   <br>
 
-## Configuration
+## Configuration Examples
 
 <details>
-<summary><b> Example </b></summary>
+<summary><b> Basic </b></summary>
 
 > ```vim
 > " Unicode
 > set encoding=utf-8
+>
+> " default key mappings
+> " let HiSet   = 'f<CR>'
+> " let HiErase = 'f<BS>'
+> " let HiClear = 'f<C-L>'
+> " let HiFind  = 'f<Tab>'
+>
+> " find key mappings
+> nn <silent>- :<C-U> Hi/next<CR>
+> nn <silent>_ :<C-U> Hi/previous<CR>
+> nn f<Left>   :<C-U> Hi/older<CR>
+> nn f<Right>  :<C-U> Hi/newer<CR>
 >
 > " command abbreviations
 > ca HL Hi:load
@@ -314,17 +325,6 @@
 > " hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
 > " hi HiColor30 ctermfg=none cterm=bold guifg=none gui=bold
 >
-> " default key mappings
-> " let HiSet   = 'f<CR>'
-> " let HiErase = 'f<BS>'
-> " let HiClear = 'f<C-L>'
-> " let HiFind  = 'f<Tab>'
->
-> " find key mappings
-> nn <silent>- :<C-U> Hi/next<CR>
-> nn <silent>_ :<C-U> Hi/previous<CR>
-> nn f<Left>   :<C-U> Hi/older<CR>
-> nn f<Right>  :<C-U> Hi/newer<CR>
 > ```
 </details>
 
