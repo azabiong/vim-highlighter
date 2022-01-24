@@ -362,9 +362,9 @@
 >
 > function s:HiOptional(cmd, key)
 >   if HiFind()
->     exe "Hi ".a:cmd
+>     exe "Hi" a:cmd
 >   else
->     exe "normal! ".a:key
+>     exe "normal!" a:key
 >   endif
 > endfunction
 > ```
