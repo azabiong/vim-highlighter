@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.36.1
+" Version: 1.36.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -20,7 +20,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.36.1'
+let s:Version   = '1.36.2'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
@@ -134,7 +134,7 @@ function s:SetColors(default)
   endif
   for l:c in s:Colors
     if a:default || empty(s:GetColor(l:c[0]))
-      exe 'hi' l:c[0].' '.l:c[1]
+      exe 'hi' l:c[0] l:c[1]
     endif
   endfor
 endfunction
@@ -576,7 +576,7 @@ function s:SetHiSyncWin(op)
   else
     noa windo unlet w:HiSync
   endif
-  noa exe l:win." wincmd w"
+  noa exe l:win "wincmd w"
   let s:Sync.add = ''
   let s:Sync.del = ''
 endfunction
@@ -611,7 +611,7 @@ endfunction
 function s:SetHiFocusWin(hi)
   let l:win = winnr()
   noa windo call <SID>SetHiFocus(a:hi)
-  noa exe l:win." wincmd w"
+  noa exe l:win "wincmd w"
 endfunction
 
 function s:SetHiFocus(hi)
@@ -627,7 +627,7 @@ endfunction
 function s:SetHiFindWin(on, buf)
   let l:win = winnr()
   noa windo call <SID>SetHiFind(a:on, a:buf)
-  noa exe l:win." wincmd w"
+  noa exe l:win "wincmd w"
 endfunction
 
 function s:SetHiFind(on, buf)
@@ -1154,16 +1154,16 @@ function s:FindOpen(...)
     let l:prev = win_getid()
     let l:pos = a:0 ? a:1: 0
     let s:FL.pos = l:pos
-    exe ((l:pos % 2) ? 'vert ' : '').['bel', 'abo', 'abo', 'bel'][l:pos].' sb'.s:FL.buf
+    exe ((l:pos % 2) ? 'vert' : '') ['bel', 'abo', 'abo', 'bel'][l:pos] 'sb' s:FL.buf
     if !(l:pos % 2)
-      exe "resize ".(winheight(0)/4 + 1)
+      exe "resize" (winheight(0)/4 + 1)
     endif
     setl wfh
     let l:win = winnr()
     call win_gotoid(l:prev)
-    exe l:win." wincmd w"
+    exe l:win "wincmd w"
   else
-    exe l:win." wincmd w"
+    exe l:win "wincmd w"
   endif
   return l:win
 endfunction
@@ -1195,7 +1195,7 @@ function s:FindSet(lines, op)
       let l:err += setbufline(s:FL.buf, 1, a:lines)
       call setbufvar(s:FL.buf, 'Status', s:FL.log.status)
       let l:line = s:FL.log.select ? s:FL.log.select : 1
-      exe "normal! ".l:line.'G'
+      exe "normal!" l:line.'G'
     endif
   elseif l:n
     for l:line in a:lines
@@ -1245,7 +1245,7 @@ function s:FindClose(ch)
   let l:win = bufwinnr(s:FL.buf)
   noa wincmd p
   call s:SetHiFindWin(1, s:FL.buf)
-  noa exe l:win." wincmd w"
+  noa exe l:win "wincmd w"
 endfunction
 
 function s:FindStdOut(job, data, event)
@@ -1321,35 +1321,35 @@ function s:FindEdit(op)
     noa wincmd p
     let wins = extend([winnr()], range(winnr('$'),1, -1))
     for w in wins
-      noa exe w. " wincmd w"
+      noa exe w "wincmd w"
       if empty(&buftype) || bufnr() == bufnr(l:file.name)
         let l:edit = w | break
       endif
     endfor
-    noa exe l:find." wincmd w"
+    noa exe l:find "wincmd w"
   endif
 
   if l:edit
-    exe l:edit." wincmd w"
+    exe l:edit "wincmd w"
   else
     let l:find = win_getid()
     abo split
     let l:height = winheight(0)/4 + 1
     call win_gotoid(l:find)
     if winheight(0) > l:height
-      exe "resize ".l:height
+      exe "resize" l:height
     endif
     wincmd p
   endif
 
   if fnamemodify(bufname(), ':p') ==# fnamemodify(l:file.name, ':p')
-    exe "normal! ".l:file.row.'G'
+    exe "normal!" l:file.row.'G'
   else
-    exe "edit +".l:file.row.' '.l:file.name
+    exe "edit +".l:file.row l:file.name
     let l:offset = (winline() >= winheight(0)/2) ? (winheight(0)/12)."\<C-E>" : ''
-    exe "normal! zz".l:offset
+    exe "normal! zz" l:offset
   endif
-  exe "normal! ".l:file.col.'|'
+  exe "normal!" l:file.col.'|'
   let s:FL.edit = s:FL.log.select
 
   call s:SetHiFind(1, 0)
@@ -1368,7 +1368,7 @@ function s:FindNextPrevious(op, num)
     endif
     let l:line = max([1, s:FL.log.select + l:sign * l:count])
   endif
-  exe "normal! ".l:line.'G'
+  exe "normal!" l:line.'G'
   call s:FindEdit('=')
 endfunction
 
@@ -1394,7 +1394,7 @@ function s:FindOlderNewer(op, n)
     call s:FindSelect(0)
     noa wincmd p
     call s:SetHiFindWin(1, s:FL.buf)
-    noa exe l:find." wincmd w"
+    noa exe l:find "wincmd w"
   endif
 endfunction
 
@@ -1402,7 +1402,7 @@ function s:FindCloseWin()
   if s:FL.buf == -1 | return | endif
   let l:win = bufwinnr(s:FL.buf)
   if l:win != -1
-    exe l:win." wincmd q"
+    exe l:win "wincmd q"
   endif
 endfunction
 
@@ -1503,7 +1503,7 @@ function highlighter#ColorScheme(op)
           if l:tune && matchstr(l:val, l:code) ==# matchstr(s:Colors[i][1], l:code)
             let l:val = l:next[i][1]
           endif
-          exe 'hi' l:key.' '.l:val
+          exe 'hi' l:key l:val
         endif
         let i += 1
       endwhile
@@ -1513,7 +1513,7 @@ function highlighter#ColorScheme(op)
     if exists("s:Custom")
       for [l:key, l:val] in s:Custom
         if empty(s:GetColor(l:key))
-          exe 'hi' l:key.' '.l:val
+          exe 'hi' l:key l:val
         endif
       endfor
       unlet s:Custom
@@ -1549,8 +1549,8 @@ function highlighter#Complete(arg, line, pos)
         silent call s:FindTool()
       endif
       if !empty(s:Find.options)
-        let l:list = filter(s:Find.options.single + s:Find.options.with_value, "v:val =~ '^'.a:arg")
-        return l:list
+        let l:list = s:Find.options.single + s:Find.options.with_value + ['--version']
+        return filter(l:list, "v:val =~ '^'.a:arg")
       endif
     elseif l:len > 2  " path
       if a:arg[0] == '$'
