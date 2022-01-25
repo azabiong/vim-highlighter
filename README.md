@@ -250,7 +250,7 @@
 
 ## Customizing Colors
 
-  The plugin provides two sets of 14 + 3 basic colors.
+  The plugin provides two default color sets which are automatically loaded based on the current `background` mode.
   <div style="display:inline-block">
   <img width="200" alt="default_light" src="https://user-images.githubusercontent.com/83812658/149505344-0d95b744-b7d5-4878-8573-04e768b46482.png">
   <img width="200" alt="default_dark"  src="https://user-images.githubusercontent.com/83812658/149505365-d6565c08-1a64-4497-9473-87740c3c4749.png">

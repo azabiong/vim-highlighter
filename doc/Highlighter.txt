@@ -257,7 +257,8 @@ Windows Unicode ~
 ------------------------------------------------------------------------------
 CUSTOMIZING COLORS                                       *Hi-Customizing-Colors*
 
-The plugin provides two sets of 14 + 3 basic colors.
+The plugin provides two default color sets which are automatically loaded based
+on the current 'background' mode.
 >
     HiColor1, HiColor2, HiColor3, ... HiColor14
     HiFollow, HiOneTime, HiFind
