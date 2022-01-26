@@ -672,7 +672,7 @@ function s:SaveHighlight(file)
   if empty(glob(l:dir, 0, 1))
     echo " * path not found: ".l:dir | return
   endif
-  if g:HiBackup && !empty(glob(l:path, 0, 1))
+  if g:HiBackup && !empty(glob(l:path, 0, 1)) && len(readfile(l:path, '', 3)) == 3
     let l:backup = l:path.'.o'
     call rename(l:path, l:backup)
   endif
