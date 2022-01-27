@@ -335,8 +335,7 @@ commands using optional spaces.
  :Hi /older ~
  :Hi /newer ~
     Go to older | newer `Find` list in history
-    It would also be convenient to map these commands somewhere.
-    To map `f <Left>` and `f <Right>` keys in normal mode:
+    It would also be convenient to map these commands somewhere. For example:
 >
       nn f<Left>    :<C-U> Hi/older<CR>
       nn f<Right>   :<C-U> Hi/newer<CR>
@@ -349,7 +348,7 @@ commands using optional spaces.
     Clear highlights of the `Find` result
                                                                    *:Hi:default*
  :Hi :default ~
-    Load the plugin default colors
+    Load plugin default colors for current 'background' mode
 
 2.Commands with default key mappings ~
                                                                           *:Hi+*
@@ -402,8 +401,8 @@ OPTIONS                                                             *Hi-Options*
     directory.
                                                                       *HiBackup*
 |HiBackup| option sets the plugin to create a backup file when an existing
-    highlight file is overwritten. The plugin adds a '.o' extension to the
-    backup file.
+    highlight file is overwritten. The plugin appends a '.o' extension to the
+    backup file. You can restore the file by simply removing the '.o' extension.
 
     Default: 1 `(on)`
     Values:  0, 1
