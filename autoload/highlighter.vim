@@ -24,7 +24,7 @@ let g:HiFindLines = 0
 let s:Version   = '1.37'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
-let s:Guide     = {'tid':0, 'line':0, 'col':0, 'count':0, 'win':0, 'mid':0}
+let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
 let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'edit':0,
@@ -667,17 +667,16 @@ function s:SetHiGuide(tid)
       let s:Guide.tid = 0
     endif
     let s:Guide.line = line('.')
-    let s:Guide.col = max([col('.')-8, 1])
-    let s:Guide.count = 0
+    let s:Guide.right = col('.')
+    let s:Guide.left = max([s:Guide.right-8, 1])
     let s:Guide.win = win_getid()
   endi
-  if !s:Guide.win || s:Guide.count >= 8
+  if !s:Guide.win || s:Guide.left >= s:Guide.right
     return
   endif
-  let s:Guide.mid = matchaddpos('HiGuide', [[s:Guide.line, s:Guide.col, 2]], 1, -1, {'window': s:Guide.win})
+  let s:Guide.mid = matchaddpos('HiGuide', [[s:Guide.line, s:Guide.left, 2]], 1, -1, {'window': s:Guide.win})
   let s:Guide.tid = timer_start(50, function('s:SetHiGuide'))
-  let s:Guide.count += 1
-  let s:Guide.col += 1
+  let s:Guide.left += 1
 endfunction
 
 function s:GetKeywordsPath(op)
