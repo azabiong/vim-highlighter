@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.36.2
+" Version: 1.37
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -15,14 +15,16 @@ let g:HiKeywords = get(g:, 'HiKeywords', '')
 let g:HiSyncMode = get(g:, 'HiSyncMode', 0)
 let g:HiFindTool = get(g:, 'HiFindTool', '')
 let g:HiFindHistory = get(g:, 'HiFindHistory', 5)
+let g:HiCursorGuide = get(g:, 'HiCursorGuide', 1)
 let g:HiOneTimeWait = get(g:, 'HiOneTimeWait', 260)
 let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.36.2'
+let s:Version   = '1.37'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
+let s:Guide     = {'tid':0, 'line':0, 'col':0, 'count':0, 'win':0, 'mid':0}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
 let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'edit':0,
@@ -58,7 +60,8 @@ function s:Load()
   let s:ColorsDark = [
     \ ['HiOneTime', 'ctermfg=233 ctermbg=152 cterm=none guifg=#001020 guibg=#a8d2d8 gui=none'],
     \ ['HiFollow',  'ctermfg=233 ctermbg=151 cterm=none guifg=#002f00 guibg=#a8d0b8 gui=none'],
-    \ ['HiFind',    'ctermfg=52  ctermbg=187 cterm=none guifg=#470000 guibg=#d0c8b2 gui=none'],
+    \ ['HiFind',    'ctermfg=52  ctermbg=187 cterm=none guifg=#470000 guibg=#d8c2b0 gui=none'],
+    \ ['HiGuide',   'ctermfg=188 ctermbg=62  cterm=none guifg=#d8d8d8 guibg=#4030e8 gui=none'],
     \ ['HiColor1',  'ctermfg=234 ctermbg=113 cterm=none guifg=#001737 guibg=#82c85a gui=none'],
     \ ['HiColor2',  'ctermfg=52  ctermbg=179 cterm=none guifg=#500000 guibg=#e6b058 gui=none'],
     \ ['HiColor3',  'ctermfg=225 ctermbg=90  cterm=none guifg=#f8dff6 guibg=#8f2f8f gui=none'],
@@ -67,7 +70,7 @@ function s:Load()
     \ ['HiColor6',  'ctermfg=89  ctermbg=182 cterm=bold guifg=#780047 guibg=#e8b8e8 gui=bold'],
     \ ['HiColor7',  'ctermfg=52  ctermbg=180 cterm=bold guifg=#570000 guibg=#dfb787 gui=bold'],
     \ ['HiColor8',  'ctermfg=223 ctermbg=130 cterm=bold guifg=#f0d7a7 guibg=#af5f17 gui=bold'],
-    \ ['HiColor9',  'ctermfg=230 ctermbg=59  cterm=bold guifg=#eeeece guibg=#606060 gui=bold'],
+    \ ['HiColor9',  'ctermfg=253 ctermbg=59  cterm=bold guifg=#e8e8c8 guibg=#606060 gui=bold'],
     \ ['HiColor10', 'ctermfg=195 ctermbg=23  cterm=none guifg=#cfefef guibg=#206838 gui=none'],
     \ ['HiColor11', 'ctermfg=22  ctermbg=187 cterm=bold guifg=#004700 guibg=#c8d6b8 gui=bold'],
     \ ['HiColor12', 'ctermfg=232 ctermbg=186 cterm=none guifg=#200000 guibg=#d8d880 gui=none'],
@@ -75,9 +78,10 @@ function s:Load()
     \ ['HiColor14', 'ctermfg=17  ctermbg=153 cterm=none guifg=#000047 guibg=#a0d0ec gui=none'],
     \ ]
   let s:ColorsLight = [
-    \ ['HiOneTime', 'ctermfg=234 ctermbg=152 cterm=none guifg=#001727 guibg=#afd9d9 gui=none'],
-    \ ['HiFollow',  'ctermfg=234 ctermbg=151 cterm=none guifg=#002f00 guibg=#b3dfb4 gui=none'],
-    \ ['HiFind',    'ctermfg=52  ctermbg=187 cterm=none guifg=#471707 guibg=#e3d3b7 gui=none'],
+    \ ['HiOneTime', 'ctermfg=234 ctermbg=152 cterm=none guifg=#001828 guibg=#afd9d9 gui=none'],
+    \ ['HiFollow',  'ctermfg=234 ctermbg=151 cterm=none guifg=#002800 guibg=#b3dfb4 gui=none'],
+    \ ['HiFind',    'ctermfg=52  ctermbg=187 cterm=none guifg=#481808 guibg=#e3d3b7 gui=none'],
+    \ ['HiGuide',   'ctermbg=62  ctermfg=231 cterm=none guifg=#f8f8f8 guibg=#6868e8 gui=none'],
     \ ['HiColor1',  'ctermfg=17  ctermbg=113 cterm=none guifg=#001767 guibg=#8fd757 gui=none'],
     \ ['HiColor2',  'ctermfg=52  ctermbg=221 cterm=none guifg=#570000 guibg=#fcd757 gui=none'],
     \ ['HiColor3',  'ctermfg=225 ctermbg=90  cterm=none guifg=#ffdff7 guibg=#8f2f8f gui=none'],
@@ -96,12 +100,13 @@ function s:Load()
   let s:Colors16 = [
     \ ['HiOneTime', 'ctermfg=darkBlue ctermbg=lightCyan' ],
     \ ['HiFollow',  'ctermfg=darkBlue ctermbg=lightGreen'],
-    \ ['HiFind',    'ctermfg=yellow ctermbg=darkGray'    ],
-    \ ['HiColor1',  'ctermfg=white ctermbg=darkGreen'    ],
-    \ ['HiColor2',  'ctermfg=white ctermbg=darkCyan'     ],
-    \ ['HiColor3',  'ctermfg=white ctermbg=darkMagenta'  ],
-    \ ['HiColor4',  'ctermfg=white ctermbg=darkYellow'   ],
-    \ ['HiColor5',  'ctermfg=black ctermbg=lightYellow'  ],
+    \ ['HiFind',    'ctermfg=yellow   ctermbg=darkGray'  ],
+    \ ['HiGuide',   'ctermfg=white    ctermbg=darkBlue' ],
+    \ ['HiColor1',  'ctermfg=white    ctermbg=darkGreen' ],
+    \ ['HiColor2',  'ctermfg=white    ctermbg=darkCyan'  ],
+    \ ['HiColor3',  'ctermfg=white   ctermbg=darkMagenta'],
+    \ ['HiColor4',  'ctermfg=white   ctermbg=darkYellow' ],
+    \ ['HiColor5',  'ctermfg=black   ctermbg=lightYellow'],
     \ ]
   let s:Colors = (s:Check < 256) ? s:Colors16 : s:ColorsDark
   let s:Color = 'HiColor'
@@ -646,6 +651,35 @@ function s:SetHiFind(on, buf)
   endif
 endfunction
 
+function s:SetHiGuide(tid)
+  if !g:HiCursorGuide | return | endif
+  if win_id2win(s:Guide.win)
+    if s:Guide.mid
+      call matchdelete(s:Guide.mid, s:Guide.win)
+    endif
+  else
+    let s:Guide.win = 0
+  endif
+  let s:Guide.mid = 0
+  if a:tid == 0
+    if s:Guide.tid
+      call timer_stop(s:Guide.tid)
+      let s:Guide.tid = 0
+    endif
+    let s:Guide.line = line('.')
+    let s:Guide.col = max([col('.')-8, 1])
+    let s:Guide.count = 0
+    let s:Guide.win = win_getid()
+  endi
+  if !s:Guide.win || s:Guide.count >= 8
+    return
+  endif
+  let s:Guide.mid = matchaddpos('HiGuide', [[s:Guide.line, s:Guide.col, 2]], 1, -1, {'window': s:Guide.win})
+  let s:Guide.tid = timer_start(50, function('s:SetHiGuide'))
+  let s:Guide.count += 1
+  let s:Guide.col += 1
+endfunction
+
 function s:GetKeywordsPath(op)
   if empty(g:HiKeywords)
     let l:vim = (stridx(s:Keywords.plug, 'vimfiles') != -1) ? 'vimfiles' : '.vim'
@@ -751,7 +785,7 @@ function s:ListFiles()
   if empty(l:path)
     echo ' no list' | return
   endif
-  exe 'Sexplore' l:path
+  exe 'Hexplore' l:path
 endfunction
 
 function s:Find(input)
@@ -1086,7 +1120,7 @@ function s:FindStart(arg)
     call bufload(s:FL.buf)
     call s:FindOpen()
 
-    setlocal buftype=nofile bh=hide noma noswapfile nofen ft=find
+    setlocal buftype=nofile bh=hide ft=find noma noswapfile nofen fdc=0
     let b:Status = ''
     let &l:statusline = '  Find | %<%{b:Status} %=%3.l / %L  '
     let &l:wrap = 0
@@ -1342,16 +1376,31 @@ function s:FindEdit(op)
     wincmd p
   endif
 
+  let l:height = winheight(0)
+  let [l:scroll, l:guide] = [0, 0]
   if fnamemodify(bufname(), ':p') ==# fnamemodify(l:file.name, ':p')
+    let [l:top, l:bottom] = [line('w0'), line('w$')]
     exe "normal!" l:file.row.'G'
+    let l:scroll = l:file.row < l:top || l:file.row > l:bottom
+    if !l:scroll
+      let l:top += l:height/8
+      let l:bottom = l:top +l:height * 6/8
+      let l:guide  = l:file.row < l:top || l:file.row > l:bottom
+    endif
   else
     exe "edit +".l:file.row l:file.name
-    let l:offset = (winline() >= winheight(0)/2) ? (winheight(0)/12)."\<C-E>" : ''
-    exe "normal! zz" l:offset
+    let l:scroll = 1
+  endif
+  if l:scroll
+    let l:scroll = (winline() >= l:height/2) ? (l:height/12)."\<C-E>" : ''
+    exe "normal! zz" l:scroll
+    let l:guide = 1
   endif
   exe "normal!" l:file.col.'|'
   let s:FL.edit = s:FL.log.select
-
+  if l:guide
+    call s:SetHiGuide(0)
+  endif
   call s:SetHiFind(1, 0)
 endfunction
 

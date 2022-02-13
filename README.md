@@ -107,7 +107,7 @@
   Pressing `HiSet` key over '**One Time Highlight**' without moving the cursor sets '**Following Highlight**' mode.
   The highlight follows the cursor. Pressing `HiEarase` key turns off the mode.
 
-  <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/117488604-95a5c380-afa7-11eb-9625-b92efaa31817.gif"> <br>
+  <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/153761231-4e2ccabe-899e-4625-923d-85d7a7ab83fd.gif"> <br>
 
   '**Following Highlight**' displays matches in all windows of the current tab-page.  
 
@@ -133,9 +133,7 @@
 
   `HiFind` key brings up the **Find** command prompt.
 
-  <img width="760" alt="find" src="https://user-images.githubusercontent.com/83812658/123290729-77daf080-d54c-11eb-8181-949333013d71.gif"> <br>
-
-> The new version uses the `Hi/Find` command prompt with `Tab` key completion support.
+  <img width="760" alt="find" src="https://user-images.githubusercontent.com/83812658/153761451-1828bbdb-b0ac-4598-a624-b69b94369333.gif"> <br>
 
 ### Search tool
 

@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                   `ver 1.36`
+                                                                   `ver 1.37`
                Introduction             |Hi-Introduction|
                Key Map                  |Hi-Key-Map|
                Sync Mode                |Hi-Sync-Mode|
@@ -429,6 +429,11 @@ OPTIONS                                                             *Hi-Options*
 
     Default: 5
     Values:  2 ~ 10
+                                                                 *HiCursorGuide*
+|HiCursorGuide| option turns the cursor guide on and off to make it easier to find
+    the cursor in `FIND IN FILES` mode.
+    Default: 1 `(on)`
+    Values:  0, 1
                                                                  *HiOneTimeWait*
 |HiOneTimeWait| defines the wait time before turning off the highlights after the
     cursor stopped in `ONE TIME HIGHLIGHT` mode.
@@ -485,8 +490,12 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.37~
+    Add |HiCursorGuide| option to easily find cursor in 'Find' mode.
+    Improve "save" command backup
+    Fix "Find" path name expansion '~'
 1.36~
-    Supprot color scheme
+    Support color scheme
       - auto loading default colors for dark and light modes
     Fix "Find" loading path starting with drive letter in Windows
 1.35~

@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.36
+" Version: 1.37
 
 scriptencoding utf-8
 if exists("g:loaded_vim_highlighter")
@@ -30,9 +30,9 @@ function s:MapKeys()
   for l:map in l:key_map
     let l:key = get(g:, l:map[1], l:map[2])
     if l:map[3][0] == '/'
-      exe l:map[0].' '.l:key.' :<C-U><C-R>=highlighter#Find("'.l:map[3].'")<CR>'
+      exe l:map[0] l:key ':<C-U><C-R>=highlighter#Find("'.l:map[3].'")<CR>'
     else
-      exe l:map[0].' <silent> '.l:key.' :<C-U>if highlighter#Command("'.l:map[3].'") \| noh \| endif<CR>'
+      exe l:map[0] '<silent>' l:key ':<C-U>if highlighter#Command("'.l:map[3].'") \| noh \| endif<CR>'
     endif
   endfor
 endfunction
