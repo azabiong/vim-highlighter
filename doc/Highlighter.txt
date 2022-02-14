@@ -261,7 +261,7 @@ The plugin provides two default color sets which are automatically loaded based
 on the current 'background' mode.
 >
     HiColor1, HiColor2, HiColor3, ... HiColor14
-    HiFollow, HiOneTime, HiFind
+    HiFollow, HiOneTime, HiFind, HiGuide
 <
 You can add, change, reorder, and save colors using Vim's native |:hi| command,
 and see the changes in real time.

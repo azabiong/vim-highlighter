@@ -250,8 +250,8 @@
 
   The plugin provides two default color sets which are automatically loaded based on the current `background` mode.
   <div style="display:inline-block">
-  <img width="200" alt="default_light" src="https://user-images.githubusercontent.com/83812658/149505344-0d95b744-b7d5-4878-8573-04e768b46482.png">
-  <img width="200" alt="default_dark"  src="https://user-images.githubusercontent.com/83812658/149505365-d6565c08-1a64-4497-9473-87740c3c4749.png">
+  <img width="198" alt="default_light" src="https://user-images.githubusercontent.com/83812658/153830890-51960a1b-4a61-4bc6-9c8f-c693a0ee5825.png">
+  <img width="198" alt="default_dark" src="https://user-images.githubusercontent.com/83812658/153829910-58e948e4-6657-4b55-8b39-39575e26e858.png">
   </div><br>
 
   You can add, change, reorder, and save colors using Vim's native **`hi`** command, and see the changes in real time.
