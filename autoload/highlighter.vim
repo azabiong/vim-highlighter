@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.37
+" Version: 1.37.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.37'
+let s:Version   = '1.37.2'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -81,7 +81,7 @@ function s:Load()
     \ ['HiOneTime', 'ctermfg=234 ctermbg=152 cterm=none guifg=#001828 guibg=#afd9d9 gui=none'],
     \ ['HiFollow',  'ctermfg=234 ctermbg=151 cterm=none guifg=#002800 guibg=#b3dfb4 gui=none'],
     \ ['HiFind',    'ctermfg=52  ctermbg=187 cterm=none guifg=#481808 guibg=#e3d3b7 gui=none'],
-    \ ['HiGuide',   'ctermbg=62  ctermfg=231 cterm=none guifg=#f8f8f8 guibg=#6868e8 gui=none'],
+    \ ['HiGuide',   'ctermfg=231 ctermbg=62  cterm=none guifg=#f8f8f8 guibg=#6868e8 gui=none'],
     \ ['HiColor1',  'ctermfg=17  ctermbg=113 cterm=none guifg=#001767 guibg=#8fd757 gui=none'],
     \ ['HiColor2',  'ctermfg=52  ctermbg=221 cterm=none guifg=#570000 guibg=#fcd757 gui=none'],
     \ ['HiColor3',  'ctermfg=225 ctermbg=90  cterm=none guifg=#ffdff7 guibg=#8f2f8f gui=none'],
@@ -101,7 +101,7 @@ function s:Load()
     \ ['HiOneTime', 'ctermfg=darkBlue ctermbg=lightCyan' ],
     \ ['HiFollow',  'ctermfg=darkBlue ctermbg=lightGreen'],
     \ ['HiFind',    'ctermfg=yellow   ctermbg=darkGray'  ],
-    \ ['HiGuide',   'ctermfg=white    ctermbg=darkBlue' ],
+    \ ['HiGuide',   'ctermfg=white    ctermbg=darkBlue'  ],
     \ ['HiColor1',  'ctermfg=white    ctermbg=darkGreen' ],
     \ ['HiColor2',  'ctermfg=white    ctermbg=darkCyan'  ],
     \ ['HiColor3',  'ctermfg=white   ctermbg=darkMagenta'],
@@ -145,7 +145,7 @@ function s:SetColors(default)
 endfunction
 
 function s:GetColor(color)
-  return hlexists(a:color) ? matchstr(execute('hi '.a:color), '\(cterm\|gui\).*') : ''
+  return hlexists(a:color) ? matchstr(execute('hi '.a:color), '\(\<cterm\|\<gui\).*') : ''
 endfunction
 
 function s:SetHighlight(cmd, mode, num)
