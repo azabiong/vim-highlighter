@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.37.2
+" Version: 1.37.3
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.37.2'
+let s:Version   = '1.37.3'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -1382,8 +1382,8 @@ function s:FindEdit(op)
     exe "normal!" l:file.row.'G'
     let l:scroll = l:file.row < l:top || l:file.row > l:bottom
     if !l:scroll
-      let l:top += l:height/8
-      let l:bottom = l:top +l:height * 6/8
+      let l:bottom = l:top + l:height - 6
+      let l:top += 4
       let l:guide  = l:file.row < l:top || l:file.row > l:bottom
     endif
   else
