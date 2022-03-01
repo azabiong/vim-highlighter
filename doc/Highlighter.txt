@@ -41,10 +41,10 @@ KEY-MAP                            *HiSet*  *HiErase*  *HiClear*  *HiFind*  *Hi-
 The plugin uses the following default key mappings which you can assign in the
 configuration file.
 >
-    let HiSet   = 'f<CR>'           " normal, visual
-    let HiErase = 'f<BS>'           " normal, visual
-    let HiClear = 'f<C-L>'          " normal
-    let HiFind  = 'f<Tab>'          " normal, visual
+    let HiSet   = 'f<CR>'       " normal, visual
+    let HiErase = 'f<BS>'       " normal, visual
+    let HiClear = 'f<C-L>'      " normal
+    let HiFind  = 'f<Tab>'      " normal, visual
 <
     Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L` and `f Tab`
 
@@ -61,7 +61,7 @@ useful. You can also select an entire line and highlight it.
 SYNC MODE                                                         *Hi-Sync-Mode*
 
 You can synchronize highlighting of the current window with other split windows
-with the command:
+using the command:
 >
     :Hi ==
 <
@@ -166,13 +166,16 @@ highlight patterns to make them easier to find.
 <
     <Tab> key completion for long options, directory and file names is supported.
 
- Tip ~
-    You can use the `Up` key to select a previously entered command at the
-    `Hi/Find` command prompt.
-
-    Typing `% Tab` in the directory field enters the file name of the currently
+  Tip~
+    You can use the `Up` key to select a previously entered command.
+>
+      :Hi/Find  <Up>
+<
+    The `% Tab` key in the directory field enters the file name of the currently
     focused buffer.
-
+>
+      :Hi/Find  expression  %<Tab>
+<
 3.Expression ~
 
     Among various regular expression options in Vim, the plugin uses "very magic"
@@ -229,10 +232,10 @@ highlight patterns to make them easier to find.
     It will be handy to use keyboard shortcuts for these commands to easily
     navigate the search results. For example:
 >
-      nn <silent>-  :<C-U> Hi/next<CR>
-      nn <silent>_  :<C-U> Hi/previous<CR>
-      nn f<Left>    :<C-U> Hi/older<CR>
-      nn f<Right>   :<C-U> Hi/newer<CR>
+      nn -        <Cmd>Hi/next<CR>
+      nn _        <Cmd>Hi/previous<CR>
+      nn f<Left>  <Cmd>Hi/older<CR>
+      nn f<Right> <Cmd>Hi/newer<CR>
 < Tip ~
     Pressing the number '1' before the |Hi/next| command invokes a special
     function that jumps to the first item in the search results. For example,
@@ -327,8 +330,8 @@ commands using optional spaces.
     It will be convenient to use keyboard shortcuts for these commands to easily
     navigate the search list. For example:
 >
-      nn <silent>-  :<C-U> Hi/next<CR>
-      nn <silent>_  :<C-U> Hi/previous<CR>
+      nn -  <Cmd>Hi/next<CR>
+      nn _  <Cmd>Hi/previous<CR>
 <
     You can also define multifunction keys using |HiFind()| function.
                                                           *:Hi/older*  *:Hi/newer*
@@ -337,8 +340,8 @@ commands using optional spaces.
     Go to older | newer `Find` list in history
     It would also be convenient to map these commands somewhere. For example:
 >
-      nn f<Left>    :<C-U> Hi/older<CR>
-      nn f<Right>   :<C-U> Hi/newer<CR>
+      nn f<Left>  <Cmd>Hi/older<CR>
+      nn f<Right> <Cmd>Hi/newer<CR>
 <                                                           *:Hi/open*  *:Hi/close*
  :Hi /open ~
  :Hi /close ~
@@ -460,8 +463,8 @@ STATUS VARIABLES ~
     to execute the |Hi| command while the `Find` window is visible, otherwise
     execute the original function.
 >
-        nn <silent>_  :<C-U> call <SID>HiOptional('previous', '_')<CR>
-        nn <silent>f- :<C-U> call <SID>HiOptional('close', 'f-')<CR>
+        nn _   <Cmd>call <SID>HiOptional('previous', '_')<CR>
+        nn f-  <Cmd>call <SID>HiOptional('close', 'f-')<CR>
 
         function s:HiOptional(cmd, key)
           if HiFind()

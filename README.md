@@ -26,10 +26,10 @@
   The plugin uses the following default key mappings which you can assign in the configuration file.
 
   ```vim
-    let HiSet   = 'f<CR>'           " normal, visual
-    let HiErase = 'f<BS>'           " normal, visual
-    let HiClear = 'f<C-L>'          " normal
-    let HiFind  = 'f<Tab>'          " normal, visual
+    let HiSet   = 'f<CR>'       " normal, visual
+    let HiErase = 'f<BS>'       " normal, visual
+    let HiClear = 'f<C-L>'      " normal
+    let HiFind  = 'f<Tab>'      " normal, visual
   ```
 
 > Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L` and `f Tab`
@@ -215,10 +215,10 @@
 
   It will be handy to use keyboard shortcuts for these commands to easily navigate the search results. For example:
   ```vim
-    nn <silent>-  :<C-U> Hi/next<CR>
-    nn <silent>_  :<C-U> Hi/previous<CR>
-    nn f<Left>    :<C-U> Hi/older<CR>
-    nn f<Right>   :<C-U> Hi/newer<CR>
+    nn -        <Cmd>Hi/next<CR>
+    nn _        <Cmd>Hi/previous<CR>
+    nn f<Left>  <Cmd>Hi/older<CR>
+    nn f<Right> <Cmd>Hi/newer<CR>
   ```
 
 #### 🍏 &nbsp;Tip
@@ -306,10 +306,10 @@
 > " let HiFind  = 'f<Tab>'
 >
 > " find key mappings
-> nn <silent>- :<C-U> Hi/next<CR>
-> nn <silent>_ :<C-U> Hi/previous<CR>
-> nn f<Left>   :<C-U> Hi/older<CR>
-> nn f<Right>  :<C-U> Hi/newer<CR>
+> nn -        <Cmd>Hi/next<CR>
+> nn _        <Cmd>Hi/previous<CR>
+> nn f<Left>  <Cmd>Hi/older<CR>
+> nn f<Right> <Cmd>Hi/newer<CR>
 >
 > " command abbreviations
 > ca HL Hi:load
@@ -355,8 +355,8 @@
 >
 > ```vim
 > " find key mappings
-> nn <silent>_  :<C-U> call <SID>HiOptional('previous', '_')<CR>
-> nn <silent>f- :<C-U> call <SID>HiOptional('close', 'f-')<CR>
+> nn _   <Cmd>call <SID>HiOptional('previous', '_')<CR>
+> nn f-  <Cmd>call <SID>HiOptional('close', 'f-')<CR>
 >
 > function s:HiOptional(cmd, key)
 >   if HiFind()
