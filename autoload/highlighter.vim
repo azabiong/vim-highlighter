@@ -668,7 +668,7 @@ function s:SetHiGuide(tid)
     endif
     let s:Guide.line = line('.')
     let s:Guide.right = col('.')
-    let s:Guide.left = max([s:Guide.right-8, 1])
+    let s:Guide.left = max([s:Guide.right-6, 1])
     let s:Guide.win = win_getid()
   endi
   if !s:Guide.win || s:Guide.left >= s:Guide.right
@@ -1664,7 +1664,7 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==? 'load'     | call s:LoadHighlight(l:val)
   elseif l:cmd ==? 'ls'       | call s:ListFiles()
   else
-    echo ' Hi: no matching commands: '.l:cmd
+    echo ' Hi: no matching command: '.l:cmd
   endif
   return s:Search
 endfunction
