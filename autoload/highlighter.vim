@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.37.3
+" Version: 1.38
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.37.3'
+let s:Version   = '1.38'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -114,6 +114,8 @@ function s:Load()
   let s:Wait = [g:HiOneTimeWait, g:HiFollowWait]
   let s:WaitRange = [[0, 320], [260, 520]]
   let s:Word = '<cword>'
+  let s:Input = ''
+  let s:Search = 0
   if empty(g:HiKeywords)
     let l:keywords = fnamemodify(s:Keywords.plug, ":h:h").'/keywords'
     let g:HiKeywords = isdirectory(l:keywords) ? l:keywords : ''
@@ -149,7 +151,7 @@ function s:GetColor(color)
 endfunction
 
 function s:SetHighlight(cmd, mode, num)
-  if s:CheckRepeat(60) | return | endif
+  if a:mode != '=' && s:CheckRepeat(60) | return | endif
 
   let l:match = getmatches()
   if a:cmd == '--'
@@ -168,35 +170,40 @@ function s:SetHighlight(cmd, mode, num)
   endif
 
   if a:mode == 'n'
-    let l:word = expand('<cword>')
+    let l:word = escape(expand('<cword>'), '\')
+    let l:word = '\V\<'.l:word.'\>'
+  elseif a:mode == '='
+    let l:word = escape(s:Input, "'\"")
+    let l:magic = &magic ? '\m' : '\M'
+    let l:word = l:magic.l:word
   else
     let l:visual = trim(s:GetVisualLine())
-    let l:word = l:visual
+    let l:word = escape(l:visual, '\')
+    let l:word = '\V'.l:word
   endif
   if empty(l:word)
     if !l:color | call s:SetFocusMode('-', '') | endif
     return
   endif
-  let l:word = escape(l:word, '\')
-  if a:mode == 'n'
-    let l:word = '\V\<'.l:word.'\>'
-  else
-    let l:word = '\V'.l:word
-  endif
-  " hlsearch overlap
-  let l:case = (&ic || stridx(@/, '\c') != -1) ? '\c' : ''
-  let l:search = match(@/, l:word.l:case) != -1
 
+  let l:case = (&ic || stridx(@/, '\c') != -1) ? '\c' : ''
   let l:deleted = s:DeleteMatch(l:match, '==', l:word)
   if l:color
     if a:mode == 'n' && s:GetFocusMode(1, l:word)
       call s:SetFocusMode('>', '')
     else
-      let s:Number = l:color
       let l:group = s:Color.l:color
-      call matchadd(l:group, l:word, 0)
+      try
+        call matchadd(l:group, l:word, 0)
+      catch
+        echohl ErrorMsg
+        echo  ' * '.v:exception
+        echohl None
+        return
+      endtry
       call s:UpdateSync('add', l:group, l:word)
-      let s:Search = l:search
+      let s:Number = l:color
+      let s:Search = match(@/, l:word.l:case) != -1
     endif
   else
     if !l:deleted
@@ -210,7 +217,7 @@ function s:SetHighlight(cmd, mode, num)
       if a:mode != 'n' && s:GetFocusMode('>', '')
         let s:HiMode['>'] = '<'
       endif
-      let s:Search = (s:SetFocusMode('.', l:word) == '1') && l:search
+      let s:Search = (s:SetFocusMode('.', l:word) == '1') && match(@/, l:word.l:case) != -1
     endif
   endif
 endfunction
@@ -854,6 +861,8 @@ function s:FindTool()
     for l:key in keys(s:Find.options)
       call uniq(sort(s:Find.options[l:key]))
     endfor
+    let l:case = ['', 'ag', '-s', 'rg', '-s', 'ack', '-I', 'sift', '-I']
+    let s:Find.options.case = l:case[index(l:case, s:Find.type) + 1]
   endif
   return 1
 endfunction
@@ -1392,7 +1401,7 @@ function s:FindEdit(op)
   endif
   if l:scroll
     let l:scroll = (winline() >= l:height/2) ? (l:height/12)."\<C-E>" : ''
-    exe "normal! zz" l:scroll
+    exe "normal! zz" l:scroll l:file.row.'G'
     let l:guide = 1
   endif
   exe "normal!" l:file.col.'|'
@@ -1611,7 +1620,8 @@ function highlighter#Complete(arg, line, pos)
     endif
   else  " commands
     let l:opt1 = ['==', '>>', '<>', '//']
-    let l:opt2 = ['/next', '/previous', '/older', '/newer', '/open', '/close', ':save ', ':load ', ':ls', ':default']
+    let l:opt2 = ['/next', '/previous', '/older', '/newer', '/open', '/close',
+                \ ':save ', ':load ', ':ls', ':default']
     if l:len == 1 && l:part[0] == 'Hi'
       return l:opt1 + opt2
     else
@@ -1629,7 +1639,14 @@ function highlighter#Complete(arg, line, pos)
 endfunction
 
 function highlighter#Find(mode)
-  return 'Hi/Find  '.((a:mode == '/x') ? '"'.escape(s:GetVisualLine(), '$^*()-+[]{}\|.?"').'" ' : '')
+  if s:Find.tool != matchstr(g:HiFindTool, '\v\S+')
+    silent call s:FindTool()
+  endif
+  let l:cmd = 'Hi/Find  '
+  if a:mode == '/x'
+    let l:cmd .= s:Find.options.case.' "'.escape(s:GetVisualLine(), '$^*()-+[]{}\|.?"').'" '
+  endif
+  return l:cmd
 endfunction
 
 function highlighter#Command(cmd, ...)
@@ -1642,8 +1659,17 @@ function highlighter#Command(cmd, ...)
   let l:val = get(l:arg, 1, '')
   let s:Search = 0
 
+  if l:cmd == '+'
+    if len(a:cmd) > 2
+      let s:Input = a:cmd[2:]
+      let l:opt = '='
+    else
+      let l:opt = 'n'
+    endif
+  endif
+
   if     l:cmd ==# ''         | echo ' Highlighter version '.s:Version
-  elseif l:cmd ==# '+'        | call s:SetHighlight('+', 'n', l:num)
+  elseif l:cmd ==# '+'        | call s:SetHighlight('+', l:opt, l:num)
   elseif l:cmd ==# '-'        | call s:SetHighlight('-', 'n', l:num)
   elseif l:cmd ==# '+x'       | call s:SetHighlight('+', 'x', l:num)
   elseif l:cmd ==# '-x'       | call s:SetHighlight('-', 'x', l:num)

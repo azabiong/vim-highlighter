@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                   `ver 1.37`
+                                                                   `ver 1.38`
                Introduction             |Hi-Introduction|
                Key Map                  |Hi-Key-Map|
                Sync Mode                |Hi-Sync-Mode|
@@ -294,8 +294,8 @@ Saving colors ~
 ------------------------------------------------------------------------------
 COMMANDS                                                 *:HI*  *:Hi*  *Hi-Commands*
 
-Highlighter commands start with `Hi` or `HI`, and are combined with the following
-commands using optional spaces.
+Highlighter commands start with `Hi` or `HI` for easy typing, and are combined
+with the following commands using optional spaces.
 
 1.Commands without default key mapping ~
 
@@ -354,16 +354,31 @@ commands using optional spaces.
     Load plugin default colors for current 'background' mode
 
 2.Commands with default key mappings ~
-                                                                          *:Hi+*
+                                                                    *:HI+*  *:Hi+*
  :Hi +  +x ~
     |HiSet| key function in normal mode (+), visual mode (+x)
-    Set highlight of the word under the cursor with optional color number
+    Set highlight of the word under the cursor or given expression
+    The optional color number can be specified before the command.
 >
-      :[number] Hi+
+        :[number] Hi+ [expression]
+<
+    Example:
+>
+        :Hi+              " HiSet key function in normal mode
+        :8 Hi+            " pick color number 8
+        :Hi+ pattern      " use this pattern to set highlights
+<  Tip~
+    It can be convenient to type in all uppercase letters.
+>
+        :HI+
+<
+    To paste the pattern used in your search:
+>
+        :Hi+ <C-R>/
 <                                                                         *:Hi-*
  :Hi -  -x~
     |HiErase| key function in normal mode (-), visual mode (-x)
-    Erase highlight of the word or pattern, or set `ONE TIME HIGHLIGHT`
+    Erase highlights of the pattern under the cursor, or set `ONE TIME HIGHLIGHT`
 
  :Hi >> ~
     Set `FOLLOWING HIGHLIGHT` mode
@@ -373,8 +388,8 @@ commands using optional spaces.
     Clear all highlights in the current window
                                                                       *:Hi/Find*
  :Hi/Find ~
-    `FIND IN FILES` command prompt activated by |HiFind| key in normal and
-    visual mode
+    `FIND IN FILES` command prompt activated by |HiFind| key in normal and visual
+    mode
 
 ------------------------------------------------------------------------------
 OPTIONS                                                             *Hi-Options*
@@ -493,6 +508,10 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.38~
+    Add highlighting using expression
+      :Hi+ pattern
+    Improve "Find" search using visual selection
 1.37~
     Add |HiCursorGuide| option to easily find cursor in 'Find' mode.
     Improve "save" command backup

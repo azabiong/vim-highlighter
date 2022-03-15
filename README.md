@@ -47,7 +47,14 @@
   You can also select an entire line and highlight it.
 
   <img width="296" alt="visual_line" src="https://user-images.githubusercontent.com/83812658/125556295-356322d3-4992-40fe-81f1-299ca5eb7007.png"> <br>
-  &nbsp;
+
+### Input
+
+  To set highlights using the pattern:
+  ```vim
+   :Hi + pattern
+  ```
+  <br>
 
 ## Sync Mode
 
