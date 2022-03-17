@@ -55,6 +55,10 @@ In visual mode, the highlight is selected as a pattern from the selection and
 applied to other words. To select the same pattern again, |gv| command would be
 useful. You can also select an entire line and highlight it.
 
+To set highlights using a pattern:
+>
+    :Hi + pattern
+<
 `HiFind` key is the shortcut for `FIND IN FILES HIGHLIGHT`
 
 ------------------------------------------------------------------------------
@@ -166,7 +170,7 @@ highlight patterns to make them easier to find.
 <
     <Tab> key completion for long options, directory and file names is supported.
 
-  Tip~
+  Tip ~
     You can use the `Up` key to select a previously entered command.
 >
       :Hi/Find  <Up>
@@ -181,7 +185,7 @@ highlight patterns to make them easier to find.
     Among various regular expression options in Vim, the plugin uses "very magic"
     style syntax which uses the standard regex syntax with fewer escape sequences.
 
-  Example~
+  Example ~
     * searching for "red" or "blue":
 >
       :Hi/Find  red|blue
@@ -297,35 +301,70 @@ COMMANDS                                                 *:HI*  *:Hi*  *Hi-Comma
 Highlighter commands start with `Hi` or `HI` for easy typing, and are combined
 with the following commands using optional spaces.
 
-1.Commands without default key mapping ~
-
- :Hi ~
+:Hi ~
     Print the plugin version
+                                                                    *:HI+*  *:Hi+*
+:Hi +  +x ~
+    |HiSet| key function in normal mode (+), visual mode (+x)
+    Set highlights of the word under the cursor, visual selection, or a given
+    expression. The optional color number can be specified before the command.
+>
+        :[number] Hi+ [expression]
+<
+  Example ~
+>
+        :Hi+              " HiSet key function in normal mode
+        :8 Hi+            " pick color number 8
+        :Hi+ pattern      " use this pattern to set highlights
+<  Tip ~
+    To paste the pattern used in your search:
+>
+        :Hi+ <C-R>/
+<
+    It can be convenient to type in all uppercase letters.
+>
+        :HI+
+<                                                                         *:Hi-*
+:Hi -  -x ~
+    |HiErase| key function in normal mode (-), visual mode (-x)
+    Erase highlights of the word under the cursor, visual selection,
+    or set `ONE TIME HIGHLIGHT`
+
+:Hi >> ~
+    Set `FOLLOWING HIGHLIGHT` mode
+                                                                     *:Hi:clear*
+:Hi :clear ~
+    |HiClear| key function
+    Clear all highlights in the current window
                                                                          *:Hi==*
- :Hi == ~
+:Hi == ~
     Synchronize highlighting of all windows in the current |tab-page|
                                                                          *:Hi=*
- :Hi = ~
+:Hi = ~
     Switch back to the default single window highlighting mode
                                                                          *:Hi=!*
- :Hi =! ~
+:Hi =! ~
     Toggle `SYNC MODE` of the current |tab-page|
                                                  *:Hi<>*  *:Hi<cword>*  *:Hi<cWORD>*
- :Hi <>  <cword>  <cWORD> ~
+:Hi <>  <cword>  <cWORD> ~
     Set word matching mode in `FOLLOWING HIGHLIGHT`
     <> toggle between two modes
                                                             *:Hi:save*  *:Hi:load*
- :Hi :save ~
- :Hi :load ~
+:Hi :save ~
+:Hi :load ~
     Save | Load highlights of the current window to/from the user configurable
     |HiKeywords| directory or relative path
                                                                         *:Hi:ls*
- :Hi :ls ~
+:Hi :ls ~
     Open the |HiKeywords| directory using |netrw| to browse and manage the list of
     highlight files
+                                                                      *:Hi/Find*
+:Hi/Find ~
+    `FIND IN FILES` command prompt activated by |HiFind| key in normal and visual
+    mode
                                                         *:Hi/next*  *:Hi/previous*
- :Hi /next ~
- :Hi /previous ~
+:Hi /next ~
+:Hi /previous ~
     Jump to the next | previous item in the `Find` list
     It will be convenient to use keyboard shortcuts for these commands to easily
     navigate the search list. For example:
@@ -335,61 +374,23 @@ with the following commands using optional spaces.
 <
     You can also define multifunction keys using |HiFind()| function.
                                                           *:Hi/older*  *:Hi/newer*
- :Hi /older ~
- :Hi /newer ~
+:Hi /older ~
+:Hi /newer ~
     Go to older | newer `Find` list in history
     It would also be convenient to map these commands somewhere. For example:
 >
       nn f<Left>  <Cmd>Hi/older<CR>
       nn f<Right> <Cmd>Hi/newer<CR>
 <                                                           *:Hi/open*  *:Hi/close*
- :Hi /open ~
- :Hi /close ~
+:Hi /open ~
+:Hi /close ~
     Open | Close `Find` window
                                                                          *:Hi//*
- :Hi // ~
+:Hi // ~
     Clear highlights of the `Find` result
                                                                    *:Hi:default*
- :Hi :default ~
+:Hi :default ~
     Load plugin default colors for current 'background' mode
-
-2.Commands with default key mappings ~
-                                                                    *:HI+*  *:Hi+*
- :Hi +  +x ~
-    |HiSet| key function in normal mode (+), visual mode (+x)
-    Set highlight of the word under the cursor or given expression
-    The optional color number can be specified before the command.
->
-        :[number] Hi+ [expression]
-<
-    Example:
->
-        :Hi+              " HiSet key function in normal mode
-        :8 Hi+            " pick color number 8
-        :Hi+ pattern      " use this pattern to set highlights
-<  Tip~
-    It can be convenient to type in all uppercase letters.
->
-        :HI+
-<
-    To paste the pattern used in your search:
->
-        :Hi+ <C-R>/
-<                                                                         *:Hi-*
- :Hi -  -x~
-    |HiErase| key function in normal mode (-), visual mode (-x)
-    Erase highlights of the pattern under the cursor, or set `ONE TIME HIGHLIGHT`
-
- :Hi >> ~
-    Set `FOLLOWING HIGHLIGHT` mode
-                                                                     *:Hi:clear*
- :Hi :clear ~
-    |HiClear| key function
-    Clear all highlights in the current window
-                                                                      *:Hi/Find*
- :Hi/Find ~
-    `FIND IN FILES` command prompt activated by |HiFind| key in normal and visual
-    mode
 
 ------------------------------------------------------------------------------
 OPTIONS                                                             *Hi-Options*

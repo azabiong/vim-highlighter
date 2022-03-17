@@ -50,7 +50,7 @@
 
 ### Input
 
-  To set highlights using the pattern:
+  To set highlights using a pattern:
   ```vim
    :Hi + pattern
   ```
