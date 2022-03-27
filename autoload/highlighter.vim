@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.38
+" Version: 1.38.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.38'
+let s:Version   = '1.38.2'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -419,7 +419,7 @@ function s:UpdateSync(op, group, pattern)
 endfunction
 
 function s:NoOption(op)
-  echo ' Hi: no matching options: '.a:op
+  echo ' Hi: no matching option: '.a:op
 endfunction
 
 " symbols: follow('>'), wait('_'), pos, timer, reltime, word
@@ -791,7 +791,8 @@ function s:ListFiles()
   if empty(l:path)
     echo ' no list' | return
   endif
-  exe 'Hexplore' l:path
+  bel new
+  exe 'Explore' l:path
 endfunction
 
 function s:Find(input)
@@ -878,19 +879,23 @@ function s:FindArgs(arg)
   let s:Find.hi_err = ''
   let l:opt = s:FindOptions(a:arg)
   let l:exp = s:FindUnescape(l:opt.exp)
+  let l:file = []
   if empty(l:opt._re)
     let s:Find.exp = l:exp.str
   elseif !empty(l:exp.str)
-    call add(s:Find.file, l:exp.str)
+    call add(l:file, l:exp.str)
   endif
   while !empty(l:exp.next)
     let l:exp = s:FindUnescape(l:exp.next)
-    call add(s:Find.file, l:exp.str)
+    call add(l:file, l:exp.str)
   endwhile
-  if empty(s:Find.file)
+  if empty(l:file)
     let s:Find.file = ['.']
   else
-    call map(s:Find.file, {i,v -> expand(v)})
+    call map(l:file, {i,v -> expand(v,0,1)})
+    for i in l:file
+      call extend(s:Find.file, i)
+    endfor
   endif
   call s:FindMatch(l:opt)
   return 1
@@ -1063,7 +1068,7 @@ function s:FindUnescape(arg)
     if l:q == -1
       return {'str':l:arg[1:-1], 'next':''}
     else
-      return {'str':l:arg[1:l:q-1], 'next':l:arg[l:q+1]}
+      return {'str':l:arg[1:l:q-1], 'next':l:arg[l:q+1:]}
     endif
   endif
 
@@ -1193,8 +1198,19 @@ function s:FindOpen(...)
   if s:FL.buf == -1 | echo ' no list' | return | endif
   let l:win = bufwinnr(s:FL.buf)
   if l:win == -1
+    if a:0
+      let l:pos = a:1
+    else
+      let l:pos = 0
+      if !empty(&buftype)
+        for i in range(winnr('$'), 1, -1)
+          if empty(winbufnr(i)->getbufvar('&buftype'))
+            exe i "wincmd w"
+          endif
+        endfor
+      endif
+    endif
     let l:prev = win_getid()
-    let l:pos = a:0 ? a:1: 0
     let s:FL.pos = l:pos
     exe ((l:pos % 2) ? 'vert' : '') ['bel', 'abo', 'abo', 'bel'][l:pos] 'sb' s:FL.buf
     if !(l:pos % 2)
@@ -1391,9 +1407,9 @@ function s:FindEdit(op)
     exe "normal!" l:file.row.'G'
     let l:scroll = l:file.row < l:top || l:file.row > l:bottom
     if !l:scroll
-      let l:bottom = l:top + l:height - 6
+      let l:bottom = max([l:top + l:height, l:bottom]) - 6
       let l:top += 4
-      let l:guide  = l:file.row < l:top || l:file.row > l:bottom
+      let l:guide = l:file.row < l:top || l:file.row > l:bottom
     endif
   else
     exe "edit +".l:file.row l:file.name
@@ -1619,7 +1635,7 @@ function highlighter#Complete(arg, line, pos)
       return getcompletion(a:arg, 'file')
     endif
   else  " commands
-    let l:opt1 = ['==', '>>', '<>', '//']
+    let l:opt1 = ['+ ', '==', '>>', '<>', '//']
     let l:opt2 = ['/next', '/previous', '/older', '/newer', '/open', '/close',
                 \ ':save ', ':load ', ':ls', ':default']
     if l:len == 1 && l:part[0] == 'Hi'
@@ -1650,8 +1666,8 @@ function highlighter#Find(mode)
 endfunction
 
 function highlighter#Command(cmd, ...)
-  if !exists("s:Colors")
-    if !s:Load() | return | endif
+  if !exists("s:Colors") && !s:Load()
+    return
   endif
   let l:num = a:0 ? a:1 : 0
   let l:arg = split(a:cmd)
@@ -1660,7 +1676,7 @@ function highlighter#Command(cmd, ...)
   let s:Search = 0
 
   if l:cmd == '+'
-    if len(a:cmd) > 2
+    if len(trim(a:cmd)) > 2
       let s:Input = a:cmd[2:]
       let l:opt = '='
     else
