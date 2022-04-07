@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.38.2
+" Version: 1.39
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.38.2'
+let s:Version   = '1.39'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -187,8 +187,8 @@ function s:SetHighlight(cmd, mode, num)
   endif
 
   let l:case = (&ic || stridx(@/, '\c') != -1) ? '\c' : ''
-  let l:deleted = s:DeleteMatch(l:match, '==', l:word)
   if l:color
+    call s:DeleteMatch(l:match, '==', l:word)
     if a:mode == 'n' && s:GetFocusMode(1, l:word)
       call s:SetFocusMode('>', '')
     else
@@ -206,18 +206,23 @@ function s:SetHighlight(cmd, mode, num)
       let s:Search = match(@/, l:word.l:case) != -1
     endif
   else
-    if !l:deleted
-      if a:mode == 'n'
-        let l:deleted = s:DeleteMatch(l:match, '≈n', s:GetStringPart())
-      else
-        let l:deleted = s:DeleteMatch(l:match, '≈x', l:visual)
+    if s:GetFocusMode('>', '')
+      let l:deleted = 0
+      if a:mode != 'n'
+        let s:HiMode['>'] = '<'
+      endif
+    else
+      let l:deleted = s:DeleteMatch(l:match, '==', l:word)
+      if !l:deleted
+        if a:mode == 'n'
+          let l:deleted = s:DeleteMatch(l:match, '≈n', s:GetStringPart())
+        else
+          let l:deleted = s:DeleteMatch(l:match, '≈x', l:visual)
+        endif
       endif
     endif
     if !l:deleted
-      if a:mode != 'n' && s:GetFocusMode('>', '')
-        let s:HiMode['>'] = '<'
-      endif
-      let s:Search = (s:SetFocusMode('.', l:word) == '1') && match(@/, l:word.l:case) != -1
+      let s:Search = (s:SetFocusMode('.', l:word) == '=') && match(@/, l:word.l:case) != -1
     endif
   endif
 endfunction
@@ -290,20 +295,21 @@ endfunction
 
 function s:GetFocusMode(mode, word)
   if !exists("s:HiMode") | return | endif
+  let l:match = empty(a:word) || s:HiMode['w'] ==# a:word
   if a:mode == 1
-    return !v:count && s:HiMode['>'] == '1' && s:HiMode['p'] == getpos('.') && s:HiMode['w'] ==# a:word
+    return !v:count && s:HiMode['>'] == '1' && s:HiMode['p'] == getpos('.') && l:match
   else
-    return s:HiMode['>'] == '>'
+    return s:HiMode['>'] == '>' && l:match
   endif
 endfunction
 
 " s:SetFocusMode(cmd) actions
-" |   mode  |   !   |  '1,<'  |   '>'   |
-" |   word  |   *   | !=   == | !=   == |
-" |-----+---|-------|---------|---------|  1:one-time
-" |     | . |   1   |  =   0  |  >   0  |  >:follow
-" | cmd | > |   >   |  >   >  |  >   >  |  =:update
-" |     | - |   0   |  0   0  |  0   0  |  0:off
+" |   mode  |   !   |  '1,<'  |   '>'   |  ! off   1  one-time    <  one-time_in_follow
+" |   word  |   *   | !=   == | !=   == |  * any   != not_match   == match
+" |-----+---|-------|---------|---------|
+" |     | . |   1   |  =   0  |  >   0  |  . check  1 one-time  = update   0 off
+" | cmd | > |   >   |  >   >  |  >   >  |  > follow
+" |     | - |   0   |  0   0  |  0   0  |  - off
 function s:SetFocusMode(cmd, word)
   if a:cmd == '.'
     if !exists("s:HiMode")
@@ -478,7 +484,7 @@ function s:SetHiWord(word)
   if s:HiMode['>'] == '1'
     call s:SetHiFocusWin(['HiOneTime', a:word, 10])
   else
-    call s:SetHiFocusWin(['HiFollow', a:word, -1])
+    call s:SetHiFocusWin(['HiFollow', a:word, 0])
   endif
   let s:HiMode['w'] = a:word
 endfunction
@@ -488,15 +494,13 @@ function s:GetKeywords()
   if !exists("s:Keywords['".l:ft."']")
     let s:Keywords[l:ft] = []
     let l:list = s:Keywords[l:ft]
-    for l:file in [s:Keywords.plug.'/'.l:ft, expand(g:HiKeywords).'/'.l:ft]
-      if filereadable(l:file)
-        for l:line in readfile(l:file)
-          if l:line[0] == '#' | continue | endif
-          let l:list += split(l:line)
-        endfor
-      endif
-    endfor
-    call uniq(sort(l:list))
+    let l:file = expand(g:HiKeywords).'/'.l:ft
+    if filereadable(l:file)
+      for l:line in readfile(l:file)
+        if l:line[0] == '#' | continue | endif
+        let l:list += split(l:line)
+      endfor
+    endif
   endif
   let s:Keywords['.'] = s:Keywords[l:ft]
 endfunction

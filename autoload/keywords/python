@@ -1,9 +1,0 @@
-# Python frequently used keywords
-
-import from
-if else elif and or not for in while break continue return try except raise
-class def pass lambda list tuple set dict type
-global nonlocal del with as len range iter next yield
-True False None
-
-print

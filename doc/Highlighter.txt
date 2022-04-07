@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                   `ver 1.38`
+                                                                   `ver 1.39`
                Introduction             |Hi-Introduction|
                Key Map                  |Hi-Key-Map|
                Sync Mode                |Hi-Sync-Mode|
@@ -510,6 +510,9 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.39~
+    Improve "Following Highlight" mode focusing, clear default skip keywords
+    Fix "Find" using wildcard file names
 1.38~
     Add highlighting using expression
       :Hi+ pattern
