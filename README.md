@@ -230,7 +230,7 @@
 
 #### 🍏 &nbsp;Tip
 
-> Pressing the number `1` before the `Hi/next` command invokes a special function that jumps to the first item in the search results. For example, in the mapping above, entering `1-` will jump to the first item.
+> Pressing the number `1` before the `Hi/next` command invokes a special function that jumps to the first item in the search results. For example, in the mapping above, entering `1` `-` will jump to the first item.
 
 ### Find window
 

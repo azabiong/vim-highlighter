@@ -8,7 +8,7 @@
                       |___/           |___/                                  ~
                                                                              ~
                       Azabiong <azabiongc@gmail.com>                         ~
-                              Licence: MIT                                   ~
+                              License: MIT                                   ~
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
@@ -175,8 +175,8 @@ highlight patterns to make them easier to find.
 >
       :Hi/Find  <Up>
 <
-    The `% Tab` key in the directory field enters the file name of the currently
-    focused buffer.
+    You can use the `%` or `% Tab` keys to enter the filename of the currently
+    focused buffer in the path field.
 >
       :Hi/Find  expression  %<Tab>
 <
@@ -241,7 +241,7 @@ highlight patterns to make them easier to find.
       nn f<Left>  <Cmd>Hi/older<CR>
       nn f<Right> <Cmd>Hi/newer<CR>
 < Tip ~
-    Pressing the number '1' before the |Hi/next| command invokes a special
+    Pressing the number `1` before the |Hi/next| command invokes a special
     function that jumps to the first item in the search results. For example,
     in the mapping above, entering `1-` will jump to the first item.
 
@@ -408,7 +408,7 @@ OPTIONS                                                             *Hi-Options*
 |HiKeywords| specifies the directory in which to save the highlights of the
     current window to a file. The default setting is:
 >
-        let HiKeywords = '$HOME/.vim/after/vim-highlighter'
+        let HiKeywords = '~/.vim/after/vim-highlighter'
 <
     The |Hi:ls| command opens |netrw| window for browsing and managing files in
     the directory.
@@ -451,6 +451,7 @@ OPTIONS                                                             *Hi-Options*
                                                                  *HiCursorGuide*
 |HiCursorGuide| option turns the cursor guide on and off to make it easier to find
     the cursor in `FIND IN FILES` mode.
+
     Default: 1 `(on)`
     Values:  0, 1
                                                                  *HiOneTimeWait*
@@ -468,11 +469,11 @@ OPTIONS                                                             *Hi-Options*
 
 STATUS VARIABLES ~
                                                                    *HiFindLines*
-|HiFindLines|  `read-only`
+|HiFindLines|
     This variable represents the number of lines found as a result of `FIND`
     `IN FILES` operation, which can be used to check if an item exists.
                                                                       *HiFind()*
-|HiFind()| This function returns whether the `Find` window is visible`(1)` or not`(0)`,
+|HiFind()| function returns whether the `Find` window is visible`(1)` or not`(0)`,
     which can be used to define multifunction keys.
 
     For example, the following configuration defines the `_` and `f-` keys
