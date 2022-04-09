@@ -114,8 +114,7 @@
   Pressing `HiSet` key over '**One Time Highlight**' without moving the cursor sets '**Following Highlight**' mode.
   The highlight follows the cursor. Pressing `HiEarase` key turns off the mode.
 
-  <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/153761231-4e2ccabe-899e-4625-923d-85d7a7ab83fd.gif"> <br>
-
+  <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/162587365-64092e0a-0b2f-4947-855a-171da12c8da6.gif"> <br>  
   '**Following Highlight**' displays matches in all windows of the current tab-page.  
 
 
@@ -386,58 +385,12 @@
 
 ## Installation
 
-  There are several options. Please choose your convenient way.
-
+You can use your preferred plugin manager using the string `'azabiong/vim-highlighter'`. For example:
+```vim
+ :Plug 'azabiong/vim-highlighter'
+```
 <details>
-<summary> vim-plug </summary>
-
-> &nbsp;  
-> in the Vim's command window:
-> ```vim
-> :Plug 'azabiong/vim-highlighter'
-> :PlugInstall
-> ```
-> copy the first line, and then insert it between the following section in your configuration file.
-> ```vim
-> call plug#begin()
-> call plug#end()
-> ```
-</details>
-
-<details>
-<summary> neobundle </summary>
-
-> &nbsp;  
-> in the Vim's command window:
-> ```vim
-> :NeoBundle 'azabiong/vim-highlighter'
-> :NeoBundleInstall
-> ```
-> copy the first line, and then insert it between the following section in your configuration file.
-> ```vim
-> call neobundle#begin()
-> call neobundle#end()
-> ```
-</details>
-
-<details>
-<summary> Vundle.vim </summary>
-
-> &nbsp;  
-> in the Vim's command window:
-> ```vim
-> :Plugin 'azabiong/vim-highlighter'
-> :PluginInstall
-> ```
-> copy the first line, and then insert it between the following section in your configuration file.
-> ```vim
-> call vundle#begin()
-> call vundle#end()
-> ```
-</details>
-
-<details>
-<summary> Vim 8 native </summary>
+<summary> &nbsp; or,&nbsp; Vim 8 pack feature: </summary>
 
 > &nbsp;  
 > default install directory:
@@ -458,7 +411,7 @@
   ```
     Linux   Vim 8.2
     Windows gVim 8.2
-    Mac     neovim 0.4.4  macVim 8.2
+    Mac     neovim 0.5.0  macVim 8.2
   ```
 
 ## Issues
