@@ -270,8 +270,8 @@ on the current 'background' mode.
     HiColor1, HiColor2, HiColor3, ... HiColor14
     HiFollow, HiOneTime, HiFind, HiGuide
 <
-You can add, change, reorder, and save colors using Vim's native |:hi| command,
-and see the changes in real time.
+You can use the |:hi| command to add, change, rearrange colors and save them to
+the configuration file or color scheme.
 
 Example 1 ~
 
@@ -290,11 +290,6 @@ Example 2 ~
 >
       :hi HiFind ctermfg=52 ctermbg=182 guifg=#570707 guibg=#e7bfe7
 <
-Saving colors ~
-
-    Highlight colors can be saved in the configuration file or color scheme file
-    using the format above.
-
 ------------------------------------------------------------------------------
 COMMANDS                                                 *:HI*  *:Hi*  *Hi-Commands*
 
@@ -494,7 +489,7 @@ STATUS VARIABLES ~
 ------------------------------------------------------------------------------
 REFERENCE                                                         *Hi-Reference*
 
-    The following tools will be useful when editing colors.
+    The following tools can be useful when editing colors.
 
     `xterm-color-table.vim` (https://github.com/guns/xterm-color-table.vim)
 
@@ -505,7 +500,6 @@ ISSUES                                                               *Hi-Issues*
 
 If you have any issues that need fixing, comments or new features you would
 like to add, please feel free to open an issue.
-
 
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
