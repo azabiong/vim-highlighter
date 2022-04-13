@@ -26,10 +26,10 @@
  The plugin uses the following default key mappings which you can assign in the configuration file.
 
  ```vim
-   let HiSet   = 'f<CR>'       " normal, visual
-   let HiErase = 'f<BS>'       " normal, visual
-   let HiClear = 'f<C-L>'      " normal
-   let HiFind  = 'f<Tab>'      " normal, visual
+   let HiSet   = 'f<CR>'
+   let HiErase = 'f<BS>'
+   let HiClear = 'f<C-L>'
+   let HiFind  = 'f<Tab>'
  ```
 
 > Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L` and `f Tab`
