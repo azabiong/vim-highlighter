@@ -5,11 +5,13 @@
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
 
- Highlighting keywords or lines can be useful when analyzing code, reviewing summaries, and quickly comparing spellings. This plugin extends Vim's highlighting capabilities with additional features such as saving and loading highlights, finding variables, and customizing colors.
+ Highlighting keywords or lines can be useful when analyzing code, reviewing summaries, and quickly comparing spellings.
+ This plugin extends Vim's highlighting capabilities with additional features such as saving and loading highlights, finding variables, and customizing colors.
 
 ### Contents
 
  &nbsp; &nbsp;
+ [Installation](#installation) <br> &nbsp; &nbsp;
  [Key Map](#key-map) <br> &nbsp; &nbsp;
  [Sync Mode](#sync-mode) <br> &nbsp; &nbsp;
  [Save & Load Highlights](#save--load-highlights) &nbsp; &nbsp; &nbsp; &nbsp;
@@ -18,7 +20,29 @@
  [Find in Files Highlight](#find-in-files-highlight) <br> &nbsp; &nbsp;
  [Customizing Colors](#customizing-colors) <br> &nbsp; &nbsp;
  [Configuration](#configuration-examples) <br> &nbsp; &nbsp;
- [Installation](#installation)  
+ <br>
+
+## Installation
+
+ You can use your preferred plugin manager using the string `'azabiong/vim-highlighter'`. For example:
+ ```vim
+   Plug 'azabiong/vim-highlighter'
+ ```
+ <details>
+ <summary> &nbsp; or,&nbsp; Vim 8 pack feature: </summary>
+
+> <br>
+>
+> |Linux, &nbsp; Mac| Windows &nbsp;|
+> |:--:|--|
+> |~/.vim| ~/vimfiles|
+>
+> in the terminal:
+> ```zsh
+> cd ~/.vim && git clone --depth=1 https://github.com/azabiong/vim-highlighter.git pack/azabiong/start/vim-highlighter
+> cd ~/.vim && vim -u NONE -c "helptags pack/azabiong/start/vim-highlighter/doc" -c q
+> ```
+ </details>
  <br>
 
 ## Key Map
@@ -31,7 +55,6 @@
    let HiClear = 'f<C-L>'
    let HiFind  = 'f<Tab>'
  ```
-
 > Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L` and `f Tab`
 
  In normal mode, `HiSet` and `HiErase` keys set or erase highlights of the word under the cursor. `HiClear` key clears all highlights.
@@ -66,7 +89,8 @@
  ```vim
   :Hi =
  ```
- '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.  
+ '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.
+
  <br>
 
 ## Save & Load Highlights
@@ -84,7 +108,8 @@
   :Hi save name
   :Hi load <Tab>
  ```
- Highlight files are stored in a user configurable `HiKeywords` directory. To browse and manage files in the directory, you can open **netrw** using the command:
+ Highlight files are stored in a user configurable `HiKeywords` directory.
+ To browse and manage files in the directory, you can open **netrw** using the command:
  ```vim
   :Hi ls
  ```
@@ -142,7 +167,8 @@
 
 ### Search tool
 
- If one of the tools listed above is in the $PATH, the plugin can run it using default options. You can set your preferred tool and options in the `HiFindTool` variable. For example:
+ If one of the tools listed above is in the $PATH, the plugin can run it using default options.
+ You can also set your preferred search tool and options in the `HiFindTool` variable. For example:
 
  ```vim
    let HiFindTool = 'grep -H -EnrI --exclude-dir=.git'
@@ -197,8 +223,9 @@
 
  <details>
  <summary><b> Fixed string or Literal option </b></summary>
- <br>
 
+> <br>
+>
 > This option treats the input as a literal string, which is useful when searching for codes with symbols.
 > ```
 >   ag,  rg,  grep,  git   -F --fixed-strings
@@ -258,8 +285,9 @@
 
  <details>
  <summary><b> Example 1 </b></summary>
- <br>
 
+> <br>
+>
 > This example adds two custom colors
 > <span style="inline">
 > <img alt="example" height=18 style="vertical-align:middle" src="https://user-images.githubusercontent.com/83812658/117539479-cc321b80-b045-11eb-82f6-f9cdf046a69d.png">
@@ -272,14 +300,15 @@
 >  :hi HiColor22 ctermfg=228 ctermbg=129 guifg=#ffff87 guibg=#af00ff
 > ```
 > Now, move the cursor to any word, and then input the number `21` and `HiSet` key.
-> Does it work? if you press `HiSet` key again, the next `HiColor22` will be set. You can try different values while seeing the results immediately.
-
+> Does it work? if you press `HiSet` key again, the next `HiColor22` will be set.
+> You can try different values while seeing the results immediately.
  </details>
 
  <details>
  <summary><b> Example 2 </b></summary>
- <br>
 
+> <br>
+>
 > The following command changes the color of '**Find in Files Highlight**'
 > ```vim
 >  :hi HiFind ctermfg=52 ctermbg=182 guifg=#570707 guibg=#e7bfe7
@@ -322,6 +351,21 @@
 > " hi HiColor30 ctermfg=none cterm=bold guifg=none gui=bold
 >
 > ```
+> <details>
+> <summary><b>&nbsp; nvim &nbsp;.lua </b></summary>
+>
+> ```lua
+> -- find key mappings
+> vim.cmd([[
+>   nn -        <Cmd>Hi/next<CR>
+>   nn _        <Cmd>Hi/previous<CR>
+>   nn f<Left>  <Cmd>Hi/older<CR>
+>   nn f<Right> <Cmd>Hi/newer<CR>
+> ]])
+> ```
+> </details>
+
+ <br>
  </details>
 
  <details>
@@ -336,13 +380,15 @@
 > hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
 > hi HiColor30 ctermfg=none cterm=bold guifg=none gui=bold
 > ```
->   
+>
 > You can now load colors using the **`colorscheme`** command:
 > ```vim
 > :colorscheme sample
 > ```
+
+ <br>
  </details>
- 
+
  <details>
  <summary><b> Multifunction keys </b></summary>
 
@@ -364,6 +410,28 @@
 >   endif
 > endfunction
 > ```
+>
+> <details>
+> <summary><b>&nbsp; nvim &nbsp;.lua </b></summary>
+>
+> ```lua
+> -- find key mappings
+> vim.cmd([[
+>   nn _   <Cmd>call v:lua.hi_optional('previous', '_')<CR>
+>   nn f-  <Cmd>call v:lua.hi_optional('close', 'f-')<CR>
+> ]])
+>
+> function _G.hi_optional(cmd, key)
+>   if vim.fn.HiFind() == 1 then
+>     vim.cmd('Hi '.. cmd)
+>   else
+>     vim.cmd('normal! '.. key)
+>   end
+> end
+> ```
+>
+> </details>
+
  </details>
  <br>
 
@@ -373,30 +441,6 @@
  ```vim
   :h HI
  ```
- <br>
-
-## Installation
-
- You can use your preferred plugin manager using the string `'azabiong/vim-highlighter'`. For example:
- ```vim
-  :Plug 'azabiong/vim-highlighter'
- ```
- <details>
- <summary> &nbsp; or,&nbsp; Vim 8 pack feature: </summary>
-
-> &nbsp;  
-> default install directory:
->
-> |Linux, &nbsp; Mac| Windows &nbsp;|
-> |:--:|--|
-> |~/.vim| ~/vimfiles|
->
-> in the terminal:
-> ```zsh
-> cd ~/.vim && git clone --depth=1 https://github.com/azabiong/vim-highlighter.git pack/azabiong/start/vim-highlighter
-> cd ~/.vim && vim -u NONE -c "helptags pack/azabiong/start/vim-highlighter/doc" -c q
-> ```
- </details>
  <br>
 
 ## Tested

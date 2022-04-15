@@ -154,8 +154,8 @@ highlight patterns to make them easier to find.
 1.Search tool ~
 
     If one of the tools listed above is in the `$PATH`, the plugin can run it
-    using default options. You can set your preferred tool and options in the
-    |HiFindTool| variable. For example:
+    using default options. You can also set your preferred search tool and
+    options in the |HiFindTool| variable. For example:
 >
         let HiFindTool = 'grep -H -EnrI --exclude-dir=.git'
 <
