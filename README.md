@@ -200,7 +200,7 @@
   :Hi/Find  [options]  expression  [directories_or_files]
  ```
 
- `Tab` key completion for long options, directory and file names is supported.
+ `Tab` key completion for --long-options, directory and file names is supported.
 
 ### Expression
 

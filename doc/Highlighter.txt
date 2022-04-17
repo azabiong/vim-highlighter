@@ -168,15 +168,15 @@ highlight patterns to make them easier to find.
 >
       :Hi/Find  [options]  expression  [directories_or_files]
 <
-    <Tab> key completion for long options, directory and file names is supported.
+    <Tab> key completion for --long-options, directory and file names is supported.
 
   Tip ~
     You can use the `Up` key to select a previously entered command.
 >
       :Hi/Find  <Up>
 <
-    You can use the `%` or `% Tab` keys to enter the filename of the currently
-    focused buffer in the path field.
+    To enter the filename of the currently focused buffer in the path field,
+     `%` or `% Tab` keys can be useful.
 >
       :Hi/Find  expression  %<Tab>
 <
@@ -306,15 +306,14 @@ with the following commands using optional spaces.
 >
         :[number] Hi+ [expression]
 <
-  Example ~
->
-        :Hi+              " HiSet key function in normal mode
-        :8 Hi+            " pick color number 8
-        :Hi+ pattern      " use this pattern to set highlights
+  Example >
+        :Hi+            " HiSet key function in normal mode
+        :8 Hi+          " pick color number 8 and set highlight
+        :Hi+ pattern    " use this pattern to set highlights
 <  Tip ~
     To paste the pattern used in your search:
 >
-        :Hi+ <C-R>/
+        :Hi+ CTRL-R /
 <
     It can be convenient to type in all uppercase letters.
 >
