@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.39
+" Version: 1.39.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.39'
+let s:Version   = '1.39.2'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -625,19 +625,17 @@ function s:SetHiSync(win)
 endfunction
 
 function s:SetHiFocusWin(hi)
-  let l:win = winnr()
-  noa windo call <SID>SetHiFocus(a:hi)
-  noa exe l:win "wincmd w"
-endfunction
-
-function s:SetHiFocus(hi)
-  if exists("w:HiFocus")
-    call matchdelete(w:HiFocus)
-    unlet w:HiFocus
-  endif
-  if !empty(a:hi)
-    let w:HiFocus = matchadd(a:hi[0], a:hi[1], a:hi[2])
-  endif
+  for w in range(1, winnr('$'))
+    let l:focus = getwinvar(w, 'HiFocus')
+    if l:focus
+      call matchdelete(l:focus, w)
+      call setwinvar(w, 'HiFocus', '')
+    endif
+    if !empty(a:hi)
+      let l:focus = matchadd(a:hi[0], a:hi[1], a:hi[2], -1, {'window': w})
+      call setwinvar(w, 'HiFocus', l:focus)
+    endif
+  endfor
 endfunction
 
 function s:SetHiFindWin(on, buf)
@@ -681,7 +679,7 @@ function s:SetHiGuide(tid)
     let s:Guide.right = col('.')
     let s:Guide.left = max([s:Guide.right-6, 1])
     let s:Guide.win = win_getid()
-  endi
+  endif
   if !s:Guide.win || s:Guide.left >= s:Guide.right
     return
   endif
