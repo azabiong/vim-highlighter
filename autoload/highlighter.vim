@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.39.2
+" Version: 1.39.6
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,14 +21,14 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.39.2'
+let s:Version   = '1.39.6'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
 let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'edit':0,
-                  \'logs':[{'list':[], 'status':'', 'select':0, 'hi':[]}], 'index':0, 'log':''}
+                  \'logs':[{'list':[], 'status':'', 'select':0, 'hi':[], 'base':''}], 'index':0, 'log':''}
 let s:FindOpts  = ['--literal', '_li', '--fixed-strings', '_li', '--smart-case', '_sc', '--ignore-case',  '_ic',
                   \'--word-regexp', '_wr', '--regexp', '_re']
 let s:FindTools = ['rg -H --color=never --no-heading --column --smart-case',
@@ -993,7 +993,7 @@ function s:FindOptions(arg)
   return l:opt
 endfunction
 
-" return 'next' value -- 0:none, 1:with_value, 2:with_regexp
+" returns 'next' value -- 0:none, 1:with_value, 2:with_regexp
 function s:FindFlag(opts, op)
   let l:options = ['single', 'single!', 'with_value', 'with_value!']
   let l:f = (a:op[1] == '-') ? a:op : a:op[:1]
@@ -1157,7 +1157,7 @@ function s:FindStart(arg)
 
   let s:FL.log = s:FL.logs[-1]
   if !empty(s:FL.log.list)
-    call add(s:FL.logs, {'list':[], 'status':'', 'select':0, 'hi':[]})
+    call add(s:FL.logs, {'list':[], 'status':'', 'select':0, 'hi':[], 'base':''})
   endif
   let l:logs = len(s:FL.logs)
   let g:HiFindHistory = min([max([2, g:HiFindHistory]), 10])
@@ -1172,6 +1172,7 @@ function s:FindStart(arg)
   let s:FL.log.status = l:status
   let s:FL.log.select = 0
   let s:FL.log.hi = []
+  let s:FL.log.base = getcwd()
   let s:Find.hi = []
   let s:Find.hi_tag += 1
   let s:Find.line = ''
@@ -1328,10 +1329,16 @@ function s:FindSelect(line)
 
   let l:pos = 2
   let l:file = matchstr(l:line, '\v[^:]*', l:pos)
-  if !filereadable(l:file)
-    let l:file .= ':'.matchstr(l:line, '\v[^:]*', l:pos + len(l:file) + 1)
+  if s:FL.log.base != getcwd() && fnamemodify(l:file, ':p') != l:file
+    let l:path = s:FL.log.base.'/'.l:file
+  else
+    let l:path = l:file
   endif
-  if !filereadable(l:file) | return | endif
+  if !filereadable(l:path)  " drive letter
+    let l:file .= ':'.matchstr(l:line, '\v[^:]*', l:pos + len(l:file) + 1)
+    let l:path = l:file
+    if !filereadable(l:path) | return | endif
+  endif
 
   call setbufvar(s:FL.buf, '&ma', 1)
   let l:pos += len(l:file) + 1
@@ -1345,7 +1352,7 @@ function s:FindSelect(line)
   call setbufline(s:FL.buf, l:num, '| '.l:line[2:])
   call setbufvar(s:FL.buf, '&ma', 0)
   let s:FL.log.select = l:num
-  return {'name':l:file, 'row':l:row, 'col':l:col}
+  return {'name':l:path, 'row':l:row, 'col':l:col}
 endfunction
 
 function s:FindRotate()
@@ -1402,9 +1409,10 @@ function s:FindEdit(op)
     wincmd p
   endif
 
-  let l:height = winheight(0)
   let [l:scroll, l:guide] = [0, 0]
-  if fnamemodify(bufname(), ':p') ==# fnamemodify(l:file.name, ':p')
+  let l:height = winheight(0)
+  let l:buf = [bufnr(fnamemodify(bufname(), ':p')), bufnr(fnamemodify(l:file.name, ':p'))]
+  if l:buf[0] != -1 && l:buf[0] == l:buf[1]
     let [l:top, l:bottom] = [line('w0'), line('w$')]
     exe "normal!" l:file.row.'G'
     let l:scroll = l:file.row < l:top || l:file.row > l:bottom
@@ -1686,27 +1694,27 @@ function highlighter#Command(cmd, ...)
     endif
   endif
 
-  if     l:cmd ==# ''         | echo ' Highlighter version '.s:Version
-  elseif l:cmd ==# '+'        | call s:SetHighlight('+', l:opt, l:num)
-  elseif l:cmd ==# '-'        | call s:SetHighlight('-', 'n', l:num)
-  elseif l:cmd ==# '+x'       | call s:SetHighlight('+', 'x', l:num)
-  elseif l:cmd ==# '-x'       | call s:SetHighlight('-', 'x', l:num)
-  elseif l:cmd ==# '>>'       | call s:SetFocusMode('>', '')
-  elseif l:cmd =~# '^<\w*>'   | call s:SetWordMode(l:cmd)
-  elseif l:cmd =~# '^=.\?'    | call s:SetSyncMode(l:cmd)
-  elseif l:cmd ==# 'Find'     | call s:Find(a:cmd[5:])
-  elseif l:cmd ==# 'next'     | call s:FindNextPrevious('+', l:num)
-  elseif l:cmd ==# 'previous' | call s:FindNextPrevious('-', l:num)
-  elseif l:cmd ==# 'older'    | call s:FindOlderNewer('-', l:num)
-  elseif l:cmd ==# 'newer'    | call s:FindOlderNewer('+', l:num)
-  elseif l:cmd ==# 'open'     | call s:FindOpen()
-  elseif l:cmd ==# 'close'    | call s:FindCloseWin()
-  elseif l:cmd ==# '/'        | call s:FindClear()
-  elseif l:cmd ==? 'clear'    | call s:SetHighlight('--', 'n', 0) | call s:SetFocusMode('-', '') | call s:FindClear()
-  elseif l:cmd ==? 'default'  | call s:SetColors(1)
-  elseif l:cmd ==? 'save'     | call s:SaveHighlight(l:val)
-  elseif l:cmd ==? 'load'     | call s:LoadHighlight(l:val)
-  elseif l:cmd ==? 'ls'       | call s:ListFiles()
+  if     l:cmd ==# ''        | echo ' Highlighter version '.s:Version
+  elseif l:cmd ==# '+'       | call s:SetHighlight('+', l:opt, l:num)
+  elseif l:cmd ==# '-'       | call s:SetHighlight('-', 'n', l:num)
+  elseif l:cmd ==# '+x'      | call s:SetHighlight('+', 'x', l:num)
+  elseif l:cmd ==# '-x'      | call s:SetHighlight('-', 'x', l:num)
+  elseif l:cmd ==# '>>'      | call s:SetFocusMode('>', '')
+  elseif l:cmd =~# '^<\w*>'  | call s:SetWordMode(l:cmd)
+  elseif l:cmd =~# '^=.\?'   | call s:SetSyncMode(l:cmd)
+  elseif l:cmd ==# 'Find'    | call s:Find(a:cmd[5:])
+  elseif l:cmd ==# 'next'    | call s:FindNextPrevious('+', l:num)
+  elseif l:cmd ==# 'previous'| call s:FindNextPrevious('-', l:num)
+  elseif l:cmd ==# 'older'   | call s:FindOlderNewer('-', l:num)
+  elseif l:cmd ==# 'newer'   | call s:FindOlderNewer('+', l:num)
+  elseif l:cmd ==# 'open'    | call s:FindOpen()
+  elseif l:cmd ==# 'close'   | call s:FindCloseWin()
+  elseif l:cmd ==# '/'       | call s:FindClear()
+  elseif l:cmd ==? 'clear'   | call s:SetHighlight('--', 'n', 0) | call s:SetFocusMode('-', '') | call s:FindClear()
+  elseif l:cmd ==? 'default' | call s:SetColors(1)
+  elseif l:cmd ==? 'save'    | call s:SaveHighlight(l:val)
+  elseif l:cmd ==? 'load'    | call s:LoadHighlight(l:val)
+  elseif l:cmd ==? 'ls'      | call s:ListFiles()
   else
     echo ' Hi: no matching command: '.l:cmd
   endif
