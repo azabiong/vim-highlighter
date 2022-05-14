@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                   `ver 1.39`
+                                                                  `ver 1.39.8`
                Introduction             |Hi-Introduction|
                Key Map                  |Hi-Key-Map|
                Sync Mode                |Hi-Sync-Mode|
@@ -323,7 +323,15 @@ with the following commands using optional spaces.
     |HiErase| key function in normal mode (-), visual mode (-x)
     Erase highlights of the word under the cursor, visual selection,
     or set `ONE TIME HIGHLIGHT`
-
+                                                                         *:Hi>*
+:Hi > ~
+:Hi < ~
+    Jump forward or backward to the most recently set highlight.
+    It can be convenient to use key mapping for these commands, for example:
+>
+      nn g<CR>  <Cmd>Hi><CR>
+      nn g\     <Cmd>Hi<<CR>
+<                                                                        *:Hi>>*
 :Hi >> ~
     Set `FOLLOWING HIGHLIGHT` mode
                                                                      *:Hi:clear*
@@ -503,9 +511,12 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.39.8~
+    Add |Hi>| command to jump to the most recently set highlight
+    Support "Find" navigation after changing current directory
 1.39~
     Improve "Following Highlight" mode focusing, clear default skip keywords
-    Fix "Find" using wildcard file names
+    Fix "Find" using wild card file names
 1.38~
     Add highlighting using expression
       :Hi+ pattern
