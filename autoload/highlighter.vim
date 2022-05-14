@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.39.6
+" Version: 1.39.8
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.39.6'
+let s:Version   = '1.39.8'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -111,6 +111,7 @@ function s:Load()
   let s:Colors = (s:Check < 256) ? s:Colors16 : s:ColorsDark
   let s:Color = 'HiColor'
   let s:Number = 0
+  let s:Focus = deepcopy(s:Guide)
   let s:Wait = [g:HiOneTimeWait, g:HiFollowWait]
   let s:WaitRange = [[0, 320], [260, 520]]
   let s:Word = '<cword>'
@@ -660,7 +661,7 @@ function s:SetHiFind(on, buf)
   endif
 endfunction
 
-function s:SetHiGuide(tid)
+function s:SetFindGuide(tid)
   if !g:HiCursorGuide | return | endif
   if win_id2win(s:Guide.win)
     if s:Guide.mid
@@ -684,8 +685,25 @@ function s:SetHiGuide(tid)
     return
   endif
   let s:Guide.mid = matchaddpos('HiGuide', [[s:Guide.line, s:Guide.left, 2]], 1, -1, {'window': s:Guide.win})
-  let s:Guide.tid = timer_start(50, function('s:SetHiGuide'))
+  let s:Guide.tid = timer_start(50, function('s:SetFindGuide'))
   let s:Guide.left += 1
+endfunction
+
+function s:SetJumpGuide(tid, length=0)
+  if s:Focus.tid
+    call timer_stop(s:Focus.tid)
+  endif
+  if win_id2win(s:Focus.win)
+    if s:Focus.mid
+      call matchdelete(s:Focus.mid, s:Focus.win)
+    endif
+  endif
+  let s:Focus = {'tid':0, 'win':0, 'mid':0}
+  if a:length
+    let s:Focus.win = win_getid()
+    let s:Focus.mid = matchaddpos('HiOneTime', [[line('.'), col('.'), a:length]], 1, -1, {'window': s:Focus.win})
+    let s:Focus.tid = timer_start(280, function('s:SetJumpGuide'))
+  endif
 endfunction
 
 function s:GetKeywordsPath(op)
@@ -795,6 +813,29 @@ function s:ListFiles()
   endif
   bel new
   exe 'Explore' l:path
+endfunction
+
+function s:Jump(op, count)
+  let l:count = a:count ? a:count : (v:count ? v:count : 1)
+  let l:matches = getmatches()
+  let i = len(l:matches)
+  while i > 0
+    let i -= 1
+    let l:m = l:matches[i]
+    if match(l:m.group, s:Color) == 0
+      let l:match = l:matches[i]
+      let l:jump = 0
+      while l:count
+        let l:jump += search(l:match.pattern, (a:op == '<' ? 'b' : '')) > 0
+        let l:count -= 1
+      endwhile
+      if l:jump
+        let l:len = len(matchstr(getline('.'), l:match.pattern, col('.')-1))
+        call s:SetJumpGuide(0, l:len)
+      endif
+      break
+    endif
+  endwhile
 endfunction
 
 function s:Find(input)
@@ -1433,7 +1474,7 @@ function s:FindEdit(op)
   exe "normal!" l:file.col.'|'
   let s:FL.edit = s:FL.log.select
   if l:guide
-    call s:SetHiGuide(0)
+    call s:SetFindGuide(0)
   endif
   call s:SetHiFind(1, 0)
 endfunction
@@ -1702,6 +1743,8 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '>>'      | call s:SetFocusMode('>', '')
   elseif l:cmd =~# '^<\w*>'  | call s:SetWordMode(l:cmd)
   elseif l:cmd =~# '^=.\?'   | call s:SetSyncMode(l:cmd)
+  elseif l:cmd ==# '>'       | call s:Jump('>', l:num)
+  elseif l:cmd ==# '<'       | call s:Jump('<', l:num)
   elseif l:cmd ==# 'Find'    | call s:Find(a:cmd[5:])
   elseif l:cmd ==# 'next'    | call s:FindNextPrevious('+', l:num)
   elseif l:cmd ==# 'previous'| call s:FindNextPrevious('-', l:num)
