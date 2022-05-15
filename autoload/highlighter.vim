@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.39.8
+" Version: 1.39.9
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.39.8'
+let s:Version   = '1.39.9'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -172,20 +172,21 @@ function s:SetHighlight(cmd, mode, num)
 
   if a:mode == 'n'
     let l:word = escape(expand('<cword>'), '\')
-    let l:word = '\V\<'.l:word.'\>'
+    let l:pattern = '\V\<'.l:word.'\>'
   elseif a:mode == '='
     let l:word = escape(s:Input, "'\"")
     let l:magic = &magic ? '\m' : '\M'
-    let l:word = l:magic.l:word
+    let l:pattern = l:magic.l:word
   else
     let l:visual = trim(s:GetVisualLine())
     let l:word = escape(l:visual, '\')
-    let l:word = '\V'.l:word
+    let l:pattern = '\V'.l:word
   endif
   if empty(l:word)
     if !l:color | call s:SetFocusMode('-', '') | endif
     return
   endif
+  let l:word = l:pattern
 
   let l:case = (&ic || stridx(@/, '\c') != -1) ? '\c' : ''
   if l:color
