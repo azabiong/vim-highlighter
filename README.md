@@ -80,10 +80,12 @@
 
 ### Jump
 
- You can use the `Hi >` and `Hi <` commands to jump forward or backward to the most recently set highlight.
+ You can use the `Hi <` and `Hi >` commands to jump back and forth to the most recently set highlight.
  ```vim
   :Hi >
  ```
+ > Please see the [Configuration](#configuration-examples) section for easy key mapping.
+
  <br>
 
 ## Sync Mode
