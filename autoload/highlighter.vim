@@ -824,6 +824,7 @@ function s:Jump(op, count)
     let l:m = l:matches[i]
     if match(l:m.group, s:Color) == 0
       let l:match = l:matches[i]
+      if !search(l:match.pattern, 'nw') | continue | endif
       let l:jump = 0
       while l:count
         let l:jump += search(l:match.pattern, (a:op == '<' ? 'b' : '')) > 0
