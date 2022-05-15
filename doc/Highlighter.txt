@@ -59,17 +59,22 @@ To set highlights using a pattern:
 >
     :Hi + pattern
 <
+You can use the `Hi >` and `Hi <` commands to jump forward or backward to the
+most recently set highlight.
+>
+    :Hi >
+<
 `HiFind` key is the shortcut for `FIND IN FILES HIGHLIGHT`
 
 ------------------------------------------------------------------------------
 SYNC MODE                                                         *Hi-Sync-Mode*
 
-You can synchronize highlighting of the current window with other split windows
-using the command:
+When you want to synchronize highlighting of the current window with other split
+windows, you can use:
 >
     :Hi ==
 <
-and switch back to single window highlighting mode using:
+and to switch back to single window highlighting mode:
 >
     :Hi =
 <
@@ -323,15 +328,16 @@ with the following commands using optional spaces.
     |HiErase| key function in normal mode (-), visual mode (-x)
     Erase highlights of the word under the cursor, visual selection,
     or set `ONE TIME HIGHLIGHT`
-                                                                         *:Hi>*
+                                                                   *:Hi>*  *:Hi<*
 :Hi > ~
 :Hi < ~
     Jump forward or backward to the most recently set highlight.
-    It can be convenient to use key mapping for these commands, for example:
+    An optional jump count can be specified before the command. It can be
+    convenient to use key mapping for these commands, for example:
 >
-      nn g<CR>  <Cmd>Hi><CR>
-      nn g\     <Cmd>Hi<<CR>
-<                                                                        *:Hi>>*
+      nn <CR>   <Cmd>Hi><CR>
+      nn g<CR>  <Cmd>Hi<<CR>
+<                                                                         *:Hi>>*
 :Hi >> ~
     Set `FOLLOWING HIGHLIGHT` mode
                                                                      *:Hi:clear*

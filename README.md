@@ -77,15 +77,22 @@
  ```vim
   :Hi + pattern
  ```
+
+### Jump
+
+ You can use the `Hi >` and `Hi <` commands to jump forward or backward to the most recently set highlight.
+ ```vim
+  :Hi >
+ ```
  <br>
 
 ## Sync Mode
 
- You can synchronize highlighting of the current window with other split windows with the command:
+When you want to synchronize highlighting of the current window with other split windows, you can use:
  ```vim
   :Hi ==
  ```
- and switch back to single window highlighting mode using:
+ and to switch back to single window highlighting mode:
  ```vim
   :Hi =
  ```
@@ -332,6 +339,10 @@
 > " let HiClear = 'f<C-L>'
 > " let HiFind  = 'f<Tab>'
 >
+> " jump key mappings
+> nn <CR>   <Cmd>Hi><CR>
+> nn g<CR>  <Cmd>Hi<<CR>
+>
 > " find key mappings
 > nn -        <Cmd>Hi/next<CR>
 > nn _        <Cmd>Hi/previous<CR>
@@ -355,8 +366,11 @@
 > <summary><b>&nbsp; nvim &nbsp;.lua </b></summary>
 >
 > ```lua
-> -- find key mappings
+> -- jump and find key mappings
 > vim.cmd([[
+>   nn <CR>     <Cmd>Hi><CR>
+>   nn g<CR>    <Cmd>Hi<<CR>
+>
 >   nn -        <Cmd>Hi/next<CR>
 >   nn _        <Cmd>Hi/previous<CR>
 >   nn f<Left>  <Cmd>Hi/older<CR>
