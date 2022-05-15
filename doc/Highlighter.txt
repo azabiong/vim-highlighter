@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                          *Highlighter*
-                                                                  `ver 1.39.8`
+                                                                  `ver 1.39.9`
                Introduction             |Hi-Introduction|
                Key Map                  |Hi-Key-Map|
                Sync Mode                |Hi-Sync-Mode|
@@ -519,7 +519,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.39.8~
+1.39.9~
+    Fix selecting empty pattern (issue #7)
     Add |Hi>| command to jump to the most recently set highlight
     Support "Find" navigation after changing current directory
 1.39~
