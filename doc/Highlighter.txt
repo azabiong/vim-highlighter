@@ -333,9 +333,9 @@ with the following commands using optional spaces.
                                                                    *:Hi>*  *:Hi<*
 :Hi > ~
 :Hi < ~
-    Jump forward or backward to the most recently set highlight.
-    An optional jump count can be specified before the command. It can be
-    convenient to use key mapping for these commands, for example:
+    Jump forward and backward to the most recently set highlight.
+    An optional jump count can be specified before the command. It would be
+    convenient to use shortcut keys for these commands, for example:
 >
       nn <CR>   <Cmd>Hi><CR>
       nn g<CR>  <Cmd>Hi<<CR>
