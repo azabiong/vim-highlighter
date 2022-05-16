@@ -178,8 +178,8 @@ function s:SetHighlight(cmd, mode, num)
     let l:magic = &magic ? '\m' : '\M'
     let l:pattern = l:magic.l:word
   else
-    let l:visual = trim(s:GetVisualLine())
-    let l:word = escape(l:visual, '\')
+    let l:visual = s:GetVisualLines()
+    let l:word = join(map(l:visual, 'escape(v:val, ''\'')'), '\n')
     let l:pattern = '\V'.l:word
   endif
   if empty(l:word)
@@ -254,6 +254,22 @@ function s:GetVisualLine()
   endif
   let l:line = getline(l:top)
   return l:line[l:left-1 : l:right]
+endfunction
+
+" Adapt from StackOverflow #1533565
+function s:GetVisualLines()
+  let [l:top, l:left] = getpos("'<")[1:2]
+  let [l:bottom, l:right] = getpos("'>")[1:2]
+  let l:lines = getline(l:top, l:bottom)
+  if len(l:lines) == 0
+      return ''
+  endif
+  if l:right > 0
+    let l:right -= &selection == 'inclusive' ? 1 : 2
+  endif
+  let l:lines[-1] = l:lines[-1][: l:right]
+  let l:lines[0] = l:lines[0][l:left - 1:]
+  return l:lines
 endfunction
 
 function s:DeleteMatch(match, op, part)
