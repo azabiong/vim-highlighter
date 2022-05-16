@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.39.9
+" Version: 1.40
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.39.9'
+let s:Version   = '1.40'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -247,12 +247,16 @@ endfunction
 function s:GetVisualLine()
   let [l:top, l:left] = getpos("'<")[1:2]
   let [l:bottom, l:right] = getpos("'>")[1:2]
-  if l:top != l:bottom | let l:right = -1 | endif
-  if l:left == l:right | return '' | endif
-  if l:right > 0
-    let l:right -= &selection == 'inclusive' ? 1 : 2
-  endif
   let l:line = getline(l:top)
+  if l:top != l:bottom | let l:right = -1 | endif
+  if l:right > 0
+    if &selection == 'exclusive'
+      if l:left == l:right | return '' | endif
+    else
+      let l:right += len(matchstr(l:line, '\%'.l:right.'c.'))
+    endif
+    let l:right -= 2
+  endif
   return l:line[l:left-1 : l:right]
 endfunction
 

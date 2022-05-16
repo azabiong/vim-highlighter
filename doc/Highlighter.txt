@@ -11,8 +11,8 @@
                               License: MIT                                   ~
                                                                              ~
 ------------------------------------------------------------------------------
-CONTENTS                                                          *Highlighter*
-                                                                  `ver 1.39.9`
+CONTENTS                                                           *Highlighter*
+                                                                    `ver 1.40`
                Introduction             |Hi-Introduction|
                Key Map                  |Hi-Key-Map|
                Sync Mode                |Hi-Sync-Mode|
@@ -23,9 +23,9 @@ CONTENTS                                                          *Highlighter*
                Customizing Colors       |Hi-Customizing-Colors|
                Commands                 |Hi-Commands|
                Options                  |Hi-Options|
-               Reference                |Hi-Reference|
                Issues                   |Hi-Issues|
                Log                      |Hi-Log|
+               Credits                  |Hi-Credits|
 
 ------------------------------------------------------------------------------
 INTRODUCTION                                                   *Hi-Introduction*
@@ -502,15 +502,6 @@ STATUS VARIABLES ~
         endfunction
 <
 ------------------------------------------------------------------------------
-REFERENCE                                                         *Hi-Reference*
-
-    The following tools can be useful when editing colors.
-
-    `xterm-color-table.vim` (https://github.com/guns/xterm-color-table.vim)
-
-    `vim-hexokinase` (https://github.com/RRethy/vim-hexokinase)
-
-------------------------------------------------------------------------------
 ISSUES                                                               *Hi-Issues*
 
 If you have any issues that need fixing, comments or new features you would
@@ -519,15 +510,15 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.39.9~
-    Fix selecting empty pattern (issue #7)
+1.40~
+    Upgrade visual mode selection (issue #7)
     Add |Hi>| command to jump to the most recently set highlight
     Support "Find" navigation after changing current directory
 1.39~
     Improve "Following Highlight" mode focusing, clear default skip keywords
     Fix "Find" using wild card file names
 1.38~
-    Add highlighting using expression
+    Add highlighting using expression (issue #5)
       :Hi+ pattern
     Improve "Find" search using visual selection
 1.37~
@@ -627,6 +618,16 @@ LOG                                                                     *Hi-Log*
     Fix buffer switching error
 1.0~
     Initial upload
+
+------------------------------------------------------------------------------
+CREDITS                                                             *Hi-Credits*
+
+I would like to thank the following people for feature suggestions, code
+contributions and help in resolving the problems.
+
+Jason Zheng - Upgrade visual selection (issue #7)
+
+Miguel Pérez Pasalodos - Add highlighting using pattern (issue #5)
 
 ------------------------------------------------------------------------------
 Vim:tw=80:ts=4:ft=help:nowrap:norl
