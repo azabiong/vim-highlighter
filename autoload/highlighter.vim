@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.40
+" Version: 1.40.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.40'
+let s:Version   = '1.40.2'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -61,7 +61,7 @@ function s:Load()
     \ ['HiOneTime', 'ctermfg=233 ctermbg=152 cterm=none guifg=#001020 guibg=#a8d2d8 gui=none'],
     \ ['HiFollow',  'ctermfg=233 ctermbg=151 cterm=none guifg=#002f00 guibg=#a8d0b8 gui=none'],
     \ ['HiFind',    'ctermfg=52  ctermbg=187 cterm=none guifg=#470000 guibg=#d8c2b0 gui=none'],
-    \ ['HiGuide',   'ctermfg=188 ctermbg=62  cterm=none guifg=#d8d8d8 guibg=#4030e8 gui=none'],
+    \ ['HiGuide',   'ctermfg=188 ctermbg=62  cterm=none guifg=#d0d0d8 guibg=#4848e8 gui=none'],
     \ ['HiColor1',  'ctermfg=234 ctermbg=113 cterm=none guifg=#001737 guibg=#82c85a gui=none'],
     \ ['HiColor2',  'ctermfg=52  ctermbg=179 cterm=none guifg=#500000 guibg=#e6b058 gui=none'],
     \ ['HiColor3',  'ctermfg=225 ctermbg=90  cterm=none guifg=#f8dff6 guibg=#8f2f8f gui=none'],
@@ -668,11 +668,10 @@ endfunction
 
 function s:SetFindGuide(tid)
   if !g:HiCursorGuide | return | endif
-  if win_id2win(s:Guide.win)
-    if s:Guide.mid
-      call matchdelete(s:Guide.mid, s:Guide.win)
-    endif
-  else
+  if s:Guide.mid && win_id2tabwin(s:Guide.win)[0]
+    call matchdelete(s:Guide.mid, s:Guide.win)
+  endif
+  if !win_id2win(s:Guide.win)
     let s:Guide.win = 0
   endif
   let s:Guide.mid = 0
@@ -695,19 +694,18 @@ function s:SetFindGuide(tid)
 endfunction
 
 function s:SetJumpGuide(tid, length=0)
+  if !g:HiCursorGuide | return | endif
   if s:Focus.tid
     call timer_stop(s:Focus.tid)
   endif
-  if win_id2win(s:Focus.win)
-    if s:Focus.mid
-      call matchdelete(s:Focus.mid, s:Focus.win)
-    endif
+  if s:Focus.mid && win_id2tabwin(s:Focus.win)[0]
+    call matchdelete(s:Focus.mid, s:Focus.win)
   endif
   let s:Focus = {'tid':0, 'win':0, 'mid':0}
   if a:length
     let s:Focus.win = win_getid()
-    let s:Focus.mid = matchaddpos('HiOneTime', [[line('.'), col('.'), a:length]], 1, -1, {'window': s:Focus.win})
-    let s:Focus.tid = timer_start(280, function('s:SetJumpGuide'))
+    let s:Focus.mid = matchaddpos('HiGuide', [[line('.'), col('.'), a:length]], 1, -1, {'window': s:Focus.win})
+    let s:Focus.tid = timer_start(230, function('s:SetJumpGuide'))
   endif
 endfunction
 
