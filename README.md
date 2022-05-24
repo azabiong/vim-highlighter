@@ -14,12 +14,27 @@
  [Installation](#installation) <br> &nbsp; &nbsp;
  [Key Map](#key-map) <br> &nbsp; &nbsp;
  [Sync Mode](#sync-mode) <br> &nbsp; &nbsp;
- [Save & Load Highlights](#save--load-highlights) &nbsp; &nbsp; &nbsp; &nbsp;
- [One Time Highlight](#one-time-highlight) &nbsp; &nbsp; &nbsp; &nbsp;
- [Following Highlight](#following-highlight) &nbsp; &nbsp; &nbsp; &nbsp;
+ [Jump to Highlights](#jump-to-highlights) &nbsp; &nbsp; &nbsp;
+ [Save & Load](#save--load-highlights) &nbsp; &nbsp; &nbsp;
+ [One Time Highlight](#one-time-highlight) &nbsp; &nbsp; &nbsp;
+ [Following Highlight](#following-highlight) &nbsp; &nbsp; &nbsp;
  [Find in Files Highlight](#find-in-files-highlight) <br> &nbsp; &nbsp;
  [Customizing Colors](#customizing-colors) <br> &nbsp; &nbsp;
  [Configuration](#configuration-examples) <br> &nbsp; &nbsp;
+
+ <details>
+ <summary><b>&nbsp; What's New </b></summary>
+ <br>
+
+> Summary of new commands and functions
+
+ | version | feature | key map |
+ |:--:|:--|:--:|
+ | 1.50 | [Jump to Highlights](#jump-to-highlights) | O |
+ | 1.38 | [Input](#input)&nbsp; patterns in the command window | |
+ | 1.35 | [Multifunction keys](#configuration-examples)&nbsp; when using **Find** | O |
+
+ </details>
  <br>
 
 ## Installation
@@ -63,7 +78,7 @@
 
 ### Visual Selection
 
- In visual mode, the highlight is selected as a pattern from the selection and applied to other words.
+ In visual mode, the highlight is selected as a partial pattern from the selection and applied to other words.
 
  <img width="290" alt="visual" src="https://user-images.githubusercontent.com/83812658/117488190-11534080-afa7-11eb-8731-bf382f71fd4e.png"> <br>
 
@@ -77,15 +92,6 @@
  ```vim
   :Hi + pattern
  ```
-
-### Jump
-
- You can use the `Hi <` and `Hi >` commands to jump back and forth to the most recently set highlight.
- ```vim
-  :Hi >
- ```
- > Please see the [Configuration](#configuration-examples) section for easy key mapping.
-
  <br>
 
 ## Sync Mode
@@ -99,6 +105,22 @@ When you want to synchronize highlighting of the current window with other split
   :Hi =
  ```
  '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.
+
+ <br>
+
+## Jump to Highlights
+
+ The plugin supports jumping to highlights using two sets of commands.
+
+ The `Hi <` and `Hi >` commands move the cursor back and forth to recently highlighted words
+ or matching highlights at the cursor position.
+
+ The `Hi {` and `Hi }` commands, on the other hand, move the cursor to the nearest highlighted word,
+ and can be used to jump to adjacent highlights in different patterns.
+
+ <img width="393" alt="jump" src="https://user-images.githubusercontent.com/83812658/169995084-4c623681-e54c-4174-bd30-81e6856b6f8d.gif"><br>
+
+ Please see the [Configuration](#configuration-examples) section for easy key mapping.
 
  <br>
 
@@ -122,20 +144,27 @@ When you want to synchronize highlighting of the current window with other split
  ```vim
   :Hi ls
  ```
+ <details>
+ <summary><b>&nbsp; relative path </b></summary>
+ <br>
+
  You can also use relative paths. For example, to save and load a highlight file in the current directory:
  ```vim
   :Hi save ./name
   :Hi load ./<Tab>
  ```
+ </details>
  <br>
 
 ## One Time Highlight
 
- The plugin has an automatic feature to clear highlights after use. This can be useful when you only need one quick scan from the cursor position.
+ The plugin has an automatic feature to clear highlights after use.
+ This can be useful when you only need one quick scan from the cursor position.
 
- When the cursor is over a word or visual selection that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'. The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
+ When the cursor is over a word or visual selection that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'.
+ The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
 
- <img width="271" alt="onetime" src="https://user-images.githubusercontent.com/83812658/117488827-cc7bd980-afa7-11eb-940b-6656ece00868.gif"> <br>
+ <img width="455" alt="onetime" src="https://user-images.githubusercontent.com/83812658/169995537-61725353-15b9-4d33-bccc-d0c471c15306.gif"><br>
 
  '**One Time Highlight**' displays matches in all windows of the current tab-page.
 
@@ -168,7 +197,9 @@ When you want to synchronize highlighting of the current window with other split
 
 ## Find in Files Highlight
 
- If you have installed hi-performance search tools such as **ag**, **rg**, **ack**, **sift**, or **grep**, the plugin can run it when looking for symbols based on the current directory. And when the given expression is simple, the plugin can highlight patterns to make them easier to find.
+ If you have installed hi-performance search tools such as **ag**, **rg**, **ack**, **sift**, or **grep**,
+ the plugin can run it when looking for symbols based on the current directory. And when the given expression is simple,
+ the plugin can highlight patterns to make them easier to find.
 
  `HiFind` key brings up the **Find** command prompt.
 
@@ -213,7 +244,8 @@ When you want to synchronize highlighting of the current window with other split
 
 ### Expression
 
- Among various regular expression options in **Vim**, the plugin uses "very magic" style syntax which uses the standard regex syntax with fewer escape sequences.
+ Among various regular expression options in **Vim**, the plugin uses "very magic" style syntax
+ which uses the standard regex syntax with fewer escape sequences.
 
 #### Examples
 
@@ -290,7 +322,7 @@ When you want to synchronize highlighting of the current window with other split
   <img width="198" alt="default_dark" src="https://user-images.githubusercontent.com/83812658/153829910-58e948e4-6657-4b55-8b39-39575e26e858.png">
   </div><br>
 
-  You can use the **`hi`** command to add, change, rearrange colors and save them to the configuration file or color scheme.
+  You can use the **`hi`** command to add, change, rearrange colors, and save them to the configuration file or color scheme.
 
  <details>
  <summary><b> Example 1 </b></summary>
@@ -342,8 +374,10 @@ When you want to synchronize highlighting of the current window with other split
 > " let HiFind  = 'f<Tab>'
 >
 > " jump key mappings
-> nn <CR>   <Cmd>Hi><CR>
-> nn g<CR>  <Cmd>Hi<<CR>
+> nn <CR>     <Cmd>Hi><CR>
+> nn g<CR>    <Cmd>Hi<<CR>
+> nn [<CR>    <Cmd>Hi{<CR>
+> nn ]<CR>    <Cmd>Hi}<CR>
 >
 > " find key mappings
 > nn -        <Cmd>Hi/next<CR>
@@ -372,6 +406,8 @@ When you want to synchronize highlighting of the current window with other split
 > vim.cmd([[
 >   nn <CR>     <Cmd>Hi><CR>
 >   nn g<CR>    <Cmd>Hi<<CR>
+>   nn [<CR>    <Cmd>Hi{<CR>
+>   nn ]<CR>    <Cmd>Hi}<CR>
 >
 >   nn -        <Cmd>Hi/next<CR>
 >   nn _        <Cmd>Hi/previous<CR>
@@ -388,7 +424,8 @@ When you want to synchronize highlighting of the current window with other split
  <summary><b>Color scheme</b></summary>
 
 > &nbsp;  
-> Highlight colors can also be included in a unified color scheme theme or saved as a separate file in your **colors** directory. `~/.vim/colors` &nbsp;or&nbsp; `~/vimfiles/colors`  
+> Highlight colors can also be included in a unified color scheme theme or saved as a separate file
+> in your **colors** directory. `~/.vim/colors` &nbsp;or&nbsp; `~/vimfiles/colors`  
 > &nbsp;  
 > For example, you can create a '**sample.vim**' file in the **colors** directory, and store some colors:
 > ```vim
@@ -411,10 +448,14 @@ When you want to synchronize highlighting of the current window with other split
 > &nbsp;  
 > Some find keys can be defined as multifunctional using the `HiFind()` function.
 >
-> The `HiFind()` function returns whether the **Find** window is visible, and can be used to define optional actions based on its state. The following example defines the `_` and `f-` keys to execute the **Hi** command while the **Find** window is visible, otherwise execute the original function.
+> The `HiFind()` function returns whether the **Find** window is visible,
+> and can be used to define optional actions based on its state.
+> The following example defines the `_` and `f-` keys to execute the **Hi** command while
+> the **Find** window is visible, otherwise execute the original function.
 >
 > ```vim
 > " find key mappings
+> nn -   <Cmd>call <SID>HiOptional('next', '-')<CR>
 > nn _   <Cmd>call <SID>HiOptional('previous', '_')<CR>
 > nn f-  <Cmd>call <SID>HiOptional('close', 'f-')<CR>
 >
@@ -433,6 +474,7 @@ When you want to synchronize highlighting of the current window with other split
 > ```lua
 > -- find key mappings
 > vim.cmd([[
+>   nn -   <Cmd>call v:lua.hi_optional('next', '-')<CR>
 >   nn _   <Cmd>call v:lua.hi_optional('previous', '_')<CR>
 >   nn f-  <Cmd>call v:lua.hi_optional('close', 'f-')<CR>
 > ]])

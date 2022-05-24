@@ -12,20 +12,21 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                    `ver 1.40`
-               Introduction             |Hi-Introduction|
-               Key Map                  |Hi-Key-Map|
-               Sync Mode                |Hi-Sync-Mode|
-               Save & Load              |Hi-Save-Load|
-               One Time Highlight       |Hi-One-Time-Highlight|
-               Following Highlight      |Hi-Following-Highlight|
-               Find in Files Highlight  |Hi-Find-In-Files-Highlight|
-               Customizing Colors       |Hi-Customizing-Colors|
-               Commands                 |Hi-Commands|
-               Options                  |Hi-Options|
-               Issues                   |Hi-Issues|
-               Log                      |Hi-Log|
-               Credits                  |Hi-Credits|
+                                                                    `ver 1.50`
+                 Introduction          |Hi-Introduction|
+                 Key Map               |Hi-Key-Map|
+                 Sync Mode             |Hi-Sync-Mode|
+                 Jump to Highlights    |Hi-Jump-To-Highlights|
+                 Save & Load           |Hi-Save-Load|
+                 One Time              |Hi-One-Time-Highlight|
+                 Following             |Hi-Following-Highlight|
+                 Find in Files         |Hi-Find-In-Files-Highlight|
+                 Customizing Colors    |Hi-Customizing-Colors|
+                 Commands              |Hi-Commands|
+                 Options               |Hi-Options|
+                 Issues                |Hi-Issues|
+                 Log                   |Hi-Log|
+                 Credits               |Hi-Credits|
 
 ------------------------------------------------------------------------------
 INTRODUCTION                                                   *Hi-Introduction*
@@ -51,21 +52,14 @@ configuration file.
 In normal mode, `HiSet` and `HiErase` keys set or erase highlights of the word
 under the cursor. `HiClear` key clears all highlights.
 
-In visual mode, the highlight is selected as a pattern from the selection and
-applied to other words. To select the same pattern again, |gv| command would be
+In visual mode, the highlight is selected as a partial pattern from the selection
+and applied to other words. To select the same pattern again, |gv| command would be
 useful. You can also select an entire line and highlight it.
 
 To set highlights using a pattern:
 >
     :Hi + pattern
 <
-You can use the `Hi <` and `Hi >` commands to jump back and forth to the most
-recently set highlight.
->
-    :Hi >
-<
-Please see the option |Hi>| for easy key mapping.
-
 `HiFind` key is the shortcut for `FIND IN FILES HIGHLIGHT`
 
 ------------------------------------------------------------------------------
@@ -82,6 +76,20 @@ and to switch back to single window highlighting mode:
 <
 `SYNC MODE` applies to all windows in the current |tab-page|, and can be set
 differently for each |tab-page|.
+
+------------------------------------------------------------------------------
+JUMP TO HIGHLIGHTS                                       *Hi-Jump-To-Highlights*
+
+The plugin supports jumping to highlights using two sets of commands.
+
+The `Hi <` and `Hi >` commands move the cursor back and forth to recently
+highlighted words or matching highlights at the cursor position.
+
+The `Hi {` and `Hi }` commands, on the other hand, move the cursor to the nearest
+highlighted word, and can be used to jump to adjacent highlights in different
+patterns.
+
+Please see the |Hi>| command section for easy key mapping.
 
 ------------------------------------------------------------------------------
 SAVE AND LOAD                                                     *Hi-Save-Load*
@@ -277,7 +285,7 @@ on the current 'background' mode.
     HiColor1, HiColor2, HiColor3, ... HiColor14
     HiFollow, HiOneTime, HiFind, HiGuide
 <
-You can use the |:hi| command to add, change, rearrange colors and save them to
+You can use the |:hi| command to add, change, rearrange colors, and save them to
 the configuration file or color scheme.
 
 Example 1 ~
@@ -333,13 +341,23 @@ with the following commands using optional spaces.
                                                                    *:Hi>*  *:Hi<*
 :Hi > ~
 :Hi < ~
-    Jump forward and backward to the most recently set highlight.
-    An optional jump count can be specified before the command. It would be
-    convenient to use shortcut keys for these commands, for example:
+    Jump forward | backward to recently set highlights, or matching highlights
+    at the cursor position. An optional jump count can be specified before the
+    command. It would be convenient to use shortcut keys for these commands.
+    For example:
 >
       nn <CR>   <Cmd>Hi><CR>
       nn g<CR>  <Cmd>Hi<<CR>
-<                                                                         *:Hi>>*
+<                                                                   *:Hi}*  *:Hi{*
+:Hi } ~
+:Hi { ~
+    Jump forward | backward to the nearest highlight. These commands can also
+    be used when jumping to adjacent highlights in different patterns. It would
+    also be convenient to use key mapping for these commands. For example:
+>
+      nn [<CR>  <Cmd>Hi{<CR>
+      nn ]<CR>  <Cmd>Hi}<CR>
+<                                                                        *:Hi>>*
 :Hi >> ~
     Set `FOLLOWING HIGHLIGHT` mode
                                                                      *:Hi:clear*
@@ -490,6 +508,7 @@ STATUS VARIABLES ~
     to execute the |Hi| command while the `Find` window is visible, otherwise
     execute the original function.
 >
+        nn -   <Cmd>call <SID>HiOptional('next', '-')<CR>
         nn _   <Cmd>call <SID>HiOptional('previous', '_')<CR>
         nn f-  <Cmd>call <SID>HiOptional('close', 'f-')<CR>
 
@@ -510,6 +529,9 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.50~
+    Support jump to matching highlights at the cursor position (issue #6)
+    Add |Hi}| command to jump to adjacent highlights.
 1.40~
     Upgrade visual mode selection (issue #7)
     Add |Hi>| command to jump to the most recently set highlight
@@ -625,9 +647,8 @@ CREDITS                                                             *Hi-Credits*
 I would like to thank the following people for feature suggestions, code
 contributions and help in resolving the problems.
 
-Jason Zheng - Upgrade visual selection (issue #7)
-
-Miguel Pérez Pasalodos - Add highlighting using pattern (issue #5)
+  Miguel Pérez Pasalodos - Add highlighting using pattern (issue #5)
+             Jason Zheng - Upgrade visual selection (issue #7)
 
 ------------------------------------------------------------------------------
 Vim:tw=80:ts=4:ft=help:nowrap:norl

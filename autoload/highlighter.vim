@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.40.2
+" Version: 1.50
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.40.2'
+let s:Version   = '1.50'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -161,6 +161,7 @@ function s:SetHighlight(cmd, mode, num)
         call matchdelete(l:m.id)
       endif
     endfor
+    call s:UpdateJump('')
     call s:UpdateSync('del', '*', '')
     let s:Number = 0
     return
@@ -203,6 +204,7 @@ function s:SetHighlight(cmd, mode, num)
         echohl None
         return
       endtry
+      call s:UpdateJump(l:word)
       call s:UpdateSync('add', l:group, l:word)
       let s:Number = l:color
       let s:Search = match(@/, l:word.l:case) != -1
@@ -271,21 +273,26 @@ function s:DeleteMatch(match, op, part)
         let l:match = a:part ==# l:m.pattern
       elseif (a:op == '≈n')
         if l:m.pattern[2:3] != '\<'
-          let l:match = match(a:part.word, l:m.pattern) != -1
-          if !l:match && stridx(l:m.pattern, ' ') != -1
-            let l:match = match(a:part.line, l:m.pattern) != -1
-          endif
+          let l:match = s:MatchPattern(a:part, l:m.pattern)
         endif
       elseif a:op == '≈x'
         let l:match = match(a:part, l:m.pattern) != -1
       endif
       if l:match
+        if l:m.pattern == get(w:, 'HiJump', '')
+          call s:UpdateJump('')
+        endif
         call matchdelete(l:m.id)
         call s:UpdateSync('del', l:m.group, l:m.pattern)
         return 1
       endif
     endif
   endwhile
+endfunction
+
+function s:MatchPattern(part, pattern)
+  return (match(a:part.word, a:pattern) != -1) ||
+       \ (stridx(a:pattern, ' ') != -1 && match(a:part.line, a:pattern) != -1)
 endfunction
 
 function s:GetStringPart()
@@ -594,7 +601,7 @@ endfunction
 function s:SetHiSyncWin(op)
   let l:win = winnr()
   if a:op
-    noa windo call <SID>SetHiSync(l:win)
+    noa windo call s:SetHiSync(l:win)
   else
     noa windo unlet w:HiSync
   endif
@@ -605,6 +612,7 @@ endfunction
 
 function s:SetHiSync(win)
   if winnr() == a:win | return | endif
+  let l:jump = ''
   if !exists("w:HiSync") || s:Sync.del[0] == '*'
     for l:m in getmatches()
       if match(l:m.group, s:Color) == 0
@@ -613,6 +621,7 @@ function s:SetHiSync(win)
     endfor
     for l:m in s:Sync.page[t:HiSync]
       call matchadd(l:m[0], l:m[1], 0)
+      let l:jump = l:m[1]
     endfor
   else
     if !empty(s:Sync.del)
@@ -625,9 +634,11 @@ function s:SetHiSync(win)
     let l:m = s:Sync.add
     if !empty(l:m)
       call matchadd(l:m[0], l:m[1], 0)
+      let l:jump = l:m[1]
     endif
   endif
   let w:HiSync = 1
+  call s:UpdateJump(l:jump)
 endfunction
 
 function s:SetHiFocusWin(hi)
@@ -646,7 +657,7 @@ endfunction
 
 function s:SetHiFindWin(on, buf)
   let l:win = winnr()
-  noa windo call <SID>SetHiFind(a:on, a:buf)
+  noa windo call s:SetHiFind(a:on, a:buf)
   noa exe l:win "wincmd w"
 endfunction
 
@@ -689,7 +700,7 @@ function s:SetFindGuide(tid)
     return
   endif
   let s:Guide.mid = matchaddpos('HiGuide', [[s:Guide.line, s:Guide.left, 2]], 1, -1, {'window': s:Guide.win})
-  let s:Guide.tid = timer_start(50, function('s:SetFindGuide'))
+  let s:Guide.tid = timer_start(46, function('s:SetFindGuide'))
   let s:Guide.left += 1
 endfunction
 
@@ -766,14 +777,17 @@ function s:LoadHighlight(file)
       call matchdelete(l:m.id)
     endif
   endfor
+  let l:pattern = ''
   for l:line in readfile(l:path)
     if l:line[0] == '#' | continue | endif
     let l:exp = match(l:line, ':')
     if l:exp > 0
       let l:num = l:line[:l:exp-1]
-      call matchadd(s:Color.l:num, l:line[l:exp+1:], 0)
+      let l:pattern = l:line[l:exp+1:]
+      call matchadd(s:Color.l:num, l:pattern, 0)
     endif
   endfor
+  call s:UpdateJump(l:pattern)
   if s:GetSyncMode()
     call s:SetSyncMode('=', '*') | call s:SetSyncMode('==', '*')
   endif
@@ -818,28 +832,119 @@ function s:ListFiles()
   exe 'Explore' l:path
 endfunction
 
-function s:Jump(op, count)
+function s:UpdateJump(pattern)
+  if empty(a:pattern)
+    if exists("w:HiJump")
+      unlet w:HiJump
+    endif
+  else
+    let w:HiJump = a:pattern
+  endif
+endfunction
+
+function s:JumpTo(pattern, op, count, update)
+  let l:from = getpos('.')
+  let l:jump = 0
+  let l:flag = a:op[0]
+  for i in range(a:count)
+    if !search(a:pattern, l:flag) | break | endif
+    let l:jump += 1
+  endfor
+  if l:jump
+    let l:to = getpos('.')
+    let l:length = len(matchstr(getline('.'), a:pattern, l:to[2]-1))
+    if a:op == 'b' && l:from[1] == l:to[1] && l:from[2] - l:to[2] < length
+      let l:jump = search(a:pattern, l:flag)
+    endif
+    if l:jump
+      call s:SetJumpGuide(0, length)
+    endif
+  endif
+  if a:update
+    call s:UpdateJump(a:pattern)
+  endif
+endfunction
+
+function s:JumpLong(op, count)
+  let l:op = (a:op == '<') ? 'b' : ''
   let l:count = a:count ? a:count : (v:count ? v:count : 1)
+  let l:jump = get(w:, 'HiJump', '')
+  let l:part = s:GetStringPart()
+  if !empty(l:jump) && s:MatchPattern(l:part, l:jump)
+    return s:JumpTo(l:jump, l:op, l:count, 0)
+  endif
+
   let l:matches = getmatches()
+  let l:size = len(l:matches)
+  if !empty(l:jump)
+    let i = l:size
+    while i > 0
+      let i -= 1
+      let l:m = l:matches[i]
+      if match(l:m.group, s:Color) == 0 && s:MatchPattern(l:part, l:m.pattern)
+        return s:JumpTo(l:m.pattern, l:op, l:count, 1)
+      endif
+    endwhile
+    if search(l:jump, 'nw')
+      return s:JumpTo(l:jump, l:op, l:count, 0)
+    endif
+  endif
+
+  let i = l:size
+  while i > 0
+    let i -= 1
+    let l:m = l:matches[i]
+    if match(l:m.group, s:Color) == 0 && search(l:m.pattern, 'nw')
+      return s:JumpTo(l:m.pattern, l:op, l:count, 1)
+    endif
+  endwhile
+endfunction
+
+function s:JumpNear(op)
+  let l:op = (a:op == '{') ? 'nWb' : 'nW'
+  let l:matches = getmatches()
+  let l:match = []
+  let l:base = line('.')
+  let l:range = line('$')
+  let l:stop = (a:op == '{') ? 1 : line('$')
   let i = len(l:matches)
   while i > 0
     let i -= 1
     let l:m = l:matches[i]
     if match(l:m.group, s:Color) == 0
-      let l:match = l:matches[i]
-      if !search(l:match.pattern, 'nw') | continue | endif
-      let l:jump = 0
-      while l:count
-        let l:jump += search(l:match.pattern, (a:op == '<' ? 'b' : '')) > 0
-        let l:count -= 1
-      endwhile
-      if l:jump
-        let l:len = len(matchstr(getline('.'), l:match.pattern, col('.')-1))
-        call s:SetJumpGuide(0, l:len)
+      let l:line = search(l:m.pattern, l:op, l:stop)
+      if l:line
+        let l:dist = abs(l:line - l:base)
+        if l:dist < l:range
+          let l:match = [l:m]
+          let l:range = l:dist
+          let l:stop = l:line
+        elseif l:dist == l:range
+          let l:match += [l:m]
+        endif
       endif
-      break
     endif
   endwhile
+  if !empty(l:match)
+    let l:flag = l:op[2]
+    if len(l:match) > 1
+      let l:pos = getpos('.')
+      let l:sign = (l:flag == 'b') ? -1 : 1
+      let l:next = {}
+      for l:m in l:match
+        call search(l:m.pattern, l:flag, l:stop)
+        let l:col = l:sign * col('.')
+        if empty(l:next) || l:col < l:next.col
+          let l:next = {'col': l:col, 'pattern': l:m.pattern}
+        endif
+        call setpos('.', l:pos)
+      endfor
+      let l:flag = (l:flag == 'b') ? 'b0' : ''
+      call s:JumpTo(l:next.pattern, l:flag, 1, 1)
+    else
+      call s:JumpTo(l:match[0].pattern, l:flag, 1, 1)
+    endif
+  endif
 endfunction
 
 function s:Find(input)
@@ -1508,11 +1613,13 @@ function s:FindOlderNewer(op, n)
   let l:logs = len(s:FL.logs) - empty(s:FL.log.list)
   if !l:logs | echo ' no list' | return | endif
 
+  let l:win = bufwinnr(s:FL.buf)
+  let l:find = s:FindOpen()
+  if !l:find || l:win == -1 | return | endif
+
   let l:offset = ((a:op == '+') ? 1 : -1) * (a:n ? a:n : (v:count ? v:count : 1))
   let l:index = min([max([0, s:FL.index + l:offset]), l:logs-1])
   echo '  List  '.(l:index + 1).' / '.l:logs
-
-  let l:find = s:FindOpen()
   if s:FL.index != l:index
     let s:FL.index = l:index
     let s:FL.log = s:FL.logs[l:index]
@@ -1747,8 +1854,8 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '>>'      | call s:SetFocusMode('>', '')
   elseif l:cmd =~# '^<\w*>'  | call s:SetWordMode(l:cmd)
   elseif l:cmd =~# '^=.\?'   | call s:SetSyncMode(l:cmd)
-  elseif l:cmd ==# '>'       | call s:Jump('>', l:num)
-  elseif l:cmd ==# '<'       | call s:Jump('<', l:num)
+  elseif l:cmd =~# '[<>]'    | call s:JumpLong(l:cmd, l:num)
+  elseif l:cmd =~# '[{}]'    | call s:JumpNear(l:cmd)
   elseif l:cmd ==# 'Find'    | call s:Find(a:cmd[5:])
   elseif l:cmd ==# 'next'    | call s:FindNextPrevious('+', l:num)
   elseif l:cmd ==# 'previous'| call s:FindNextPrevious('-', l:num)
