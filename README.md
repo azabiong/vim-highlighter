@@ -14,10 +14,10 @@
  [Installation](#installation) <br> &nbsp; &nbsp;
  [Key Map](#key-map) <br> &nbsp; &nbsp;
  [Sync Mode](#sync-mode) <br> &nbsp; &nbsp;
- [Jump to Highlights](#jump-to-highlights) &nbsp; &nbsp; &nbsp;
- [Save & Load](#save--load-highlights) &nbsp; &nbsp; &nbsp;
- [One Time Highlight](#one-time-highlight) &nbsp; &nbsp; &nbsp;
- [Following Highlight](#following-highlight) &nbsp; &nbsp; &nbsp;
+ [Jump to Highlights](#jump-to-highlights) &nbsp;&nbsp; &nbsp;
+ [Save & Load](#save--load-highlights) &nbsp;&nbsp; &nbsp;
+ [One Time Highlight](#one-time-highlight) &nbsp;&nbsp; &nbsp;
+ [Following Highlight](#following-highlight) &nbsp;&nbsp; &nbsp;
  [Find in Files Highlight](#find-in-files-highlight) <br> &nbsp; &nbsp;
  [Customizing Colors](#customizing-colors) <br> &nbsp; &nbsp;
  [Configuration](#configuration-examples) <br> &nbsp; &nbsp;
@@ -44,7 +44,7 @@
    Plug 'azabiong/vim-highlighter'
  ```
  <details>
- <summary> &nbsp; or,&nbsp; Vim 8 pack feature: </summary>
+ <summary>&nbsp; or,&nbsp; Vim 8 pack feature: </summary>
 
 > <br>
 >
@@ -181,7 +181,7 @@ When you want to synchronize highlighting of the current window with other split
  '**Following Highlight**' displays matches in all windows of the current tab-page.  
 
  <details>
- <summary><b> cWORD &nbsp;matching </b></summary> 
+ <summary><b>&nbsp;cWORD &nbsp;matching </b></summary> 
 
  Sometimes, when comparing variables consisting of letters and symbols, Vim's **`<cWORD>`** matching option can be useful.
 
@@ -215,7 +215,7 @@ When you want to synchronize highlighting of the current window with other split
  ```
 
  <details>
- <summary><b>Tools</b></summary>
+ <summary><b>&nbsp;Tools</b></summary>
 
  ```vim
    let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
@@ -263,7 +263,7 @@ When you want to synchronize highlighting of the current window with other split
 > ```
 
  <details>
- <summary><b> Fixed string or Literal option </b></summary>
+ <summary><b>&nbsp; Fixed string or Literal option </b></summary>
 
 > <br>
 >
@@ -325,7 +325,7 @@ When you want to synchronize highlighting of the current window with other split
   You can use the **`hi`** command to add, change, rearrange colors, and save them to the configuration file or color scheme.
 
  <details>
- <summary><b> Example 1 </b></summary>
+ <summary><b>&nbsp;Example 1 </b></summary>
 
 > <br>
 >
@@ -346,7 +346,7 @@ When you want to synchronize highlighting of the current window with other split
  </details>
 
  <details>
- <summary><b> Example 2 </b></summary>
+ <summary><b>&nbsp;Example 2 </b></summary>
 
 > <br>
 >
@@ -361,7 +361,7 @@ When you want to synchronize highlighting of the current window with other split
 ## Configuration Examples
 
  <details>
- <summary><b> Basic </b></summary>
+ <summary><b>&nbsp;Basic </b></summary>
 
 > ```vim
 > " Unicode
@@ -421,7 +421,7 @@ When you want to synchronize highlighting of the current window with other split
  </details>
 
  <details>
- <summary><b>Color scheme</b></summary>
+ <summary><b>&nbsp;Color scheme</b></summary>
 
 > &nbsp;  
 > Highlight colors can also be included in a unified color scheme theme or saved as a separate file
@@ -443,7 +443,7 @@ When you want to synchronize highlighting of the current window with other split
  </details>
 
  <details>
- <summary><b> Multifunction keys </b></summary>
+ <summary><b>&nbsp;Multifunction keys </b></summary>
 
 > &nbsp;  
 > Some find keys can be defined as multifunctional using the `HiFind()` function.

@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                    `ver 1.50`
+                                                                   `ver 1.50.2`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -529,6 +529,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.50.2~
+    Search using case-sensitive option
 1.50~
     Support jump to matching highlights at the cursor position (issue #6)
     Add |Hi}| command to jump to adjacent highlights.
@@ -647,8 +649,11 @@ CREDITS                                                             *Hi-Credits*
 I would like to thank the following people for feature suggestions, code
 contributions and help in resolving the problems.
 
-  Miguel Pérez Pasalodos - Add highlighting using pattern (issue #5)
-             Jason Zheng - Upgrade visual selection (issue #7)
+ Miguel Pérez Pasalodos - Add highlighting using pattern (issue #5)
+
+            Jason Zheng - Upgrade visual selection (issue #7)
+
+              Jinq Qian - Jump to highlights (issue #6)
 
 ------------------------------------------------------------------------------
 Vim:tw=80:ts=4:ft=help:nowrap:norl
