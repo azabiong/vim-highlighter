@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.50
+" Version: 1.50.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.50'
+let s:Version   = '1.50.2'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -267,7 +267,7 @@ function s:DeleteMatch(match, op, part)
   while l:i > 0
     let l:i -= 1
     let l:m = a:match[l:i]
-    if match(l:m.group, s:Color.'\d\+') == 0
+    if match(l:m.group, s:Color) == 0
       let l:match = 0
       if a:op == '=='
         let l:match = a:part ==# l:m.pattern
@@ -276,7 +276,7 @@ function s:DeleteMatch(match, op, part)
           let l:match = s:MatchPattern(a:part, l:m.pattern)
         endif
       elseif a:op == '≈x'
-        let l:match = match(a:part, l:m.pattern) != -1
+        let l:match = match(a:part, '\C'.l:m.pattern) != -1
       endif
       if l:match
         if l:m.pattern == get(w:, 'HiJump', '')
@@ -291,8 +291,9 @@ function s:DeleteMatch(match, op, part)
 endfunction
 
 function s:MatchPattern(part, pattern)
-  return (match(a:part.word, a:pattern) != -1) ||
-       \ (stridx(a:pattern, ' ') != -1 && match(a:part.line, a:pattern) != -1)
+  let l:pattern = '\C'.a:pattern
+  return (match(a:part.word, l:pattern) != -1) ||
+       \ (stridx(l:pattern, ' ') != -1 && match(a:part.line, l:pattern) != -1)
 endfunction
 
 function s:GetStringPart()
@@ -846,15 +847,16 @@ function s:JumpTo(pattern, op, count, update)
   let l:from = getpos('.')
   let l:jump = 0
   let l:flag = a:op[0]
+  let l:pattern = '\C'.a:pattern
   for i in range(a:count)
-    if !search(a:pattern, l:flag) | break | endif
+    if !search(l:pattern, l:flag) | break | endif
     let l:jump += 1
   endfor
   if l:jump
     let l:to = getpos('.')
-    let l:length = len(matchstr(getline('.'), a:pattern, l:to[2]-1))
+    let l:length = len(matchstr(getline('.'), l:pattern, l:to[2]-1))
     if a:op == 'b' && l:from[1] == l:to[1] && l:from[2] - l:to[2] < length
-      let l:jump = search(a:pattern, l:flag)
+      let l:jump = search(l:pattern, l:flag)
     endif
     if l:jump
       call s:SetJumpGuide(0, length)
@@ -885,7 +887,7 @@ function s:JumpLong(op, count)
         return s:JumpTo(l:m.pattern, l:op, l:count, 1)
       endif
     endwhile
-    if search(l:jump, 'nw')
+    if search('\C'.l:jump, 'nw')
       return s:JumpTo(l:jump, l:op, l:count, 0)
     endif
   endif
@@ -894,7 +896,7 @@ function s:JumpLong(op, count)
   while i > 0
     let i -= 1
     let l:m = l:matches[i]
-    if match(l:m.group, s:Color) == 0 && search(l:m.pattern, 'nw')
+    if match(l:m.group, s:Color) == 0 && search('\C'.l:m.pattern, 'nw')
       return s:JumpTo(l:m.pattern, l:op, l:count, 1)
     endif
   endwhile
@@ -912,7 +914,7 @@ function s:JumpNear(op)
     let i -= 1
     let l:m = l:matches[i]
     if match(l:m.group, s:Color) == 0
-      let l:line = search(l:m.pattern, l:op, l:stop)
+      let l:line = search('\C'.l:m.pattern, l:op, l:stop)
       if l:line
         let l:dist = abs(l:line - l:base)
         if l:dist < l:range
@@ -932,7 +934,7 @@ function s:JumpNear(op)
       let l:sign = (l:flag == 'b') ? -1 : 1
       let l:next = {}
       for l:m in l:match
-        call search(l:m.pattern, l:flag, l:stop)
+        call search('\C'.l:m.pattern, l:flag, l:stop)
         let l:col = l:sign * col('.')
         if empty(l:next) || l:col < l:next.col
           let l:next = {'col': l:col, 'pattern': l:m.pattern}
