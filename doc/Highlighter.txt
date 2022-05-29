@@ -531,7 +531,6 @@ LOG                                                                     *Hi-Log*
 
 1.50.6~
     Improve "Jump to Highlights"
-    Support "Hi+" pattern input without space
     Search using case-sensitive option
 1.50~
     Support jump to matching highlights at the cursor position (issue #6)
