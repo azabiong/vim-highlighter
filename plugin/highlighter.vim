@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.50
+" Version: 1.50.6
 
 scriptencoding utf-8
 if exists("g:loaded_vim_highlighter")
@@ -41,9 +41,8 @@ function HiFind()
   return bufwinnr(bufnr(' Find *')) != -1
 endfunction
 
-if !exists("g:HiMapKeys") || g:HiMapKeys
+if get(g:,'HiMapKeys', 1)
   call s:MapKeys()
-  let HiMapKeys = 1
 endif
 
 aug HiColorScheme

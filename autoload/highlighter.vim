@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.50.2
+" Version: 1.50.6
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.50.2'
+let s:Version   = '1.50.6'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -272,8 +272,10 @@ function s:DeleteMatch(match, op, part)
       if a:op == '=='
         let l:match = a:part ==# l:m.pattern
       elseif (a:op == '≈n')
-        if l:m.pattern[2:3] != '\<'
-          let l:match = s:MatchPattern(a:part, l:m.pattern)
+        if l:m.pattern[:3] !=# '\V\<'
+          let l:pattern = '\C'.l:m.pattern
+          let l:match = (match(a:part.word, l:pattern) != -1) ||
+                      \ (stridx(l:pattern, ' ') != -1 && match(a:part.line, l:pattern) != -1)
         endif
       elseif a:op == '≈x'
         let l:match = match(a:part, '\C'.l:m.pattern) != -1
@@ -288,12 +290,6 @@ function s:DeleteMatch(match, op, part)
       endif
     endif
   endwhile
-endfunction
-
-function s:MatchPattern(part, pattern)
-  let l:pattern = '\C'.a:pattern
-  return (match(a:part.word, l:pattern) != -1) ||
-       \ (stridx(l:pattern, ' ') != -1 && match(a:part.line, l:pattern) != -1)
 endfunction
 
 function s:GetStringPart()
@@ -833,6 +829,15 @@ function s:ListFiles()
   exe 'Explore' l:path
 endfunction
 
+function s:MatchPattern(line, pos, pattern)
+  if search('\C'.a:pattern, 'bc', a:pos[1])
+    let l:col = col('.')
+    let l:len = len(matchstr(a:line, a:pattern, l:col-1))
+    call setpos('.', a:pos)
+    return a:pos[2] < l:col + l:len
+  endif
+endfunction
+
 function s:UpdateJump(pattern)
   if empty(a:pattern)
     if exists("w:HiJump")
@@ -871,8 +876,10 @@ function s:JumpLong(op, count)
   let l:op = (a:op == '<') ? 'b' : ''
   let l:count = a:count ? a:count : (v:count ? v:count : 1)
   let l:jump = get(w:, 'HiJump', '')
-  let l:part = s:GetStringPart()
-  if !empty(l:jump) && s:MatchPattern(l:part, l:jump)
+  let l:line = getline('.')
+  let l:pos = getpos('.')
+
+  if !empty(l:jump) && s:MatchPattern(l:line, l:pos, l:jump)
     return s:JumpTo(l:jump, l:op, l:count, 0)
   endif
 
@@ -883,7 +890,7 @@ function s:JumpLong(op, count)
     while i > 0
       let i -= 1
       let l:m = l:matches[i]
-      if match(l:m.group, s:Color) == 0 && s:MatchPattern(l:part, l:m.pattern)
+      if match(l:m.group, s:Color) == 0 && s:MatchPattern(l:line, l:pos, l:m.pattern)
         return s:JumpTo(l:m.pattern, l:op, l:count, 1)
       endif
     endwhile
