@@ -1846,9 +1846,11 @@ function highlighter#Command(cmd, ...)
   let l:val = get(l:arg, 1, '')
   let s:Search = 0
 
-  if l:cmd == '+'
-    if len(trim(a:cmd)) > 2
-      let s:Input = a:cmd[2:]
+  if l:cmd[0] == '+'
+    if len(trim(a:cmd)) > 1
+      let l:index = (l:cmd == '+') ? 2 : 1
+      let s:Input = a:cmd[l:index:]
+      let l:cmd = '+'
       let l:opt = '='
     else
       let l:opt = 'n'
