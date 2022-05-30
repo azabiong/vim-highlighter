@@ -6,7 +6,8 @@
  <h3> Introduction </h3>
 
  Highlighting keywords or lines can be useful when analyzing code, reviewing summaries, and quickly comparing spellings.
- This plugin extends Vim's highlighting capabilities with additional features such as saving and loading highlights, finding variables, and customizing colors.
+ This plugin extends Vim's highlighting capabilities with additional features such as jumping to highlights,
+ saving and loading, finding patterns, and customizing colors.
 
 ### Contents
 
@@ -446,10 +447,11 @@ When you want to synchronize highlighting of the current window with other split
  <summary><b>&nbsp;Multifunction keys </b></summary>
 
 > &nbsp;  
-> The idea is to assign some keys to the find functions while the **Find** window is visible and restore the keys after the window is closed.
+> The plugin's `HiFind()` function returns whether the **Find** window is visible.
+> The idea is to assign some convenient keys for navigating the find results while the **Find** window is displayed,
+> and then restore the keys after the window is closed.
 >
-> The `HiFind()` function returns whether the **Find** window is visible.
-> The following example defines the `_` and `f-` keys to execute the **Hi** command while
+> The following example defines the `-` `_` and `f-` keys to execute the **Hi** command while
 > the **Find** window is visible, otherwise execute the original function.
 >
 > ```vim

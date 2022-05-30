@@ -504,7 +504,7 @@ STATUS VARIABLES ~
 |HiFind()| function returns whether the `Find` window is visible`(1)` or not`(0)`,
     which can be used to define multifunction keys.
 
-    For example, the following configuration defines the `_` and `f-` keys
+    For example, the following configuration defines the `-` `_` and `f-` keys
     to execute the |Hi| command while the `Find` window is visible, otherwise
     execute the original function.
 >
