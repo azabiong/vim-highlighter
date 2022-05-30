@@ -26,7 +26,7 @@
  <summary><b>&nbsp; What's New </b></summary>
  <br>
 
-> Summary of new commands and functions
+> Summary of new functions
 
  | version | feature | key map |
  |:--:|:--|:--:|
@@ -446,10 +446,9 @@ When you want to synchronize highlighting of the current window with other split
  <summary><b>&nbsp;Multifunction keys </b></summary>
 
 > &nbsp;  
-> Some find keys can be defined as multifunctional using the `HiFind()` function.
+> The idea is to assign some keys to the find functions while the **Find** window is visible and restore the keys after the window is closed.
 >
-> The `HiFind()` function returns whether the **Find** window is visible,
-> and can be used to define optional actions based on its state.
+> The `HiFind()` function returns whether the **Find** window is visible.
 > The following example defines the `_` and `f-` keys to execute the **Hi** command while
 > the **Find** window is visible, otherwise execute the original function.
 >
