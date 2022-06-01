@@ -6,7 +6,7 @@
  <h3> Introduction </h3>
 
  Highlighting keywords or lines can be useful when analyzing code, reviewing summaries, and quickly comparing spellings.
- This plugin extends Vim's highlighting capabilities with additional features such as jumping to highlights,
+ This plugin extends Vim's highlighting capabilities with additional features such as jump to highlights,
  saving and loading, finding patterns, and customizing colors.
 
 ### Contents
