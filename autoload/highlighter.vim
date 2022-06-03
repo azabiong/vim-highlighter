@@ -697,7 +697,7 @@ function s:SetFindGuide(tid)
     return
   endif
   let s:Guide.mid = matchaddpos('HiGuide', [[s:Guide.line, s:Guide.left, 2]], 1, -1, {'window': s:Guide.win})
-  let s:Guide.tid = timer_start(46, function('s:SetFindGuide'))
+  let s:Guide.tid = timer_start(40, function('s:SetFindGuide'))
   let s:Guide.left += 1
 endfunction
 
