@@ -498,14 +498,15 @@ OPTIONS                                                             *Hi-Options*
 CUSTOM OPTIONS~
                                                            *HiClearUsingOneTime*
 |HiClearUsingOneTime| option assigns the normal mode `ONE TIME HIGHLIGHT` key to
-    the |HiClear| function. This option can also be set during runtime, and the
-    visual mode `ONE TIME HIGHLIGHT` function is still supported regardless of
-    this option. (issue #10)
+    the |HiClear| function (issue #10).
 >
         let HiClearUsingOneTime = 1
 <
     Default: 0 `(off)`
     Values:  0, 1
+
+    This option can also be set during runtime, and the visual mode `ONE TIME`
+    `HIGHLIGHT` function is supported independently of this option.
 
 STATUS VARIABLES ~
                                                                       *HiFind()*
