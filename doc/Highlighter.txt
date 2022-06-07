@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.50.6`
+                                                                   `ver 1.50.8`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -495,11 +495,19 @@ OPTIONS                                                             *Hi-Options*
     Default: 320 `(ms)`
     Values:  260 ~ 520
 
+CUSTOM OPTIONS~
+                                                           *HiClearUsingOneTime*
+|HiClearUsingOneTime| option assigns the normal mode `ONE TIME HIGHLIGHT` key to
+    the |HiClear| function. This option can also be set during runtime, and the
+    visual mode `ONE TIME HIGHLIGHT` function is still supported regardless of
+    this option. (issue #10)
+>
+        let HiClearUsingOneTime = 1
+<
+    Default: 0 `(off)`
+    Values:  0, 1
+
 STATUS VARIABLES ~
-                                                                   *HiFindLines*
-|HiFindLines|
-    This variable represents the number of lines found as a result of `FIND`
-    `IN FILES` operation, which can be used to check if an item exists.
                                                                       *HiFind()*
 |HiFind()| function returns whether the `Find` window is visible`(1)` or not`(0)`,
     which can be used to define multifunction keys.
@@ -520,6 +528,11 @@ STATUS VARIABLES ~
           endif
         endfunction
 <
+                                                                   *HiFindLines*
+|HiFindLines|
+    This variable represents the number of lines found as a result of `FIND`
+    `IN FILES` operation, which can be used to check if an item exists.
+
 ------------------------------------------------------------------------------
 ISSUES                                                               *Hi-Issues*
 
@@ -529,7 +542,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.50.6~
+1.50.8~
+    Add custom option |HiClearUsingOneTime| (issue #10)
     Improve "Jump to Highlights"
     Search using case-sensitive option
 1.50~
