@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.50.6
+" Version: 1.50.8
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.50.6'
+let s:Version   = '1.50.8'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -220,6 +220,9 @@ function s:SetHighlight(cmd, mode, num)
       if !l:deleted
         if a:mode == 'n'
           let l:deleted = s:DeleteMatch(l:match, '≈n', s:GetStringPart())
+          if !l:deleted && get(g:, 'HiClearUsingOneTime', 0)
+            return s:ClearHighlights()
+          endif
         else
           let l:deleted = s:DeleteMatch(l:match, '≈x', l:visual)
         endif
@@ -432,6 +435,12 @@ function s:UpdateSync(op, group, pattern)
   endif
   let w:HiSync = 1
   call s:SetHiSyncWin(1)
+endfunction
+
+function s:ClearHighlights()
+  call s:SetHighlight('--', '=', 0)
+  call s:SetFocusMode('-', '')
+  call s:FindClear()
 endfunction
 
 function s:NoOption(op)
@@ -1873,7 +1882,7 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# 'open'    | call s:FindOpen()
   elseif l:cmd ==# 'close'   | call s:FindCloseWin()
   elseif l:cmd ==# '/'       | call s:FindClear()
-  elseif l:cmd ==? 'clear'   | call s:SetHighlight('--', 'n', 0) | call s:SetFocusMode('-', '') | call s:FindClear()
+  elseif l:cmd ==? 'clear'   | call s:ClearHighlights()
   elseif l:cmd ==? 'default' | call s:SetColors(1)
   elseif l:cmd ==? 'save'    | call s:SaveHighlight(l:val)
   elseif l:cmd ==? 'load'    | call s:LoadHighlight(l:val)
