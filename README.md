@@ -27,8 +27,6 @@
  <summary><b>&nbsp; What's New </b></summary>
  <br>
 
-> Summary of new functions
-
  | version | feature | key map |
  |:--:|:--|:--:|
  | 1.50 | [Jump to Highlights](#jump-to-highlights) | O |
@@ -403,14 +401,13 @@ When you want to synchronize highlighting of the current window with other split
 > <summary><b>&nbsp; nvim &nbsp;.lua </b></summary>
 >
 > ```lua
+> -- jump and find key mappings
 > vim.cmd([[
->   " jump key mappings
 >   nn <CR>     <Cmd>Hi><CR>
 >   nn g<CR>    <Cmd>Hi<<CR>
 >   nn [<CR>    <Cmd>Hi{<CR>
 >   nn ]<CR>    <Cmd>Hi}<CR>
 >
->   " find key mappings
 >   nn -        <Cmd>Hi/next<CR>
 >   nn _        <Cmd>Hi/previous<CR>
 >   nn f<Left>  <Cmd>Hi/older<CR>
