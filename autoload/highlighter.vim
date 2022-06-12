@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.51
+" Version: 1.51.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.51'
+let s:Version   = '1.51.2'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -129,7 +129,11 @@ function s:Load()
     au BufLeave    * call <SID>BufLeave()
     au WinEnter    * call <SID>WinEnter()
     au WinLeave    * call <SID>WinLeave()
-    au WinClosed   * call <SID>WinClosed()
+    if exists("#WinClosed")
+      au WinClosed * call <SID>WinClosed()
+    else
+      au BufHidden * call <SID>BufHidden()
+    endif
     au TabClosed   * call <SID>TabClosed()
   aug END
   return 1
@@ -1674,6 +1678,12 @@ function s:BufLeave()
   call s:EraseHiWord()
 endfunction
 
+function s:BufHidden()
+  if expand('<afile>') ==# s:FL.name
+    call s:SetHiFindWin(0)
+  endif
+endfunction
+
 function s:WinEnter()
   if s:GetSyncMode() && !exists("w:HiSync")
     call s:SetHiSync(0)
@@ -1690,7 +1700,7 @@ function s:WinLeave()
 endfunction
 
 function s:WinClosed()
-  if bufwinid(s:FL.buf) == expand('<afile>')
+  if expand('<afile>') == bufwinid(s:FL.buf)
     call s:SetHiFindWin(0)
   endif
 endfunction
