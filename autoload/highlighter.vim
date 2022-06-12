@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.50.8
+" Version: 1.51
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.50.8'
+let s:Version   = '1.51'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -127,10 +127,9 @@ function s:Load()
     au!
     au BufEnter    * call <SID>BufEnter()
     au BufLeave    * call <SID>BufLeave()
-    au BufHidden   * call <SID>BufHidden()
     au WinEnter    * call <SID>WinEnter()
     au WinLeave    * call <SID>WinLeave()
-    au BufWinEnter * call <SID>BufWinEnter()
+    au WinClosed   * call <SID>WinClosed()
     au TabClosed   * call <SID>TabClosed()
   aug END
   return 1
@@ -661,26 +660,32 @@ function s:SetHiFocusWin(hi)
   endfor
 endfunction
 
-function s:SetHiFindWin(on, buf)
-  let l:win = winnr()
-  noa windo call s:SetHiFind(a:on, a:buf)
-  noa exe l:win "wincmd w"
-endfunction
+function s:SetHiFindWin(on)
+  for w in range(1, winnr('$'))
+    let l:find = getwinvar(w, 'HiFind', '')
+    if !empty(l:find)
+      if !a:on || l:find.tag != s:Find.hi_tag
+        for m in l:find.id
+          call matchdelete(m, w)
+        endfor
+        call setwinvar(w, 'HiFind', '')
+      endif
+    endif
+  endfor
+  if !a:on | return | endif
 
-function s:SetHiFind(on, buf)
-  if exists("w:HiFind")
-    if a:on && w:HiFind.tag == s:Find.hi_tag | return | endif
-    for m in w:HiFind.id
-      call matchdelete(m)
-    endfor
-    unlet w:HiFind
-  endif
-  if a:on && (empty(&buftype) || bufnr() == a:buf)
-    let w:HiFind = {'tag':s:Find.hi_tag, 'id':[]}
-    for h in s:Find.hi
-      call add(w:HiFind.id, matchadd('HiFind', h, 0))
-    endfor
-  endif
+  for w in range(1, winnr('$'))
+    let l:buf = winbufnr(w)
+    if empty(getbufvar(l:buf, '&buftype')) || l:buf == s:FL.buf
+      if empty(getwinvar(w, 'HiFind', ''))
+        let l:find = {'tag':s:Find.hi_tag, 'id':[]}
+        for h in s:Find.hi
+          call add(l:find.id, matchadd('HiFind', h, 0, -1, {'window': w}))
+        endfor
+        call setwinvar(w, 'HiFind', l:find)
+      endif
+    endif
+  endfor
 endfunction
 
 function s:SetFindGuide(tid)
@@ -887,7 +892,6 @@ function s:JumpLong(op, count)
   let l:jump = get(w:, 'HiJump', '')
   let l:line = getline('.')
   let l:pos = getpos('.')
-
   if !empty(l:jump) && s:MatchPattern(l:line, l:pos, l:jump)
     return s:JumpTo(l:jump, l:op, l:count, 0)
   endif
@@ -1302,11 +1306,8 @@ function s:FindStart(arg)
     let g:HiFindLines = 0
     call bufload(s:FL.buf)
     call s:FindOpen()
-
     setlocal buftype=nofile bh=hide ft=find noma noswapfile nofen fdc=0
     let b:Status = ''
-    let &l:statusline = '  Find | %<%{b:Status} %=%3.l / %L  '
-    let &l:wrap = 0
 
     nn <silent><buffer><C-C>         :call <SID>FindStop(1)<CR>
     nn <silent><buffer>r             :call <SID>FindRotate()<CR>
@@ -1348,7 +1349,7 @@ function s:FindStart(arg)
 
   call s:FindSet([], '=')
   call s:FindOpen()
-  call s:SetHiFind(0, 0)
+  call s:SetHiFindWin(0)
   let w:HiFind = {'tag':s:Find.hi_tag, 'id':[]}
   let b:Status = l:status
 
@@ -1381,19 +1382,20 @@ function s:FindOpen(...)
         endfor
       endif
     endif
-    let l:prev = win_getid()
     let s:FL.pos = l:pos
     exe ((l:pos % 2) ? 'vert' : '') ['bel', 'abo', 'abo', 'bel'][l:pos] 'sb' s:FL.buf
     if !(l:pos % 2)
       exe "resize" (winheight(0)/4 + 1)
     endif
-    setl wfh
+    let &l:statusline = '  Find | %<%{b:Status} %=%3.l / %L  '
+    setl wfh nowrap nofen fdc=0
+    if !empty(s:FL.log)
+      let s:Find.hi = s:FL.log.hi
+    endif
+    call s:SetHiFindWin(1)
     let l:win = winnr()
-    call win_gotoid(l:prev)
-    exe l:win "wincmd w"
-  else
-    exe l:win "wincmd w"
   endif
+  exe l:win "wincmd w"
   return l:win
 endfunction
 
@@ -1405,10 +1407,10 @@ function s:FindStop(op)
   call s:FindSet(['', '--- Search Interrupted ---', ''], '+')
   if a:op
     call s:FindOpen()
-    exe "normal! G"
+    normal! G
   endif
   let s:Find.err += 1
-  sleep 250m
+  sleep 200m
 endfunction
 
 function s:FindSet(lines, op)
@@ -1471,10 +1473,7 @@ function s:FindClose(ch)
     let l:msg .= ' * '.s:Find.hi_err
   endif
   echo l:msg
-  let l:win = bufwinnr(s:FL.buf)
-  noa wincmd p
-  call s:SetHiFindWin(1, s:FL.buf)
-  noa exe l:win "wincmd w"
+  call s:SetHiFindWin(1)
 endfunction
 
 function s:FindStdOut(job, data, event)
@@ -1603,7 +1602,7 @@ function s:FindEdit(op)
   if l:guide
     call s:SetFindGuide(0)
   endif
-  call s:SetHiFind(1, 0)
+  call s:SetHiFindWin(1)
 endfunction
 
 function s:FindNextPrevious(op, num)
@@ -1645,14 +1644,12 @@ function s:FindOlderNewer(op, n)
     let s:Find.hi_tag += 1
     call s:FindSet(s:FL.log.list, '=')
     call s:FindSelect(0)
-    noa wincmd p
-    call s:SetHiFindWin(1, s:FL.buf)
+    call s:SetHiFindWin(1)
     noa exe l:find "wincmd w"
   endif
 endfunction
 
 function s:FindCloseWin()
-  if s:FL.buf == -1 | return | endif
   let l:win = bufwinnr(s:FL.buf)
   if l:win != -1
     exe l:win "wincmd q"
@@ -1661,7 +1658,7 @@ endfunction
 
 function s:FindClear()
   if !empty(s:Find.hi)
-    call s:SetHiFindWin(0, 0)
+    call s:SetHiFindWin(0)
     let s:Find.hi = []
   endif
 endfunction
@@ -1675,12 +1672,6 @@ endfunction
 function s:BufLeave()
   if !exists("s:HiMode") | return | endif
   call s:EraseHiWord()
-endfunction
-
-function s:BufHidden()
-  if expand('<afile>') ==# s:FL.name
-    call s:SetHiFindWin(0, 0)
-  endif
 endfunction
 
 function s:WinEnter()
@@ -1698,9 +1689,9 @@ function s:WinLeave()
   endif
 endfunction
 
-function s:BufWinEnter()
-  if bufname() ==# s:FL.name && !empty(s:Find.hi)
-    call s:SetHiFindWin(1, s:FL.buf)
+function s:WinClosed()
+  if bufwinid(s:FL.buf) == expand('<afile>')
+    call s:SetHiFindWin(0)
   endif
 endfunction
 
