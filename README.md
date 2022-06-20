@@ -11,17 +11,17 @@
 
 ### Contents
 
- &nbsp; &nbsp;
- [Installation](#installation) <br> &nbsp; &nbsp;
- [Key Map](#key-map) <br> &nbsp; &nbsp;
- [Sync Mode](#sync-mode) <br> &nbsp; &nbsp;
- [Jump to Highlights](#jump-to-highlights) &nbsp;&nbsp; &nbsp;
- [Save & Load](#save--load-highlights) &nbsp;&nbsp; &nbsp;
- [One Time Highlight](#one-time-highlight) &nbsp;&nbsp; &nbsp;
+ &nbsp;&nbsp;
+ [Installation](#installation) <br> &nbsp;&nbsp;
+ [Key Map](#key-map) <br> &nbsp;&nbsp;
+ [Sync Mode](#sync-mode) <br> &nbsp;&nbsp;
+ [Jump to Highlights](#jump-to-highlights) &nbsp;&nbsp;&nbsp;
+ [Save & Load](#save--load-highlights) &nbsp;&nbsp;&nbsp;
+ [One Time Highlight](#one-time-highlight) &nbsp;&nbsp;&nbsp;
  [Following Highlight](#following-highlight) &nbsp;&nbsp; &nbsp;
- [Find in Files Highlight](#find-in-files-highlight) <br> &nbsp; &nbsp;
- [Customizing Colors](#customizing-colors) <br> &nbsp; &nbsp;
- [Configuration](#configuration-examples) <br> &nbsp; &nbsp;
+ [Find in Files Highlight](#find-in-files-highlight) <br> &nbsp;&nbsp;
+ [Customizing Colors](#customizing-colors) <br> &nbsp;&nbsp;
+ [Configuration](#configuration-examples) <br> &nbsp;&nbsp;
 
  <details>
  <summary><b>&nbsp; What's New </b></summary>
@@ -30,7 +30,7 @@
  | version | feature | key map |
  |:--:|:--|:--:|
  | 1.50 | [Jump to Highlights](#jump-to-highlights) | O |
- | 1.38 | [Input](#input)&nbsp; patterns in the command window | |
+ | 1.38 | [Input](#input)&nbsp; patterns in the command-line | |
  | 1.35 | [Multifunction keys](#configuration-examples)&nbsp; when using **Find** | O |
 
  </details>
