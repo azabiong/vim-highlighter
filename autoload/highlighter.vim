@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.51.2
+" Version: 1.51.6
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.51.2'
+let s:Version   = '1.51.6'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -39,6 +39,7 @@ let s:FindTools = ['rg -H --color=never --no-heading --column --smart-case',
                   \'grep -H -EnrI --exclude-dir=.git',
                   \'git grep -EnI --no-color --column']
 const s:FL = s:FindList
+const s:Group = 'HiColor'
 
 function s:Load()
   if !exists("s:Check")
@@ -109,7 +110,6 @@ function s:Load()
     \ ['HiColor5',  'ctermfg=black   ctermbg=lightYellow'],
     \ ]
   let s:Colors = (s:Check < 256) ? s:Colors16 : s:ColorsDark
-  let s:Color = 'HiColor'
   let s:Number = 0
   let s:Focus = deepcopy(s:Guide)
   let s:Wait = [g:HiOneTimeWait, g:HiFollowWait]
@@ -160,7 +160,7 @@ function s:SetHighlight(cmd, mode, num)
   let l:match = getmatches()
   if a:cmd == '--'
     for l:m in l:match
-      if match(l:m.group, s:Color) == 0
+      if match(l:m.group, s:Group) == 0
         call matchdelete(l:m.id)
       endif
     endfor
@@ -198,7 +198,7 @@ function s:SetHighlight(cmd, mode, num)
     if a:mode == 'n' && s:GetFocusMode(1, l:word)
       call s:SetFocusMode('>', '')
     else
-      let l:group = s:Color.l:color
+      let l:group = s:Group.l:color
       try
         call matchadd(l:group, l:word, 0)
       catch
@@ -249,7 +249,7 @@ endfunction
 
 function s:GetNextColor(num)
   let l:next = a:num ? a:num : (v:count ? v:count : s:Number+1)
-  return hlexists(s:Color.l:next) ? l:next : 1
+  return hlexists(s:Group.l:next) ? l:next : 1
 endfunction
 
 function s:GetVisualLine()
@@ -273,7 +273,7 @@ function s:DeleteMatch(match, op, part)
   while l:i > 0
     let l:i -= 1
     let l:m = a:match[l:i]
-    if match(l:m.group, s:Color) == 0
+    if match(l:m.group, s:Group) == 0
       let l:match = 0
       if a:op == '=='
         let l:match = a:part ==# l:m.pattern
@@ -398,7 +398,7 @@ function s:SetSyncMode(op, ...)
 
   if l:op
     call s:SetSyncPage(1)
-    let s:Sync.page[t:HiSync] = map(filter(getmatches(), {i,v -> match(v.group, s:Color) == 0}),
+    let s:Sync.page[t:HiSync] = map(filter(getmatches(), {i,v -> match(v.group, s:Group) == 0}),
                                                        \ {i,v -> [v.group, v.pattern]})
   else
     let s:Sync.page[t:HiSync] = []
@@ -624,7 +624,7 @@ function s:SetHiSync(win)
   let l:jump = ''
   if !exists("w:HiSync") || s:Sync.del[0] == '*'
     for l:m in getmatches()
-      if match(l:m.group, s:Color) == 0
+      if match(l:m.group, s:Group) == 0
         call matchdelete(l:m.id)
       endif
     endfor
@@ -635,7 +635,7 @@ function s:SetHiSync(win)
   else
     if !empty(s:Sync.del)
       for l:m in getmatches()
-        if (match(l:m.group, s:Color) == 0) && (l:m.pattern ==# s:Sync.del[1])
+        if (match(l:m.group, s:Group) == 0) && (l:m.pattern ==# s:Sync.del[1])
           call matchdelete(l:m.id) | break
         endif
       endfor
@@ -766,7 +766,7 @@ function s:SaveHighlight(file)
     call rename(l:path, l:backup)
   endif
   let l:list = ['# Highlighter Ver '.s:Version, '']
-  let l:list += map(filter(getmatches(), {i,v -> match(v.group, s:Color) == 0}),
+  let l:list += map(filter(getmatches(), {i,v -> match(v.group, s:Group) == 0}),
                                         \{i,v -> matchstr(v.group, '\d\+').':'.v.pattern})
   if writefile(l:list, l:path) == 0
     echo  " Hi:save ".l:file
@@ -788,7 +788,7 @@ function s:LoadHighlight(file)
 
   echo  " Hi:load ".l:file
   for l:m in getmatches()
-    if match(l:m.group, s:Color) == 0
+    if match(l:m.group, s:Group) == 0
       call matchdelete(l:m.id)
     endif
   endfor
@@ -799,7 +799,7 @@ function s:LoadHighlight(file)
     if l:exp > 0
       let l:num = l:line[:l:exp-1]
       let l:pattern = l:line[l:exp+1:]
-      call matchadd(s:Color.l:num, l:pattern, 0)
+      call matchadd(s:Group.l:num, l:pattern, 0)
     endif
   endfor
   call s:UpdateJump(l:pattern)
@@ -907,7 +907,7 @@ function s:JumpLong(op, count)
     while i > 0
       let i -= 1
       let l:m = l:matches[i]
-      if match(l:m.group, s:Color) == 0 && s:MatchPattern(l:line, l:pos, l:m.pattern)
+      if match(l:m.group, s:Group) == 0 && s:MatchPattern(l:line, l:pos, l:m.pattern)
         return s:JumpTo(l:m.pattern, l:op, l:count, 1)
       endif
     endwhile
@@ -920,7 +920,7 @@ function s:JumpLong(op, count)
   while i > 0
     let i -= 1
     let l:m = l:matches[i]
-    if match(l:m.group, s:Color) == 0 && search('\C'.l:m.pattern, 'nw')
+    if match(l:m.group, s:Group) == 0 && search('\C'.l:m.pattern, 'nw')
       return s:JumpTo(l:m.pattern, l:op, l:count, 1)
     endif
   endwhile
@@ -937,7 +937,7 @@ function s:JumpNear(op)
   while i > 0
     let i -= 1
     let l:m = l:matches[i]
-    if match(l:m.group, s:Color) == 0
+    if match(l:m.group, s:Group) == 0
       let l:line = search('\C'.l:m.pattern, l:op, l:stop)
       if l:line
         let l:dist = abs(l:line - l:base)
@@ -1303,14 +1303,13 @@ function s:FindStatus(msg)
 endfunction
 
 function s:FindStart(arg)
-  " buf variables: {Status}
   if s:FL.buf == -1
     let s:FL.buf = bufadd(s:FL.name)
     let s:FL.lines = 0
     let g:HiFindLines = 0
     call bufload(s:FL.buf)
     call s:FindOpen()
-    setlocal buftype=nofile bh=hide ft=find noma noswapfile nofen fdc=0
+    setl buftype=nofile bh=hide ft=find noma noswapfile nofen fdc=0
     let b:Status = ''
 
     nn <silent><buffer><C-C>         :call <SID>FindStop(1)<CR>
@@ -1844,6 +1843,11 @@ function highlighter#Find(mode)
     let l:cmd .= s:Find.options.case.' "'.escape(s:GetVisualLine(), '$^*()-+[]{}\|.?"').'" '
   endif
   return l:cmd
+endfunction
+
+function highlighter#List()
+  return getmatches()->filter({i,v -> match(v.group, s:Group) == 0})
+         \ ->map({i,v -> {'color':matchstr(v.group, '\d\+'), 'pattern':v.pattern}})
 endfunction
 
 function highlighter#Command(cmd, ...)

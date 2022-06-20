@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.51`
+                                                                   `ver 1.51.6`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -317,7 +317,7 @@ with the following commands using optional spaces.
 :Hi +  +x ~
     |HiSet| key function in normal mode (+), visual mode (+x)
     Set highlights of the word under the cursor, visual selection, or a given
-    expression. The optional color number can be specified before the command.
+    expression. An optional color number can be specified before the command.
 >
         :[number] Hi+ [expression]
 <
@@ -326,7 +326,7 @@ with the following commands using optional spaces.
         :8 Hi+          " pick color number 8 and set highlight
         :Hi+ pattern    " use this pattern to set highlights
 <  Tip ~
-    To paste the pattern used in your search:
+    To highlight the pattern used in your search:
 >
         :Hi+ CTRL-R /
 <
@@ -495,19 +495,6 @@ OPTIONS                                                             *Hi-Options*
     Default: 320 `(ms)`
     Values:  260 ~ 520
 
-CUSTOM OPTIONS~
-                                                           *HiClearUsingOneTime*
-|HiClearUsingOneTime| option assigns the normal mode `ONE TIME HIGHLIGHT` key to
-    the |HiClear| function (issue #10).
->
-        let HiClearUsingOneTime = 1
-<
-    Default: 0 `(off)`
-    Values:  0, 1
-
-    This option can also be set during runtime, and the visual mode `ONE TIME`
-    `HIGHLIGHT` function is supported independently of this option.
-
 STATUS VARIABLES ~
                                                                       *HiFind()*
 |HiFind()| function returns whether the `Find` window is visible`(1)` or not`(0)`,
@@ -528,11 +515,40 @@ STATUS VARIABLES ~
             exe "normal!" a:key
           endif
         endfunction
-<
-                                                                   *HiFindLines*
+<                                                                   *HiFindLines*
 |HiFindLines|
     This variable represents the number of lines found as a result of `FIND`
     `IN FILES` operation, which can be used to check if an item exists.
+
+LISTING ~
+                                                                      *HiList()*
+|HiList()| function returns a list of highlight patterns for the current window,
+    which can be used to generate a |Quickfix| or |Location| list for further
+    processing (issue #11). Each dictionary entry has `color` number and `pattern`
+    fields. For example:
+>
+    [{'color':2, 'pattern':'\VFoo'}, {'color':6, 'pattern':'\mBar'}]
+<
+    To list highlights of the current window as a Quickfix list:
+>
+    :exe 'vimgrep /\v('. HiList()->map({i,v -> v.pattern})->join('\v|'). '\v)/gj %' | copen
+<
+    To synchronize highlighting of the current window to the Quickfix window in
+    the default single window highlighting mode, you can use |Hi==| command before
+    running the above command.
+
+CUSTOM OPTIONS~
+                                                           *HiClearUsingOneTime*
+|HiClearUsingOneTime| option assigns the normal mode `ONE TIME HIGHLIGHT` key to
+    the |HiClear| function (issue #10).
+>
+        let HiClearUsingOneTime = 1
+<
+    Default: 0 `(off)`
+    Values:  0, 1
+
+    This option can also be set during runtime, and the visual mode `ONE TIME`
+    `HIGHLIGHT` function is supported independently of this option.
 
 ------------------------------------------------------------------------------
 ISSUES                                                               *Hi-Issues*
@@ -543,6 +559,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.51.6~
+    Add |HiList()| function to support Quickfix list creation (issue #11)
 1.51~
     Improve "Find" window and highlights
     Add custom option |HiClearUsingOneTime| (issue #10)
