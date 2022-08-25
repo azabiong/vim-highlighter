@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.51.6
+" Version: 1.52
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,13 +21,13 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.51.6'
+let s:Version   = '1.52'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
-let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'edit':0,
+let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'div':4, 'lines':0, 'edit':0,
                   \'logs':[{'list':[], 'status':'', 'select':0, 'hi':[], 'base':''}], 'index':0, 'log':''}
 let s:FindOpts  = ['--literal', '_li', '--fixed-strings', '_li', '--smart-case', '_sc', '--ignore-case',  '_ic',
                   \'--word-regexp', '_wr', '--regexp', '_re']
@@ -62,7 +62,7 @@ function s:Load()
     \ ['HiOneTime', 'ctermfg=233 ctermbg=152 cterm=none guifg=#001020 guibg=#a8d2d8 gui=none'],
     \ ['HiFollow',  'ctermfg=233 ctermbg=151 cterm=none guifg=#002f00 guibg=#a8d0b8 gui=none'],
     \ ['HiFind',    'ctermfg=52  ctermbg=187 cterm=none guifg=#470000 guibg=#d8c2b0 gui=none'],
-    \ ['HiGuide',   'ctermfg=188 ctermbg=62  cterm=none guifg=#d0d0d8 guibg=#4848e8 gui=none'],
+    \ ['HiGuide',   'ctermfg=188 ctermbg=62  cterm=none guifg=#d0d0d8 guibg=#4848d8 gui=none'],
     \ ['HiColor1',  'ctermfg=234 ctermbg=113 cterm=none guifg=#001737 guibg=#82c85a gui=none'],
     \ ['HiColor2',  'ctermfg=52  ctermbg=179 cterm=none guifg=#500000 guibg=#e6b058 gui=none'],
     \ ['HiColor3',  'ctermfg=225 ctermbg=90  cterm=none guifg=#f8dff6 guibg=#8f2f8f gui=none'],
@@ -1313,8 +1313,9 @@ function s:FindStart(arg)
     let b:Status = ''
 
     nn <silent><buffer><C-C>         :call <SID>FindStop(1)<CR>
-    nn <silent><buffer>r             :call <SID>FindRotate()<CR>
-    nn <silent><buffer>s             :call <SID>FindEdit('split')<CR>
+    nn <silent><buffer><nowait>r     :call <SID>FindRotate()<CR>
+    nn <silent><buffer><nowait>s     :call <SID>FindEdit('split')<CR>
+    nn <silent><buffer><nowait>i     :call <SID>FindEdit('view')<CR>
     nn <silent><buffer><CR>          :call <SID>FindEdit('=')<CR>
     nn <silent><buffer><2-LeftMouse> :call <SID>FindEdit('=')<CR>
 
@@ -1375,8 +1376,10 @@ function s:FindOpen(...)
   if l:win == -1
     if a:0
       let l:pos = a:1
+      let l:div = a:2
     else
       let l:pos = 0
+      let l:div = 4
       if !empty(&buftype)
         for i in range(winnr('$'), 1, -1)
           if empty(winbufnr(i)->getbufvar('&buftype'))
@@ -1386,9 +1389,10 @@ function s:FindOpen(...)
       endif
     endif
     let s:FL.pos = l:pos
+    let s:FL.div = l:div
     exe ((l:pos % 2) ? 'vert' : '') ['bel', 'abo', 'abo', 'bel'][l:pos] 'sb' s:FL.buf
     if !(l:pos % 2)
-      exe "resize" (winheight(0)/4 + 1)
+      exe "resize" (winheight(0)/l:div + 1)
     endif
     let &l:statusline = '  Find | %<%{b:Status} %=%3.l / %L  '
     setl wfh nowrap nofen fdc=0
@@ -1534,6 +1538,7 @@ function s:FindRotate()
   endfor                       " 1 → * ← 3
   let l:win += l:win           "     ↑
   let l:pos = s:FL.pos         "     0
+  let l:div = s:FL.div
   for i in range(4)
     if l:win[l:pos] != l:find
       break
@@ -1541,20 +1546,25 @@ function s:FindRotate()
     let l:pos += 1
   endfor
   let l:pivot = win_getid(l:win[l:pos])
-  let l:pos = (l:pos + 1) % 4
-  let l:pos += l:pos == 2
+  if l:pos == 0 && l:div == 4
+    let l:div = 1
+  else
+    let l:pos = (l:pos + 1) % 4
+    let l:pos += l:pos == 2
+    let l:div = 4
+  endif
   noa close
   call win_gotoid(l:pivot)
-  call s:FindOpen(l:pos)
+  call s:FindOpen(l:pos, l:div)
 endfunction
 
 function s:FindEdit(op)
   let l:file = s:FindSelect(line('.'))
   if empty(l:file) | return | endif
 
+  let l:find = win_getid()
   let l:edit = 0
-  if a:op == '=' && winnr('$') > 1
-    let l:find = winnr()
+  if a:op != 'split' && winnr('$') > 1
     noa wincmd p
     let wins = extend([winnr()], range(winnr('$'),1, -1))
     for w in wins
@@ -1563,13 +1573,12 @@ function s:FindEdit(op)
         let l:edit = w | break
       endif
     endfor
-    noa exe l:find "wincmd w"
+    noa call win_gotoid(l:find)
   endif
 
   if l:edit
     exe l:edit "wincmd w"
   else
-    let l:find = win_getid()
     abo split
     let l:height = winheight(0)/4 + 1
     call win_gotoid(l:find)
@@ -1602,8 +1611,12 @@ function s:FindEdit(op)
   endif
   exe "normal!" l:file.col.'|'
   let s:FL.edit = s:FL.log.select
-  if l:guide
+  let l:view = (a:op != '=')
+  if l:guide || l:view
     call s:SetFindGuide(0)
+  endif
+  if l:view
+    call win_gotoid(l:find)
   endif
   call s:SetHiFindWin(1)
 endfunction

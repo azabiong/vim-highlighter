@@ -29,6 +29,7 @@
 
  | version | feature | key map |
  |:--:|:--|:--:|
+ | 1.52 | [Find window](#find-window)&nbsp; View &nbsp;<kbd>i</kbd> | O |
  | 1.50 | [Jump to Highlights](#jump-to-highlights) | O |
  | 1.38 | [Input](#input)&nbsp; patterns in the command-line | |
  | 1.35 | [Multifunction keys](#configuration-examples)&nbsp; when using **Find** | O |
@@ -119,8 +120,13 @@ When you want to synchronize highlighting of the current window with other split
 
  <img width="393" alt="jump" src="https://user-images.githubusercontent.com/83812658/169995084-4c623681-e54c-4174-bd30-81e6856b6f8d.gif"><br>
 
- Please see the [Configuration](#configuration-examples) section for easy key mapping.
-
+ It will be handy to use key mappings for these commands. For example:
+ ```vim
+   nn <CR>   <Cmd>Hi><CR>
+   nn g<CR>  <Cmd>Hi<<CR>
+   nn [<CR>  <Cmd>Hi{<CR>
+   nn ]<CR>  <Cmd>Hi}<CR>
+ ```
  <br>
 
 ## Save & Load Highlights
@@ -288,7 +294,7 @@ When you want to synchronize highlighting of the current window with other split
 
  `Hi/older` and `Hi/newer` commands navigate the search history.
 
- It will be handy to use keyboard shortcuts for these commands to easily navigate the search results. For example:
+ It will be handy to use key mappings for these commands to easily navigate the search results. For example:
  ```vim
    nn -        <Cmd>Hi/next<CR>
    nn _        <Cmd>Hi/previous<CR>
@@ -307,9 +313,10 @@ When you want to synchronize highlighting of the current window with other split
   |key|function|
   |:--:|--|
   |<kbd>Ctrl</kbd>+<kbd>C</kbd>| Stop searching |
-  |<kbd>r</kbd>                | Rotate **Find** window |
-  |<kbd>s</kbd>                | Split and Jump to file |
-  |<kbd>Enter</kbd>            | Jump to file |
+  |<kbd>r</kbd>                | Resize / Rotate |
+  |<kbd>s</kbd>                | Split and View |
+  |<kbd>i</kbd>                | View |
+  |<kbd>Enter</kbd>            | Jump to position |
 
   <br>
 

@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.51.6`
+                                                                     `ver 1.52`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -89,8 +89,13 @@ The `Hi {` and `Hi }` commands, on the other hand, move the cursor to the neares
 highlighted word, and can be used to jump to adjacent highlights in different
 patterns.
 
-Please see the |Hi>| command section for easy key mapping.
-
+It will be handy to use key mappings for these commands. For example:
+>
+    nn <CR>   <Cmd>Hi><CR>
+    nn g<CR>  <Cmd>Hi<<CR>
+    nn [<CR>  <Cmd>Hi{<CR>
+    nn ]<CR>  <Cmd>Hi}<CR>
+<
 ------------------------------------------------------------------------------
 SAVE AND LOAD                                                     *Hi-Save-Load*
 
@@ -248,8 +253,8 @@ highlight patterns to make them easier to find.
 
     |Hi/older| and |Hi/newer| commands navigate the search history.
 
-    It will be handy to use keyboard shortcuts for these commands to easily
-    navigate the search results. For example:
+    It will be handy to use key mappings for these commands to easily navigate
+    the search results. For example:
 >
       nn -        <Cmd>Hi/next<CR>
       nn _        <Cmd>Hi/previous<CR>
@@ -265,9 +270,10 @@ highlight patterns to make them easier to find.
     The following keys and functions are available in the `Find` window.
 
      CTRL-C   Stop searching
-       r      Rotate `Find` window
-       s      Split and Jump to file
-    <Enter>   Jump to file
+       r      Resize / Rotate
+       s      Split and View
+       i      View
+    <Enter>   Jump to position
 
 Windows Unicode ~
 
@@ -559,7 +565,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.51.6~
+1.52~
+    Improve "Find" window rotation, view
     Add |HiList()| function to support Quickfix list creation (issue #11)
 1.51~
     Improve "Find" window and highlights
