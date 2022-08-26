@@ -116,7 +116,7 @@ When you want to synchronize highlighting of the current window with other split
  or matching highlights at the cursor position.
 
  The `Hi {` and `Hi }` commands, on the other hand, move the cursor to the nearest highlighted word,
- and can be used to jump to adjacent highlights in different patterns.
+ even if the pattern differs from the current selection.
 
  <img width="393" alt="jump" src="https://user-images.githubusercontent.com/83812658/169995084-4c623681-e54c-4174-bd30-81e6856b6f8d.gif"><br>
 

@@ -86,8 +86,7 @@ The `Hi <` and `Hi >` commands move the cursor back and forth to recently
 highlighted words or matching highlights at the cursor position.
 
 The `Hi {` and `Hi }` commands, on the other hand, move the cursor to the nearest
-highlighted word, and can be used to jump to adjacent highlights in different
-patterns.
+highlighted word, even if the pattern differs from the current selection.
 
 It will be handy to use key mappings for these commands. For example:
 >
