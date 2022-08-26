@@ -288,9 +288,23 @@ When you want to synchronize highlighting of the current window with other split
  When searching for parts of a string in a file as is, visual selection would be useful.  
  After selecting the part, press `HiFind` key. The plugin will escape the pattern properly.
 
+### Find window
+
+  The following keys and functions are available in the **Find** window.
+
+  |key|function|
+  |:--:|--|
+  |<kbd>Ctrl</kbd>+<kbd>C</kbd>| Stop searching |
+  |<kbd>r</kbd>                | Resize / Rotate |
+  |<kbd>s</kbd>                | Split and View |
+  |<kbd>i</kbd>                | View |
+  |<kbd>Enter</kbd>            | Jump to position |
+
 ### Navigation
 
- `Hi/next` and `Hi/previous` commands jump to files from search results.
+  Additional commands are supported to quickly navigate through search results.
+
+ `Hi/next` and `Hi/previous` commands jump directly to the location of the file.
 
  `Hi/older` and `Hi/newer` commands navigate the search history.
 
@@ -305,18 +319,6 @@ When you want to synchronize highlighting of the current window with other split
 #### 🍏 &nbsp;Tip
 
 > Pressing the number `1` before the `Hi/next` command invokes a special function that jumps to the first item in the search results. For example, in the mapping above, entering `1` `-` will jump to the first item.
-
-### Find window
-
-  The following keys and functions are available in the **Find** window.
-
-  |key|function|
-  |:--:|--|
-  |<kbd>Ctrl</kbd>+<kbd>C</kbd>| Stop searching |
-  |<kbd>r</kbd>                | Resize / Rotate |
-  |<kbd>s</kbd>                | Split and View |
-  |<kbd>i</kbd>                | View |
-  |<kbd>Enter</kbd>            | Jump to position |
 
   <br>
 
