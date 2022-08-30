@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.52
+" Version: 1.52.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.52'
+let s:Version   = '1.52.2'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -883,6 +883,7 @@ function s:JumpTo(pattern, op, count, update)
     endif
     if l:jump
       call s:SetJumpGuide(0, length)
+      call feedkeys('zv', 'n')
     endif
   endif
   if a:update
@@ -1861,6 +1862,17 @@ endfunction
 function highlighter#List()
   return getmatches()->filter({i,v -> match(v.group, s:Group) == 0})
          \ ->map({i,v -> {'color':matchstr(v.group, '\d\+'), 'pattern':v.pattern}})
+endfunction
+
+function highlighter#Search(key)
+  if v:hlsearch || empty(get(w:, 'HiJump', ''))
+    call feedkeys(max([v:count, 1]).a:key.'zv', 'n')
+    return 0
+  else
+    let l:cmd = (a:key == 'n') ? '>' : '<'
+    call s:JumpLong(l:cmd, v:count)
+    return 1
+  endif
 endfunction
 
 function highlighter#Command(cmd, ...)
