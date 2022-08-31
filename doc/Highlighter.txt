@@ -482,8 +482,8 @@ OPTIONS                                                             *Hi-Options*
     Default: 5
     Values:  2 ~ 10
                                                                  *HiCursorGuide*
-|HiCursorGuide| option turns the cursor guide on and off to make it easier to find
-    the cursor in `FIND IN FILES` mode.
+|HiCursorGuide| option specifies whether to display cursor guide when using jump
+    commands or in `FIND IN FILES` mode.
 
     Default: 1 `(on)`
     Values:  0, 1
@@ -712,6 +712,7 @@ contributions and great help in resolving issues.
               Jinq Qian - Jump to highlights (issue #6)
 
             Amin Roosta - Using `n` and `N` keys for jumps (issue #12)
+
 
 ------------------------------------------------------------------------------
 Vim:tw=80:ts=4:ft=help:nowrap:norl
