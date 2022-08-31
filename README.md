@@ -2,6 +2,8 @@
 
 # Vim Highlighter
 
+ <p><h6> &nbsp;&nbsp; ver 1.52.2 </<h6></p>
+
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
 
@@ -127,6 +129,9 @@ When you want to synchronize highlighting of the current window with other split
    nn [<CR>  <Cmd>Hi{<CR>
    nn ]<CR>  <Cmd>Hi}<CR>
  ```
+ > Alternatively, you can map the <kbd>n</kbd> and <kbd>N</kbd> keys to `HiSearch()` function, which automatically selects
+ > the search type between native search and jump(`Hi>`, `Hi<`) &nbsp; → &nbsp;[Configuration](#configuration-examples)
+
  <br>
 
 ## Save & Load Highlights
@@ -330,7 +335,7 @@ When you want to synchronize highlighting of the current window with other split
   <img width="198" alt="default_dark" src="https://user-images.githubusercontent.com/83812658/153829910-58e948e4-6657-4b55-8b39-39575e26e858.png">
   </div><br>
 
-  You can use the **`hi`** command to add, change, rearrange colors, and save them to the configuration file or color scheme.
+  You can use the **`:hi`** command to add, change, rearrange colors, and save them to the configuration file or color scheme.
 
  <details>
  <summary><b>&nbsp;Example 1 </b></summary>
@@ -501,6 +506,40 @@ When you want to synchronize highlighting of the current window with other split
 >
 > </details>
 
+ </details>
+
+ <details>
+ <summary><b>&nbsp;Jump to highlights with <kbd>n</kbd> and <kbd>N</kbd> keys</b></summary>
+
+> &nbsp;  
+> The `HiSearch()` function supports <kbd>n</kbd> and <kbd>N</kbd> key mappings for both native search and jump commands.
+> ```vim
+> " jump key mappings
+> nn n  <Cmd>call HiSearch('n')<CR>
+> nn N  <Cmd>call HiSearch('N')<CR>
+> ```
+> While `hlsearch` is displayed, the function executes the native search command assigned to each key,
+> otherwise, it executes the `Hi>` or `Hi<` command.
+> When switching from native search to jump mode, you can simply turn off `hlsearch` using the **`:noh`** command.
+> ```vim
+> nn <Esc>n  <Cmd>noh<CR>
+> ```
+> <details>
+> <summary><b>&nbsp; nvim &nbsp;.lua </b></summary>
+>
+> ```lua
+> -- jump key mappings
+> vim.cmd([[
+>   nn n  <Cmd>call HiSearch('n')<CR>
+>   nn N  <Cmd>call HiSearch('N')<CR>
+>
+>   " :noh commmand mapping, if there isn't
+>   nn <Esc>n  <Cmd>noh<CR>
+> ]])
+> ```
+> </details>
+
+ <br>
  </details>
  <br>
 

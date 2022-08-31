@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                     `ver 1.52`
+                                                                    `ver 1.52.2`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -95,6 +95,9 @@ It will be handy to use key mappings for these commands. For example:
     nn [<CR>  <Cmd>Hi{<CR>
     nn ]<CR>  <Cmd>Hi}<CR>
 <
+Alternatively, you can map the `n` and `N` keys to |HiSearch()| function, which
+automatically selects the search type between native search and jump (|Hi>|, |Hi<|)
+
 ------------------------------------------------------------------------------
 SAVE AND LOAD                                                     *Hi-Save-Load*
 
@@ -326,13 +329,13 @@ with the following commands using optional spaces.
         :8 Hi+          " pick color number 8 and set highlight
         :Hi+ pattern    " use this pattern to set highlights
 <  Tip ~
-    To highlight the pattern used in your search:
->
-        :Hi+ CTRL-R /
-<
     It can be convenient to type in all uppercase letters.
 >
         :HI+
+<
+    To highlight the pattern used in your search:
+>
+        :Hi+ CTRL-R /
 <                                                                         *:Hi-*
 :Hi -  -x ~
     |HiErase| key function in normal mode (-), visual mode (-x)
@@ -348,7 +351,9 @@ with the following commands using optional spaces.
 >
       nn <CR>   <Cmd>Hi><CR>
       nn g<CR>  <Cmd>Hi<<CR>
-<                                                                   *:Hi}*  *:Hi{*
+<
+    Alternatively, you can map `n` and `N` keys to the |HiSearch()| function.
+                                                                   *:Hi}*  *:Hi{*
 :Hi } ~
 :Hi { ~
     Jump forward | backward to the nearest highlight. These commands can also
@@ -496,21 +501,6 @@ OPTIONS                                                             *Hi-Options*
     Values:  260 ~ 520
 
 FUNCTIONS AND VARIABLES ~
-                                                                      *HiList()*
-|HiList()| function returns a list of highlight patterns for the current window,
-    which can be used to generate a |Quickfix| or |Location| list for further
-    processing (issue #11). Each dictionary entry has `color` number and `pattern`
-    fields. For example:
->
-    [{'color':2, 'pattern':'\VFoo'}, {'color':6, 'pattern':'\mBar'}]
-<
-    To list highlights of the current window as a Quickfix list:
->
-    :exe 'vimgrep /\v('. HiList()->map({i,v -> v.pattern})->join('\v|'). '\v)/gj %' | copen
-<
-    To synchronize highlighting of the current window to the Quickfix window in
-    the default single window highlighting mode, you can use |Hi==| command before
-    running the above command.
                                                                       *HiFind()*
 |HiFind()| function returns whether the `Find` window is visible`(1)` or not`(0)`,
     which can be used to define multifunction keys.
@@ -534,6 +524,37 @@ FUNCTIONS AND VARIABLES ~
 |HiFindLines|
     This variable represents the number of lines found as a result of `FIND`
     `IN FILES` operation, which can be used to check if an item exists.
+                                                                    *HiSearch()*
+|HiSearch()| function supports `n` and `N` key mappings for both native search and
+    jump commands (issue #12).
+>
+        nn n  <Cmd>call HiSearch('n')<CR>
+        nn N  <Cmd>call HiSearch('N')<CR>
+<
+    While |hlsearch| is displayed, the function executes the native search command
+    assigned to each key, otherwise, it executes the |Hi>| or |Hi<| command. When
+    switching from native search to jump mode, you can simply turn off |hlsearch|
+    using the |:noh| command.
+>
+        nn <Esc>n  <Cmd>noh<CR>
+<
+    The function returns the current search type:
+        `0` (native search), `1` (jump to highlights)
+                                                                      *HiList()*
+|HiList()| function returns a list of highlight patterns for the current window,
+    which can be used to generate a |Quickfix| or |Location| list for further
+    processing (issue #11). Each dictionary entry has `color` number and `pattern`
+    fields. For example:
+>
+    [{'color':2, 'pattern':'\VFoo'}, {'color':6, 'pattern':'\mBar'}]
+<
+    To list highlights of the current window as a Quickfix list:
+>
+    :exe 'vimgrep /\v('. HiList()->map({i,v -> v.pattern})->join('\v|'). '\v)/gj %' | copen
+<
+    To synchronize highlighting of the current window to the Quickfix window in
+    the default single window highlighting mode, you can use |Hi==| command before
+    running the above command.
 
 CUSTOM OPTIONS~
                                                            *HiClearUsingOneTime*
@@ -557,6 +578,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.52.2~
+    Add |HiSearch()| function to support jumping with 'n' and 'N' keys (issue #12)
 1.52~
     Improve "Find" window rotation, view
     Add |HiList()| function to support Quickfix list creation (issue #11)
@@ -679,14 +702,16 @@ LOG                                                                     *Hi-Log*
 ------------------------------------------------------------------------------
 CREDITS                                                             *Hi-Credits*
 
-I would like to thank the following people for feature suggestions, code
-contributions and help in resolving the problems.
+I would like to thank the following people for useful feature suggestions, code
+contributions and great help in resolving issues.
 
  Miguel Pérez Pasalodos - Highlight using input pattern (issue #5)
 
             Jason Zheng - Upgrade visual selection (issue #7)
 
               Jinq Qian - Jump to highlights (issue #6)
+
+            Amin Roosta - Using `n` and `N` keys for jumps (issue #12)
 
 ------------------------------------------------------------------------------
 Vim:tw=80:ts=4:ft=help:nowrap:norl
