@@ -519,8 +519,8 @@ When you want to synchronize highlighting of the current window with other split
 > nn N  <Cmd>call HiSearch('N')<CR>
 > ```
 > While `hlsearch` is displayed, the function executes the native search command assigned to each key,
-> otherwise, it executes the `Hi>` or `Hi<` command.
-> When switching from native search to jump mode, you can simply turn off `hlsearch` using the **`:noh`** command.
+> otherwise, it executes the `Hi>` or `Hi<` command. When switching from native search to jump mode, 
+> you can simply turn off `hlsearch` using the **`:noh`** command. For example:
 > ```vim
 > nn <Esc>n  <Cmd>noh<CR>
 > ```
