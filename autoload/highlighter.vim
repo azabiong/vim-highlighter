@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.52.3
+" Version: 1.53
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.52.3'
+let s:Version   = '1.53'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -1541,6 +1541,7 @@ function s:FindRotate()
   let l:win += l:win           "     ↑
   let l:pos = s:FL.pos         "     0
   let l:div = s:FL.div
+  let l:rotate = l:pos || s:CheckRepeat(660)
   for i in range(4)
     if l:win[l:pos] != l:find
       break
@@ -1548,9 +1549,13 @@ function s:FindRotate()
     let l:pos += 1
   endfor
   let l:pivot = win_getid(l:win[l:pos])
-  if l:pos == 0 && l:div == 4
-    let l:div = 1
-  else
+  if l:pos == 0
+    if l:div == 4
+      let l:rotate = 0
+    endif
+    let l:div = (4+1) - l:div
+  endif
+  if l:rotate
     let l:pos = (l:pos + 1) % 4
     let l:pos += l:pos == 2
     let l:div = 4

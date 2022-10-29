@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                    `ver 1.52.3`
+                                                                    `ver 1.53`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -578,9 +578,9 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.52.3~
+1.53~
+    Improve "Find" window rotation with keystroke interval
     Fix visual line selection in 'inclusive' mode (issue #15)
-1.52.2~
     Add |HiSearch()| function to support jumping with 'n' and 'N' keys (issue #12)
 1.52~
     Improve "Find" window rotation, view
