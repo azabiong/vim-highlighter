@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.53.2
+" Version: 1.54
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.53.2'
+let s:Version   = '1.54'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -223,8 +223,11 @@ function s:SetHighlight(cmd, mode, num)
       if !l:deleted
         if a:mode == 'n'
           let l:deleted = s:DeleteMatch(l:match, '≈n', s:GetStringPart())
-          if !l:deleted && get(g:, 'HiClearUsingOneTime', 0)
-            return s:ClearHighlights()
+          if !l:deleted
+            if get(g:, 'HiClearUsingOneTime', 0)
+              return s:ClearHighlights()
+            endif
+            let l:deleted = s:DeleteMatch(l:match, '%l', '\m\%'.line('.').'l')
           endif
         elseif a:mode == 'x'
           let l:deleted = s:DeleteMatch(l:match, '≈x', l:visual)
@@ -286,6 +289,8 @@ function s:DeleteMatch(match, op, part)
         endif
       elseif a:op == '≈x'
         let l:match = match(a:part, '\C'.l:m.pattern) != -1
+      elseif a:op == '%l'
+        let l:match = stridx(l:m.pattern, a:part) == 0
       endif
       if l:match
         if l:m.pattern == get(w:, 'HiJump', '')

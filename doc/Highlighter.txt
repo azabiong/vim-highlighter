@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                    `ver 1.53.2`
+                                                                    `ver 1.54`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -578,7 +578,7 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.53.2~
+1.54~
     Support "Hi- pattern" command paired with "Hi+ pattern" command (issue #16)
 1.53~
     Improve "Find" window rotation with keystroke interval
