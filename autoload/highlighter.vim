@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.53
+" Version: 1.53.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.53'
+let s:Version   = '1.53.2'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -215,7 +215,7 @@ function s:SetHighlight(cmd, mode, num)
   else
     if s:GetFocusMode('>', '')
       let l:deleted = 0
-      if a:mode != 'n'
+      if a:mode == 'x'
         let s:HiMode['>'] = '<'
       endif
     else
@@ -226,12 +226,12 @@ function s:SetHighlight(cmd, mode, num)
           if !l:deleted && get(g:, 'HiClearUsingOneTime', 0)
             return s:ClearHighlights()
           endif
-        else
+        elseif a:mode == 'x'
           let l:deleted = s:DeleteMatch(l:match, '≈x', l:visual)
         endif
       endif
     endif
-    if !l:deleted
+    if !l:deleted && a:mode != '='
       let s:Search = (s:SetFocusMode('.', l:word) == '=') && match(@/, l:word.l:case) != -1
     endif
   endif
@@ -1891,7 +1891,7 @@ function highlighter#Command(cmd, ...)
   let l:val = get(l:arg, 1, '')
   let s:Search = 0
 
-  if l:cmd == '+'
+  if l:cmd == '+' || l:cmd == '-'
     if len(trim(a:cmd)) > 2
       let s:Input = a:cmd[2:]
       let l:opt = '='
@@ -1902,7 +1902,7 @@ function highlighter#Command(cmd, ...)
 
   if     l:cmd ==# ''        | echo ' Highlighter version '.s:Version
   elseif l:cmd ==# '+'       | call s:SetHighlight('+', l:opt, l:num)
-  elseif l:cmd ==# '-'       | call s:SetHighlight('-', 'n', l:num)
+  elseif l:cmd ==# '-'       | call s:SetHighlight('-', l:opt, l:num)
   elseif l:cmd ==# '+x'      | call s:SetHighlight('+', 'x', l:num)
   elseif l:cmd ==# '-x'      | call s:SetHighlight('-', 'x', l:num)
   elseif l:cmd ==# '>>'      | call s:SetFocusMode('>', '')
