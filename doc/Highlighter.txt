@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                    `ver 1.53`
+                                                                    `ver 1.53.2`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -339,8 +339,8 @@ with the following commands using optional spaces.
 <                                                                         *:Hi-*
 :Hi -  -x ~
     |HiErase| key function in normal mode (-), visual mode (-x)
-    Erase highlights of the word under the cursor, visual selection,
-    or set `ONE TIME HIGHLIGHT`
+    Erase highlights of the word under the cursor, visual selection, patterns
+    set by "Hi+ pattern" command, or set `ONE TIME HIGHLIGHT`
                                                                    *:Hi>*  *:Hi<*
 :Hi > ~
 :Hi < ~
@@ -578,6 +578,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.53.2~
+    Support "Hi- pattern" command paired with "Hi+ pattern" command (issue #16)
 1.53~
     Improve "Find" window rotation with keystroke interval
     Fix visual line selection in 'inclusive' mode (issue #15)
@@ -709,7 +711,8 @@ contributions and great help in resolving issues.
 
  Miguel Pérez Pasalodos - Highlight using input pattern (issue #5)
 
-            Jason Zheng - Upgrade visual selection (issue #7)
+            Jason Zheng - Upgraded visual selection (issue #7)
+                          Erasing highlights using "Hi- pattern" (issue #16)
 
               Jinq Qian - Jump to highlights (issue #6)
 
