@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.54 </<h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.54.2 </<h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -122,7 +122,8 @@ When you want to synchronize highlighting of the current window with other split
 
  <img width="393" alt="jump" src="https://user-images.githubusercontent.com/83812658/169995084-4c623681-e54c-4174-bd30-81e6856b6f8d.gif"><br>
 
- It will be handy to use key mappings for these commands. For example:
+ You can easily define key mappings for these commands. For example:
+
  ```vim
    nn <CR>   <Cmd>Hi><CR>
    nn g<CR>  <Cmd>Hi<<CR>
@@ -512,7 +513,7 @@ When you want to synchronize highlighting of the current window with other split
  <summary><b>&nbsp;Jump to highlights with <kbd>n</kbd> and <kbd>N</kbd> keys</b></summary>
 
 > &nbsp;  
-> The `HiSearch()` function supports <kbd>n</kbd> and <kbd>N</kbd> key mappings for both native search and jump commands.
+> You can define <kbd>n</kbd> and <kbd>N</kbd> keys for both the native search and the plugin's jump commands.
 > ```vim
 > " jump key mappings
 > nn n  <Cmd>call HiSearch('n')<CR>

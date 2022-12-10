@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                    `ver 1.54`
+                                                                   `ver 1.54.2`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -88,7 +88,7 @@ highlighted words or matching highlights at the cursor position.
 The `Hi {` and `Hi }` commands, on the other hand, move the cursor to the nearest
 highlighted word, even if the pattern differs from the current selection.
 
-It will be handy to use key mappings for these commands. For example:
+You can easily define key mappings for these commands. For example:
 >
     nn <CR>   <Cmd>Hi><CR>
     nn g<CR>  <Cmd>Hi<<CR>
@@ -525,8 +525,8 @@ FUNCTIONS AND VARIABLES ~
     This variable represents the number of lines found as a result of `FIND`
     `IN FILES` operation, which can be used to check if an item exists.
                                                                     *HiSearch()*
-|HiSearch()| function supports `n` and `N` key mappings for both native search and
-    jump commands (issue #12).
+|HiSearch()| function supports `n` and `N` key mappings for both the native search
+    and the plugin's jump commands (issue #12).
 >
         nn n  <Cmd>call HiSearch('n')<CR>
         nn N  <Cmd>call HiSearch('N')<CR>
@@ -578,6 +578,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.54.2~
+    Fix "Find" window split focus
 1.54~
     Support "Hi- pattern" command paired with "Hi+ pattern" command (issue #16)
 1.53~
@@ -712,7 +714,7 @@ contributions and great help in resolving issues.
  Miguel Pérez Pasalodos - Highlight using input pattern (issue #5)
 
             Jason Zheng - Upgraded visual selection (issue #7)
-                          Erasing highlights using "Hi- pattern" (issue #16)
+                          Highlights in a specific line (issue #16)
 
               Jinq Qian - Jump to highlights (issue #6)
 
