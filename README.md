@@ -542,35 +542,30 @@ When you want to synchronize highlighting of the current window with other split
 > ```
 > </details>
 
- <br>
  </details>
-
- <details>
- <summary><b>&nbsp; Advanced features </b></summary>
  <br>
- 
-> ### Highlights in a specific line
->
-> Sometimes, when you want to apply highlighting only to a Specific Line, `HiSetSL` key mapping can be useful.
->
-> <img  width="324" alt="specific_line" src="https://user-images.githubusercontent.com/83812658/207630276-49e31b01-4e27-4598-bb28-91ac5e68e544.gif"><br>
->
-> Highlighting can be limited to a specific line, and jump functions are also available.
->
-> `Note` The highlighting may change if there is a line deletion or insertion in the line above.
->
-> Key mapping example:
-> ```vim
-> let HiSetSL = 't<CR>'
-> ```
-> <details>
-> <summary><b>&nbsp; nvim &nbsp;.lua </b></summary>
->
-> ```lua
-> vim.g.HiSetSL = 't<CR>'
-> ```
-> </details>
 
+## Advanced features
+ 
+### Highlights in a specific line
+
+ Sometimes, when you want to apply highlighting only to a Specific Line, `HiSetSL` key mapping can be useful.
+ Highlighting can be limited to a specific line, and jump functions are also available.
+
+ <img  width="324" alt="specific_line" src="https://user-images.githubusercontent.com/83812658/207630276-49e31b01-4e27-4598-bb28-91ac5e68e544.gif"><br>
+
+ `Note` The highlighting may change if there is a line deletion or insertion in the line above.
+
+ Key mapping example:
+ ```vim
+ let HiSetSL = 't<CR>'
+ ```
+ <details>
+ <summary><b>&nbsp; nvim &nbsp;.lua </b></summary>
+
+ ```lua
+ vim.g.HiSetSL = 't<CR>'
+ ```
  </details>
  <br>
 
