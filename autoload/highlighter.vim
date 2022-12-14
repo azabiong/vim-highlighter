@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.54.2
+" Version: 1.55
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.54.2'
+let s:Version   = '1.55'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -158,6 +158,7 @@ function s:SetHighlight(cmd, mode, num)
   if a:mode != '=' && s:CheckRepeat(60) | return | endif
 
   let l:match = getmatches()
+  let l:line = '\%'.line('.').'l'
   if a:cmd == '--'
     for l:m in l:match
       if match(l:m.group, s:Group) == 0
@@ -174,43 +175,45 @@ function s:SetHighlight(cmd, mode, num)
     let l:color = 0
   endif
 
-  if a:mode == 'n'
+  if a:mode[0] == 'n'
     let l:word = escape(expand('<cword>'), '\')
     let l:pattern = '\V\<'.l:word.'\>'
+  elseif a:mode[0] == 'x'
+    let l:visual = trim(s:GetVisualLine())
+    let l:word = escape(l:visual, '\')
+    let l:pattern = '\V'.l:word
   elseif a:mode == '='
     let l:word = escape(s:Input, "'\"")
     let l:magic = &magic ? '\m' : '\M'
     let l:pattern = l:magic.l:word
-  else
-    let l:visual = trim(s:GetVisualLine())
-    let l:word = escape(l:visual, '\')
-    let l:pattern = '\V'.l:word
   endif
   if empty(l:word)
     if !l:color | call s:SetFocusMode('-', '') | endif
     return
   endif
-  let l:word = l:pattern
 
   let l:case = (&ic || stridx(@/, '\c') != -1) ? '\c' : ''
   if l:color
-    call s:DeleteMatch(l:match, '==', l:word)
-    if a:mode == 'n' && s:GetFocusMode(1, l:word)
+    call s:DeleteMatch(l:match, '==', l:pattern, l:line)
+    if a:mode == 'n' && s:GetFocusMode(1, l:pattern)
       call s:SetFocusMode('>', '')
     else
       let l:group = s:Group.l:color
+      if a:mode[1] == '%'
+        let l:pattern = '\V\%'.line('.').'l'.l:pattern
+      endif
       try
-        call matchadd(l:group, l:word, 0)
+        call matchadd(l:group, l:pattern, 0)
       catch
         echohl ErrorMsg
         echo  ' * '.v:exception
         echohl None
         return
       endtry
-      call s:UpdateJump(l:word)
-      call s:UpdateSync('add', l:group, l:word)
+      call s:UpdateJump(l:pattern)
+      call s:UpdateSync('add', l:group, l:pattern)
       let s:Number = l:color
-      let s:Search = match(@/, l:word.l:case) != -1
+      let s:Search = match(@/, l:pattern.l:case) != -1
     endif
   else
     if s:GetFocusMode('>', '')
@@ -219,23 +222,23 @@ function s:SetHighlight(cmd, mode, num)
         let s:HiMode['>'] = '<'
       endif
     else
-      let l:deleted = s:DeleteMatch(l:match, '==', l:word)
+      let l:deleted = s:DeleteMatch(l:match, '==', l:pattern, l:line)
       if !l:deleted
         if a:mode == 'n'
-          let l:deleted = s:DeleteMatch(l:match, '≈n', s:GetStringPart())
+          let l:deleted = s:DeleteMatch(l:match, '≈n', s:GetStringPart(), l:line)
           if !l:deleted
             if get(g:, 'HiClearUsingOneTime', 0)
               return s:ClearHighlights()
             endif
-            let l:deleted = s:DeleteMatch(l:match, '%l', '\m\%'.line('.').'l')
+            let l:deleted = s:DeleteMatch(l:match, '%l', '', l:line)
           endif
         elseif a:mode == 'x'
-          let l:deleted = s:DeleteMatch(l:match, '≈x', l:visual)
+          let l:deleted = s:DeleteMatch(l:match, '≈x', l:visual, l:line)
         endif
       endif
     endif
     if !l:deleted && a:mode != '='
-      let s:Search = (s:SetFocusMode('.', l:word) == '=') && match(@/, l:word.l:case) != -1
+      let s:Search = (s:SetFocusMode('.', l:pattern) == '=') && match(@/, l:pattern.l:case) != -1
     endif
   endif
 endfunction
@@ -272,25 +275,35 @@ function s:GetVisualLine()
   return l:line[l:left-1 : l:right]
 endfunction
 
-function s:DeleteMatch(match, op, part)
+function s:DeleteMatch(match, op, part, line)
   let l:i = len(a:match)
   while l:i > 0
     let l:i -= 1
     let l:m = a:match[l:i]
     if match(l:m.group, s:Group) == 0
+      if stridx(l:m.pattern, '\%') == 2
+        if stridx(l:m.pattern, a:line) != 2 | continue | endif
+        let l:offset = len(matchstr(l:m.pattern, '\v^\\.\\\%\d+l'))
+        let l:pattern = l:m.pattern[l:offset:]
+      else
+        let l:offset = 0
+        let l:pattern = l:m.pattern
+      endif
       let l:match = 0
       if a:op == '=='
-        let l:match = a:part ==# l:m.pattern
-      elseif (a:op == '≈n')
-        if l:m.pattern[:3] !=# '\V\<'
-          let l:pattern = '\C'.l:m.pattern
-          let l:match = (match(a:part.word, l:pattern) != -1) ||
-                      \ (stridx(l:pattern, ' ') != -1 && match(a:part.line, l:pattern) != -1)
+        let l:match = (a:part ==# l:pattern)
+      else
+        if (a:op == '≈n')
+          if l:pattern[:3] !=# '\V\<'
+            let l:pattern = '\C'.l:pattern
+            let l:match = (match(a:part.word, l:pattern) != -1) ||
+                        \ (stridx(l:pattern, ' ') != -1 && match(a:part.line, l:pattern) != -1)
+          endif
+        elseif a:op == '≈x'
+          let l:match = match(a:part, '\C'.l:pattern) != -1
+        elseif a:op == '%l'
+          let l:match = l:offset
         endif
-      elseif a:op == '≈x'
-        let l:match = match(a:part, '\C'.l:m.pattern) != -1
-      elseif a:op == '%l'
-        let l:match = stridx(l:m.pattern, a:part) == 0
       endif
       if l:match
         if l:m.pattern == get(w:, 'HiJump', '')
@@ -883,12 +896,18 @@ function s:JumpTo(pattern, op, count, update)
   endfor
   if l:jump
     let l:to = getpos('.')
-    let l:length = len(matchstr(getline('.'), l:pattern, l:to[2]-1))
-    if a:op == 'b' && l:from[1] == l:to[1] && l:from[2] - l:to[2] < length
+    if stridx(a:pattern, '\%') == 2
+      let l:offset = len(matchstr(a:pattern, '\v^\\.\\\%\d+l'))
+      let l:word = '\C'.a:pattern[l:offset:]
+    else
+      let l:word = l:pattern
+    endif
+    let l:length = len(matchstr(getline('.'), l:word, l:to[2]-1))
+    if a:op == 'b' && l:from[1] == l:to[1] && l:from[2] - l:to[2] < l:length
       let l:jump = search(l:pattern, l:flag)
     endif
     if l:jump
-      call s:SetJumpGuide(0, length)
+      call s:SetJumpGuide(0, l:length)
       call feedkeys('zv', 'n')
     endif
   endif
@@ -1910,6 +1929,8 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '-'       | call s:SetHighlight('-', l:opt, l:num)
   elseif l:cmd ==# '+x'      | call s:SetHighlight('+', 'x', l:num)
   elseif l:cmd ==# '-x'      | call s:SetHighlight('-', 'x', l:num)
+  elseif l:cmd ==# '+%'      | call s:SetHighlight('+', 'n%', l:num)
+  elseif l:cmd ==# '+x%'     | call s:SetHighlight('+', 'x%', l:num)
   elseif l:cmd ==# '>>'      | call s:SetFocusMode('>', '')
   elseif l:cmd =~# '^<\w*>'  | call s:SetWordMode(l:cmd)
   elseif l:cmd =~# '^=.\?'   | call s:SetSyncMode(l:cmd)

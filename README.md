@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.54.2 </<h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.55 </<h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -31,6 +31,7 @@
 
  | version | feature | key map |
  |:--:|:--|:--:|
+ | 1.55 | [Highlights in a specific line](#highlights-in-a-specific-line) | O |
  | 1.52 | [Find window](#find-window)&nbsp; View &nbsp;<kbd>i</kbd> | O |
  | 1.50 | [Jump to Highlights](#jump-to-highlights) | O |
  | 1.38 | [Input](#input)&nbsp; patterns in the command-line | |
@@ -506,6 +507,7 @@ When you want to synchronize highlighting of the current window with other split
 > ```
 >
 > </details>
+  <br>
 
  </details>
 
@@ -513,7 +515,7 @@ When you want to synchronize highlighting of the current window with other split
  <summary><b>&nbsp;Jump to highlights with <kbd>n</kbd> and <kbd>N</kbd> keys</b></summary>
 
 > &nbsp;  
-> You can define <kbd>n</kbd> and <kbd>N</kbd> keys for both the native search and the plugin's jump commands.
+> You can also define <kbd>n</kbd> and <kbd>N</kbd> keys for both the native search and the plugin's jump commands.
 > ```vim
 > " jump key mappings
 > nn n  <Cmd>call HiSearch('n')<CR>
@@ -541,6 +543,34 @@ When you want to synchronize highlighting of the current window with other split
 > </details>
 
  <br>
+ </details>
+
+ <details>
+ <summary><b>&nbsp; Advanced features </b></summary>
+ <br>
+ 
+> ### Highlights in a specific line
+>
+> Sometimes, when you want to apply highlighting only to a Specific Line, `HiSetSL` key mapping can be useful.
+>
+> <img  width="324" alt="specific_line" src="https://user-images.githubusercontent.com/83812658/207630276-49e31b01-4e27-4598-bb28-91ac5e68e544.gif"><br>
+>
+> Highlighting can be limited to a specific line, and jump functions are also available.
+>
+> `Note` The highlighting may change if there is a line deletion or insertion in the line above.
+>
+> Key mapping example:
+> ```vim
+> let HiSetSL = 't<CR>'
+> ```
+> <details>
+> <summary><b>&nbsp; nvim &nbsp;.lua </b></summary>
+>
+> ```lua
+> vim.g.HiSetSL = 't<CR>'
+> ```
+> </details>
+
  </details>
  <br>
 

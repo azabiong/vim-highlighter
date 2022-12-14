@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.54.2`
+                                                                    `ver 1.55`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -556,6 +556,17 @@ FUNCTIONS AND VARIABLES ~
     the default single window highlighting mode, you can use |Hi==| command before
     running the above command.
 
+ADVANCED FEATURES~
+                                                                      *HiSetSL*
+|HiSetSL| Highlights in a specific line
+    Sometimes, when you want to apply highlighting only to a Specific Line,
+    |HiSetSL| key mapping can be useful. Highlighting can be limited to
+    a specific line, and jump functions are also available.
+
+    Key mapping example:
+>
+       let HiSetSL = 't<CR>'
+<
 CUSTOM OPTIONS~
                                                            *HiClearUsingOneTime*
 |HiClearUsingOneTime| option assigns the normal mode `ONE TIME HIGHLIGHT` key to
@@ -578,8 +589,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.54.2~
-    Fix "Find" window split focus
+1.55~
+    Add |HiSetSL| mapping to support highlighting in a specific line
 1.54~
     Support "Hi- pattern" command paired with "Hi+ pattern" command (issue #16)
 1.53~
