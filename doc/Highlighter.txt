@@ -560,8 +560,8 @@ ADVANCED FEATURES~
                                                                       *HiSetSL*
 |HiSetSL| Highlights in a specific line
     Sometimes, when you want to apply highlighting only to a Specific Line,
-    |HiSetSL| key mapping can be useful. Highlighting can be limited to
-    a specific line, and jump functions are also available.
+    |HiSetSL| key mapping can be useful. Highlighting is limited to a specific
+    line, and jump functions are also available.
 
     Key mapping example:
 >
