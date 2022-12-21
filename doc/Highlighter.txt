@@ -719,8 +719,8 @@ LOG                                                                     *Hi-Log*
 ------------------------------------------------------------------------------
 CREDITS                                                             *Hi-Credits*
 
-I would like to thank the following people for useful feature suggestions, code
-contributions and great help in resolving issues.
+I would like to thank the following people for their great feature suggestions,
+code contributions and help in resolving issues.
 
  Miguel Pérez Pasalodos - Highlight using input pattern (issue #5)
 
