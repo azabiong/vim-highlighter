@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.55
+" Version: 1.56
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.55'
+let s:Version   = '1.56'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -61,7 +61,7 @@ function s:Load()
   let s:ColorsDark = [
     \ ['HiOneTime', 'ctermfg=233 ctermbg=152 cterm=none guifg=#001020 guibg=#a8d2d8 gui=none'],
     \ ['HiFollow',  'ctermfg=233 ctermbg=151 cterm=none guifg=#002f00 guibg=#a8d0b8 gui=none'],
-    \ ['HiFind',    'ctermfg=52  ctermbg=187 cterm=none guifg=#470000 guibg=#d8c2b0 gui=none'],
+    \ ['HiFind',    'ctermfg=52  ctermbg=181 cterm=none guifg=#470000 guibg=#d0b8a8 gui=none'],
     \ ['HiGuide',   'ctermfg=188 ctermbg=62  cterm=none guifg=#d0d0d8 guibg=#4848d8 gui=none'],
     \ ['HiColor1',  'ctermfg=234 ctermbg=113 cterm=none guifg=#001737 guibg=#82c85a gui=none'],
     \ ['HiColor2',  'ctermfg=52  ctermbg=179 cterm=none guifg=#500000 guibg=#e6b058 gui=none'],
@@ -749,8 +749,8 @@ function s:SetJumpGuide(tid, length=0)
   let s:Focus = {'tid':0, 'win':0, 'mid':0}
   if a:length
     let s:Focus.win = win_getid()
-    let s:Focus.mid = matchaddpos('HiGuide', [[line('.'), col('.'), a:length]], 1, -1, {'window': s:Focus.win})
-    let s:Focus.tid = timer_start(230, function('s:SetJumpGuide'))
+    let s:Focus.mid = matchaddpos('HiGuide', [[line('.'), col('.'), a:length]], 10, -1, {'window': s:Focus.win})
+    let s:Focus.tid = timer_start(220, function('s:SetJumpGuide'))
   endif
 endfunction
 
@@ -919,9 +919,18 @@ endfunction
 function s:JumpLong(op, count)
   let l:op = (a:op == '<') ? 'b' : ''
   let l:count = a:count ? a:count : (v:count ? v:count : 1)
-  let l:jump = get(w:, 'HiJump', '')
+  if exists("s:HiMode")
+    let l:jump = s:HiMode['w']
+    if !empty(l:jump)
+      call s:JumpTo(l:jump, l:op, l:count, 0)
+      let s:HiMode['p'] = getpos('.')
+      return
+    endif
+  endif
+
   let l:line = getline('.')
   let l:pos = getpos('.')
+  let l:jump = get(w:, 'HiJump', '')
   if !empty(l:jump) && s:MatchPattern(l:line, l:pos, l:jump)
     return s:JumpTo(l:jump, l:op, l:count, 0)
   endif

@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.55 </<h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.56 </h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -31,6 +31,7 @@
 
  | version | feature | key map |
  |:--:|:--|:--:|
+ | 1.56 | [One Time Highlight](#one-time-highlight)&nbsp; and **Jump** | |
  | 1.55 | [Highlights in a specific line](#highlights-in-a-specific-line) | O |
  | 1.52 | [Find window](#find-window)&nbsp; View &nbsp;<kbd>i</kbd> | O |
  | 1.50 | [Jump to Highlights](#jump-to-highlights) | O |
@@ -178,7 +179,8 @@ When you want to synchronize highlighting of the current window with other split
 
  <img width="455" alt="onetime" src="https://user-images.githubusercontent.com/83812658/169995537-61725353-15b9-4d33-bccc-d0c471c15306.gif"><br>
 
- '**One Time Highlight**' displays matches in all windows of the current tab-page.
+ '**One Time Highlight**' displays matches in all windows on the current tab-page, and&nbsp;
+ '**Jump to Highlights**' commands are also supported.
 
  <br>
 
@@ -190,7 +192,8 @@ When you want to synchronize highlighting of the current window with other split
  The highlight follows the cursor. Pressing `HiEarase` key turns off the mode.
 
  <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/162587365-64092e0a-0b2f-4947-855a-171da12c8da6.gif"> <br>  
- '**Following Highlight**' displays matches in all windows of the current tab-page.  
+ '**Following Highlight**' displays matches in all windows on the current tab-page, and&nbsp;
+ '**Jump to Highlights**' commands are also supported.
 
  <details>
  <summary><b>&nbsp;cWORD &nbsp;matching </b></summary> 
@@ -550,7 +553,7 @@ When you want to synchronize highlighting of the current window with other split
 ### Highlights in a specific line
 
  Sometimes, when you want to apply highlighting only to a Specific Line, `HiSetSL` key mapping can be useful.
- Highlighting is limited to a specific line, and jump functions are also available.
+ Highlighting is limited to a specific line, and **Jump** commands are also available.
 
  <img width="324" alt="specific_line" src="https://user-images.githubusercontent.com/83812658/207630276-49e31b01-4e27-4598-bb28-91ac5e68e544.gif"><br>
 
@@ -577,16 +580,11 @@ When you want to synchronize highlighting of the current window with other split
  ```
  <br>
 
-## Tested
- ```
-   Linux   Vim 8.2
-   Windows gVim 8.2
-   Mac     neovim 0.5.0  macVim 8.2
- ```
-
 ## Issues
 
  If you have any issues that need fixing, comments or new features you would like to add, please feel free to open an issue.
+
+ <br>
 
 ## License
  MIT

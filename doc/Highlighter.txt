@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                    `ver 1.55`
+                                                                    `ver 1.56`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -137,7 +137,8 @@ When the cursor is over a word or visual selection that is not highlighted,
 pressing |HiErase| key sets `ONE TIME HIGHLIGHT`, The highlight stays on while
 the cursor is not moving, and automatically turns off after the cursor moves.
 
-`ONE TIME HIGHLIGHT` displays matches in all windows of the current |tab-page|.
+`ONE TIME HIGHLIGHT` displays matches in all windows on the current |tab-page|,
+and `JUMP TO HIGHLIGHTS` commands are also supported.
 
 ------------------------------------------------------------------------------
 FOLLOWING HIGHLIGHT                                     *Hi-Following-Highlight*
@@ -163,7 +164,8 @@ Matching option ~
 >
       :Hi <>
 <
-`FOLLOWING HIGHLIGHT` displays matches in all windows of the current |tab-page|.
+`FOLLOWING HIGHLIGHT` displays matches in all windows on the current |tab-page|,
+and `JUMP TO HIGHLIGHTS` commands are also supported.
 
 ------------------------------------------------------------------------------
 FIND IN FILES HIGHLIGHT                             *Hi-Find-In-Files-Highlight*
@@ -561,7 +563,7 @@ ADVANCED FEATURES~
 |HiSetSL| Highlights in a specific line
     Sometimes, when you want to apply highlighting only to a Specific Line,
     |HiSetSL| key mapping can be useful. Highlighting is limited to a specific
-    line, and jump functions are also available.
+    line, and jump commands are also available.
 
     Key mapping example:
 >
@@ -589,6 +591,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.56~
+    Support jump in "One Time Highlight" and "Following Highlight" modes
 1.55~
     Add |HiSetSL| mapping to support highlighting in a specific line
 1.54~
