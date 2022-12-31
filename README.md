@@ -306,8 +306,8 @@ When you want to synchronize highlighting of the current window with other split
   |:--:|--|
   |<kbd>Ctrl</kbd>+<kbd>C</kbd>| Stop searching |
   |<kbd>r</kbd>                | Resize / Rotate |
-  |<kbd>s</kbd>                | Split and View |
   |<kbd>i</kbd>                | View |
+  |<kbd>s</kbd>                | Split and View |
   |<kbd>Enter</kbd>            | Jump to position |
 
 ### Navigation
