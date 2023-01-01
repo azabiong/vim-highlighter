@@ -318,7 +318,7 @@ When you want to synchronize highlighting of the current window with other split
 
  `Hi/older` and `Hi/newer` commands navigate the search history.
 
- It will be handy to use key mappings for these commands to easily navigate the search results. For example:
+ It would be convenient to define key mappings for these commands for easy navigation. For example:
  ```vim
    nn -        <Cmd>Hi/next<CR>
    nn _        <Cmd>Hi/previous<CR>

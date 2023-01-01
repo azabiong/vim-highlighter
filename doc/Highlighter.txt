@@ -257,8 +257,8 @@ highlight patterns to make them easier to find.
 
      CTRL-C   Stop searching
        r      Resize / Rotate
-       s      Split and View
        i      View
+       s      Split and View
     <Enter>   Jump to position
 
 7.Navigation ~
@@ -269,8 +269,8 @@ highlight patterns to make them easier to find.
 
     |Hi/older| and |Hi/newer| commands navigate the search history.
 
-    It will be handy to use key mappings for these commands to easily navigate
-    the search results. For example:
+    It would be convenient to define key mappings for these commands for easy
+    navigation. For example:
 >
       nn -        <Cmd>Hi/next<CR>
       nn _        <Cmd>Hi/previous<CR>
