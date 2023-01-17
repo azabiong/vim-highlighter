@@ -65,8 +65,8 @@ To set highlights using a pattern:
 ------------------------------------------------------------------------------
 SYNC MODE                                                         *Hi-Sync-Mode*
 
-When you want to synchronize highlighting of the current window with other split
-windows, you can use:
+When synchronizing the highlighting of the current window with other split windows,
+you can use:
 >
     :Hi ==
 <
@@ -314,7 +314,7 @@ Example 2 ~
 COMMANDS                                                 *:HI*  *:Hi*  *Hi-Commands*
 
 Highlighter commands start with `Hi` or `HI` for easy typing, and are combined
-with the following commands using optional spaces.
+with subsequent commands using an optional space.
 
 :Hi ~
     Print the plugin version
@@ -425,7 +425,7 @@ with the following commands using optional spaces.
     Clear highlights of the `Find` result
                                                                    *:Hi:default*
 :Hi :default ~
-    Load plugin default colors for current 'background' mode
+    Load plugin default colors for the current 'background' mode
 
 ------------------------------------------------------------------------------
 OPTIONS                                                             *Hi-Options*
@@ -726,14 +726,14 @@ CREDITS                                                             *Hi-Credits*
 I would like to thank the following people for their great feature suggestions,
 code contributions and help in resolving issues.
 
- Miguel Pérez Pasalodos - Highlight using input pattern (issue #5)
+    Miguel Pérez Pasalodos   Highlight using input pattern
 
-            Jason Zheng - Upgraded visual selection (issue #7)
-                          Highlights in a specific line (issue #16)
+               Jason Zheng   Upgraded visual selection
+                             Highlights in a specific line
 
-              Jinq Qian - Jump to highlights (issue #6)
+                 Jinq Qian   Jump to highlights
 
-            Amin Roosta - Using `n` and `N` keys for jumps (issue #12)
+               Amin Roosta   Using `n` and `N` keys for jumps
 
 
 ------------------------------------------------------------------------------

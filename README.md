@@ -100,7 +100,7 @@
 
 ## Sync Mode
 
-When you want to synchronize highlighting of the current window with other split windows, you can use:
+When synchronizing the highlighting of the current window with other split windows, you can use:
  ```vim
   :Hi ==
  ```
