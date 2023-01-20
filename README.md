@@ -48,7 +48,7 @@
    Plug 'azabiong/vim-highlighter'
  ```
  <details>
- <summary>&nbsp; or,&nbsp; Vim 8 pack feature: </summary>
+ <summary>&nbsp; or,&nbsp; Vim's built-in package feature: </summary>
 
 > <br>
 >
@@ -557,8 +557,6 @@ When synchronizing the highlighting of the current window with other split windo
 
  <img width="324" alt="specific_line" src="https://user-images.githubusercontent.com/83812658/207630276-49e31b01-4e27-4598-bb28-91ac5e68e544.gif"><br>
 
- `Note` The highlighting may change if there is a line deletion or insertion in the line above.
-
  Key mapping example:
  ```vim
  let HiSetSL = 't<CR>'
@@ -570,6 +568,10 @@ When synchronizing the highlighting of the current window with other split windo
  vim.g.HiSetSL = 't<CR>'
  ```
  </details>
+
+ `Note`&nbsp; The highlighting may change if lines are added or deleted above it.
+
+
  <br>
 
 ## Help tags

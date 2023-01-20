@@ -569,6 +569,8 @@ ADVANCED FEATURES~
 >
        let HiSetSL = 't<CR>'
 <
+    The highlighting may change if lines are added or deleted above it.
+
 CUSTOM OPTIONS~
                                                            *HiClearUsingOneTime*
 |HiClearUsingOneTime| option assigns the normal mode `ONE TIME HIGHLIGHT` key to
