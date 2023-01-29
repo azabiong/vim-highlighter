@@ -36,7 +36,7 @@
  | 1.52 | [Find window](#find-window)&nbsp; View &nbsp;<kbd>i</kbd> | O |
  | 1.50 | [Jump to Highlights](#jump-to-highlights) | O |
  | 1.38 | [Input](#input)&nbsp; patterns in the command-line | |
- | 1.35 | [Multifunction keys](#configuration-examples)&nbsp; when using **Find** | O |
+ | 1.35 | [Multifunction keys](#configuration-examples)&nbsp; for **Find** | O |
 
  </details>
  <br>
@@ -464,12 +464,11 @@ When synchronizing the highlighting of the current window with other split windo
  </details>
 
  <details>
- <summary><b>&nbsp;Multifunction keys </b></summary>
+ <summary><b>&nbsp;Multifunction keys for Find</b></summary>
 
 > &nbsp;  
 > The plugin's `HiFind()` function returns whether the **Find** window is visible.
-> The idea is to assign some convenient keys for navigating the find results while the **Find** window is displayed,
-> and then restore the keys after the window is closed.
+> The idea is to define different actions for the keys depending on whether the **Find** window is displayed or not.
 >
 > The following example defines the `-` `_` and `f-` keys to execute the **Hi** command while
 > the **Find** window is visible, otherwise execute the original function.
