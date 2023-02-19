@@ -329,9 +329,9 @@ with subsequent commands using an optional space.
   Example >
         :Hi+            " HiSet key function in normal mode
         :8 Hi+          " pick color number 8 and set highlight
-        :Hi+ pattern    " use this pattern to set highlights
+        :Hi+ pattern    " set highlights using this pattern
 <  Tip ~
-    It can be convenient to type in all uppercase letters.
+    It may be convenient to type in all uppercase letters.
 >
         :HI+
 <
@@ -728,14 +728,14 @@ CREDITS                                                             *Hi-Credits*
 I would like to thank the following people for their great feature suggestions,
 code contributions and help in resolving issues.
 
-    Miguel Pérez Pasalodos   Highlight using input pattern
+        Miguel Pérez Pasalodos   Highlight using input pattern
 
-               Jason Zheng   Upgraded visual selection
-                             Highlights in a specific line
+                   Jason Zheng   Upgraded visual selection
+                                 Highlights in a specific line
 
-                 Jinq Qian   Jump to highlights
+                     Jinq Qian   Jump to highlights
 
-               Amin Roosta   Using `n` and `N` keys for jumps
+                   Amin Roosta   Using `n` and `N` keys for jumps
 
 
 ------------------------------------------------------------------------------
