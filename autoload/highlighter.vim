@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.56.2
+" Version: 1.56.3
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.56.2'
+let s:Version   = '1.56.3'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -1921,7 +1921,7 @@ function highlighter#Command(cmd, ...)
   let l:num = a:0 ? a:1 : 0
   let l:arg = split(a:cmd)
   let l:cmd = substitute(get(l:arg, 0, ''), '\v^[:/]', '', '')
-  let l:val = get(l:arg, 1, '')
+  let l:val = join(l:arg[1:])
   let s:Search = 0
 
   if l:cmd == '+' || l:cmd == '-'
