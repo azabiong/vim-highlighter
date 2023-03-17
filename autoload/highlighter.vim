@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.56.3
+" Version: 1.56.4
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -1649,7 +1649,7 @@ function s:FindEdit(op)
     exe "normal! zz" l:scroll l:file.row.'G'
     let l:guide = 1
   endif
-  exe "normal!" l:file.col.'|'
+  call cursor(0, l:file.col)
   let s:FL.edit = s:FL.log.select
   let l:view = (a:op != '=')
   if l:guide || l:view
