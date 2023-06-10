@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.56 </h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.57 </h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -22,7 +22,8 @@
  [One Time Highlight](#one-time-highlight) &nbsp;&nbsp;&nbsp;
  [Following Highlight](#following-highlight) &nbsp;&nbsp; &nbsp;
  [Find in Files Highlight](#find-in-files-highlight) <br> &nbsp;&nbsp;
- [Customizing Colors](#customizing-colors) <br> &nbsp;&nbsp;
+ [Customizing Colors](#customizing-colors) &nbsp;&nbsp;
+ [Additional Features](#additional-features) <br> &nbsp;&nbsp;
  [Configuration](#configuration-examples) <br> &nbsp;&nbsp;
 
  <details>
@@ -31,6 +32,7 @@
 
  | version | feature | key map |
  |:--:|:--|:--:|
+ | 1.57 | [Positional Highlight](#positional-highlight)&nbsp; in visual-block mode | |
  | 1.56 | [One Time Highlight](#one-time-highlight)&nbsp; and **Jump** | |
  | 1.55 | [Highlights in a specific line](#highlights-in-a-specific-line) | O |
  | 1.52 | [Find window](#find-window)&nbsp; View &nbsp;<kbd>i</kbd> | O |
@@ -376,6 +378,43 @@ When synchronizing the highlighting of the current window with other split windo
  </details>
   <br>
 
+## Additional Features
+
+### Highlights in a specific line
+
+ Sometimes, when you want to apply highlighting only to a Specific Line, `HiSetSL` key mapping can be useful.
+ Highlighting is limited to the specific line, and **Jump** commands are also available.
+
+ <img width="324" alt="specific_line" src="https://user-images.githubusercontent.com/83812658/207630276-49e31b01-4e27-4598-bb28-91ac5e68e544.gif"><br>
+
+ Key mapping example:
+ ```vim
+ let HiSetSL = 't<CR>'
+ ```
+ <details>
+ <summary><b>&nbsp; lua </b></summary>
+
+ ```lua
+ vim.g.HiSetSL = 't<CR>'
+ ```
+ </details>
+
+ `Note`&nbsp; The highlighting may change if lines are added or deleted above it.
+
+ <br>
+
+### Positional Highlight
+
+There is another type of highlight that is set in visual-block mode.
+Unlike pattern-based highlighting, positional highlighting is set to a specific area.
+In a way, it's like a color filter on a transparent board that can slide over text.
+
+Select some area in visual-block mode using <kbd>Ctrl</kbd>+<kbd>V</kbd> keys, 
+then press `HiSet` key to set positional highlight.
+Short jump commands are also supported after setting.
+
+ <br>
+
 ## Configuration Examples
 
  <details>
@@ -417,7 +456,7 @@ When synchronizing the highlighting of the current window with other split windo
 >
 > ```
 > <details>
-> <summary><b>&nbsp; nvim &nbsp;.lua </b></summary>
+> <summary><b>&nbsp; lua </b></summary>
 >
 > ```lua
 > -- jump and find key mappings
@@ -489,7 +528,7 @@ When synchronizing the highlighting of the current window with other split windo
 > ```
 >
 > <details>
-> <summary><b>&nbsp; nvim &nbsp;.lua </b></summary>
+> <summary><b>&nbsp; lua </b></summary>
 >
 > ```lua
 > -- find key mappings
@@ -530,7 +569,7 @@ When synchronizing the highlighting of the current window with other split windo
 > nn <Esc>n  <Cmd>noh<CR>
 > ```
 > <details>
-> <summary><b>&nbsp; nvim &nbsp;.lua </b></summary>
+> <summary><b>&nbsp; lua </b></summary>
 >
 > ```lua
 > -- jump key mappings
@@ -545,32 +584,6 @@ When synchronizing the highlighting of the current window with other split windo
 > </details>
 
  </details>
- <br>
-
-## Advanced features
- 
-### Highlights in a specific line
-
- Sometimes, when you want to apply highlighting only to a Specific Line, `HiSetSL` key mapping can be useful.
- Highlighting is limited to a specific line, and **Jump** commands are also available.
-
- <img width="324" alt="specific_line" src="https://user-images.githubusercontent.com/83812658/207630276-49e31b01-4e27-4598-bb28-91ac5e68e544.gif"><br>
-
- Key mapping example:
- ```vim
- let HiSetSL = 't<CR>'
- ```
- <details>
- <summary><b>&nbsp; nvim &nbsp;.lua </b></summary>
-
- ```lua
- vim.g.HiSetSL = 't<CR>'
- ```
- </details>
-
- `Note`&nbsp; The highlighting may change if lines are added or deleted above it.
-
-
  <br>
 
 ## Help tags

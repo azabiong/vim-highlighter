@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                    `ver 1.56`
+                                                                    `ver 1.57`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -368,7 +368,7 @@ with subsequent commands using an optional space.
 :Hi >> ~
     Set `FOLLOWING HIGHLIGHT` mode
                                                                      *:Hi:clear*
-:Hi :clear ~
+:Hi clear ~
     |HiClear| key function
     Clear all highlights in the current window
                                                                          *:Hi==*
@@ -385,12 +385,12 @@ with subsequent commands using an optional space.
     Set word matching mode in `FOLLOWING HIGHLIGHT`
     <> toggle between two modes
                                                             *:Hi:save*  *:Hi:load*
-:Hi :save ~
-:Hi :load ~
+:Hi save ~
+:Hi load ~
     Save | Load highlights of the current window to/from the user configurable
     |HiKeywords| directory or relative path
                                                                         *:Hi:ls*
-:Hi :ls ~
+:Hi ls ~
     Open the |HiKeywords| directory using |netrw| to browse and manage the list of
     highlight files
                                                                       *:Hi/Find*
@@ -424,7 +424,7 @@ with subsequent commands using an optional space.
 :Hi // ~
     Clear highlights of the `Find` result
                                                                    *:Hi:default*
-:Hi :default ~
+:Hi default ~
     Load plugin default colors for the current 'background' mode
 
 ------------------------------------------------------------------------------
@@ -558,18 +558,25 @@ FUNCTIONS AND VARIABLES ~
     the default single window highlighting mode, you can use |Hi==| command before
     running the above command.
 
-ADVANCED FEATURES~
+ADDITIONAL FEATURES~
                                                                       *HiSetSL*
-|HiSetSL| Highlights in a specific line
-    Sometimes, when you want to apply highlighting only to a Specific Line,
-    |HiSetSL| key mapping can be useful. Highlighting is limited to a specific
-    line, and jump commands are also available.
-
-    Key mapping example:
+|HiSetSL| key sets highlights on a specific line.
+    Sometimes, when you want to apply highlighting only to a Specific Line, this
+    key mapping can be useful. Highlighting is limited to the specific line, and
+    jump commands are also available. Key mapping example:
 >
        let HiSetSL = 't<CR>'
 <
-    The highlighting may change if lines are added or deleted above it.
+    Note. The highlighting may change if lines are added or deleted above it.
+
+                                                       *Hi-Positional-Highlight*
+There is another type of highlight that is set in |visual-block| mode.
+Unlike pattern-based highlighting, positional highlighting is set to a specific
+area. In a way, it's like a color filter on a transparent board that can slide
+over text.
+
+Select some area in |visual-block| mode using |Ctrl-V| keys, then press |HiSet| key
+to set positional highlight. Short jump commands are also supported after setting.
 
 CUSTOM OPTIONS~
                                                            *HiClearUsingOneTime*
@@ -593,6 +600,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.57~
+    Add "Positional Highlight" in |visual-block| mode (issue #22)
 1.56~
     Support jump in "One Time Highlight" and "Following Highlight" modes
 1.55~
@@ -630,86 +639,82 @@ LOG                                                                     *Hi-Log*
     Fix "Find" path name expansion '~'
 1.36~
     Support color scheme
-      - auto loading default colors for dark and light modes
+      . auto loading default colors for dark and light modes
     Fix "Find" loading path starting with drive letter in Windows
 1.35~
     Add options
-      - |HiSyncMode| for the default |Hi-Sync-Mode|
-      - |HiFind()| function to support multifunction keys
+      . |HiSyncMode| for the default |Hi-Sync-Mode|
+      . |HiFind()| function to support multifunction keys
 1.34~
     Add |HiBackup| option to back up highlight files when overwritten.
 1.33~
     Improve "Find" results navigation
-      - center the cursor line when switching buffers
-      - window resizing
-      - fixed handling option '--'
+      . center the cursor line when switching buffers
+      . fixed handling option '--'
 1.32~
     Improve "Find" results navigation
-      - jumping to the first item using number key combination
+      . jump to the first item with number key 1
 1.31~
     Improve usability
-      - "Hi" command <Tab> completion
-      - "Following Highlight" turning off operation
-      - grep default options
+      . "Hi" command <Tab> completion
+      . "Following Highlight" turning off operation
+      . grep default options
 1.30~
     Improve "Find" results navigation
-      - preserving the index when switching lists
-      - optional count for Hi/next, Hi/previous
-      - focus switching after Hi/older commands
+      . preserving the index when switching lists
+      . optional count for Hi/next, Hi/previous
+      . focus switching after Hi/older commands
 1.29~
     Improve usability
-      - relative path support for saving and loading highlights
-      - rename default.hl to _.hl
-      - runtime HiFindTool configuration
+      . relative path support for saving and loading highlights
+      . rename default.hl to _.hl
+      . runtime HiFindTool configuration
 1.28~
     Add command mode <Tab> key completion
-      - grep long options, directory and file names
+      . grep long options, directory and file names
     Improve ColorScheme change handling
 1.27~
-    Fix - incorrect window resizing, grep default options, --smart-case matching
+    Fix "Find" incorrect window resizing, grep options, --smart-case matching
 1.26~
-    Improve "Find in Files Highlight"
-      - added "clear highlights" command
-      - fixed default options for grep
-      - fixed --smart-case matching
+    Fix "Find" grep options, --smart-case matching
 1.25~
     Add commands - save, load highlights
-    Improve "Find" window split location
+    Improve "Find" window split
 1.24~
-    Fix - correct focus switching to the "Find" window
+    Fix "Find" window focus switching
 1.23~
-    Fix - Jump to File
+    Fix Jump to File
 1.22~
-    Improve focus switching to the "Find" window
+    Improve "Find" window focus switching
 1.21~
     Improve options
-      - fixed "Find" window rotation
-      - added "HiKeywords" option for user configurable keywords
-      - added "Sync Mode" toggle command
+      . fixed "Find" window rotation
+      . added "HiKeywords" option for user configurable keywords
+      . added "Sync Mode" toggle command
 1.20~
     Add "Sync Mode"
     Improve grep output list
 1.19~
     Add "Following Highlight" <cWORD> matching mode
-      - extended matching to windows in the current tab
+      . extended matching to windows in the current tab
     Adjust "HiFind" match priority
-      - added restoring HiFind color on color scheme change
+      . added restoring HiFind color on color scheme change
     Add user keywords options for search tools
 1.18~
     Support multiple -e --regexp option
-      - fixed empty expression input
-      - added git-grep options
+      . fixed empty expression input
+      . added git-grep options
     Highlight a single line using visual selection
 1.17~
     Improve "Find in Files Highlight" input handling
-      - added --fixed-strings  --literal option
+      . added --fixed-strings  --literal option
 1.16~
     Add "Find in Files Highlight" --smart-case option
 1.15~
     Add "Find in Files Highlight"
-      - "very magic" style regex syntax
-      - asynchronous search
-      - airline compatible
+      . "very magic" style regex syntax
+      . asynchronous search
+      . airline compatible
     Improve "One Time Highlight" to show all matches in the current tab
     Improve erasing highlight using visual selection
 1.14~
