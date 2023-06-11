@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                    `ver 1.57`
+                                                                    `ver 1.57.2`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -522,11 +522,7 @@ FUNCTIONS AND VARIABLES ~
             exe "normal!" a:key
           endif
         endfunction
-<                                                                   *HiFindLines*
-|HiFindLines|
-    This variable represents the number of lines found as a result of `FIND`
-    `IN FILES` operation, which can be used to check if an item exists.
-                                                                    *HiSearch()*
+<                                                                   *HiSearch()*
 |HiSearch()| function supports `n` and `N` key mappings for both the native search
     and the plugin's jump commands (issue #12).
 >
@@ -557,26 +553,9 @@ FUNCTIONS AND VARIABLES ~
     To synchronize highlighting of the current window to the Quickfix window in
     the default single window highlighting mode, you can use |Hi==| command before
     running the above command.
-
-ADDITIONAL FEATURES~
-                                                                      *HiSetSL*
-|HiSetSL| key sets highlights on a specific line.
-    Sometimes, when you want to apply highlighting only to a Specific Line, this
-    key mapping can be useful. Highlighting is limited to the specific line, and
-    jump commands are also available. Key mapping example:
->
-       let HiSetSL = 't<CR>'
-<
-    Note. The highlighting may change if lines are added or deleted above it.
-
-                                                       *Hi-Positional-Highlight*
-There is another type of highlight that is set in |visual-block| mode.
-Unlike pattern-based highlighting, positional highlighting is set to a specific
-area. In a way, it's like a color filter on a transparent board that can slide
-over text.
-
-Select some area in |visual-block| mode using |Ctrl-V| keys, then press |HiSet| key
-to set positional highlight. Short jump commands are also supported after setting.
+                                                                   *HiFindLines*
+|HiFindLines| represents the number of lines found as a result of `FIND` `IN FILES`
+operation, which can be used to check if an item exists.
 
 CUSTOM OPTIONS~
                                                            *HiClearUsingOneTime*
@@ -591,6 +570,24 @@ CUSTOM OPTIONS~
     This option can also be set during runtime, and the visual mode `ONE TIME`
     `HIGHLIGHT` function is supported independently of this option.
 
+ADDITIONAL FEATURES~
+                                                       *Hi-Positional-Highlight*
+There is another type of highlight that is set in |visual-block| mode.
+Unlike pattern-based highlighting, positional highlighting is set to a specific
+area. In a way, it's like a color filter on a transparent board that can slide
+over text.
+
+Select some area in |visual-block| mode using |Ctrl-V| keys, then press |HiSet| key
+to set positional highlight. Short `Jump` commands are supported after setting.
+
+                                                                       *HiSetSL*
+There is a combination of positional highlight and pattern highlight.
+When you want to apply pattern highlighting only to a Specific Line, `HiSetSL`
+key mapping can be useful. Highlighting is limited to the Specific Line, and
+`Jump` commands are also available.
+>
+       let HiSetSL = 't<CR>'
+<
 ------------------------------------------------------------------------------
 ISSUES                                                               *Hi-Issues*
 

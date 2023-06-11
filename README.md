@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.57 </h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.57.2 </h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -102,7 +102,7 @@
 
 ## Sync Mode
 
-When synchronizing the highlighting of the current window with other split windows, you can use:
+ When synchronizing the highlighting of the current window with other split windows, you can use:
  ```vim
   :Hi ==
  ```
@@ -330,7 +330,8 @@ When synchronizing the highlighting of the current window with other split windo
 
 #### 🍏 &nbsp;Tip
 
-> Pressing the number `1` before the `Hi/next` command invokes a special function that jumps to the first item in the search results. For example, in the mapping above, entering `1` `-` will jump to the first item.
+> Pressing the number `1` before the `Hi/next` command invokes a special function that jumps to the first item
+in the search results. For example, in the mapping above, entering `1` `-` will jump to the first item.
 
   <br>
 
@@ -380,10 +381,24 @@ When synchronizing the highlighting of the current window with other split windo
 
 ## Additional Features
 
+### Positional Highlight
+
+ There is another type of highlight that is set in visual-block mode.
+ Unlike pattern-based highlighting, positional highlighting is set to a specific area.
+ In a way, it's like a color filter on a transparent board that can slide over text.
+ 
+ Select some area in visual-block mode using <kbd>Ctrl</kbd>+<kbd>V</kbd> keys, 
+ then press `HiSet` key to set positional highlight.
+ Short `Jump` commands are supported after setting.
+
+ <img width=420 alt="positional" src="https://github.com/azabiong/vim-highlighter/assets/83812658/1bb30caf-c5e0-405f-98c9-204f5c897547"><br>
+ <br>
+
 ### Highlights in a specific line
 
- Sometimes, when you want to apply highlighting only to a Specific Line, `HiSetSL` key mapping can be useful.
- Highlighting is limited to the specific line, and **Jump** commands are also available.
+ There is a combination of positional highlight and pattern highlight.
+ When you want to apply pattern highlighting only to a Specific Line, `HiSetSL` key mapping can be useful.
+ Highlighting is limited to the specific line, and `Jump` commands are also available.
 
  <img width="324" alt="specific_line" src="https://user-images.githubusercontent.com/83812658/207630276-49e31b01-4e27-4598-bb28-91ac5e68e544.gif"><br>
 
@@ -398,20 +413,6 @@ When synchronizing the highlighting of the current window with other split windo
  vim.g.HiSetSL = 't<CR>'
  ```
  </details>
-
- `Note`&nbsp; The highlighting may change if lines are added or deleted above it.
-
- <br>
-
-### Positional Highlight
-
-There is another type of highlight that is set in visual-block mode.
-Unlike pattern-based highlighting, positional highlighting is set to a specific area.
-In a way, it's like a color filter on a transparent board that can slide over text.
-
-Select some area in visual-block mode using <kbd>Ctrl</kbd>+<kbd>V</kbd> keys, 
-then press `HiSet` key to set positional highlight.
-Short jump commands are also supported after setting.
 
  <br>
 
