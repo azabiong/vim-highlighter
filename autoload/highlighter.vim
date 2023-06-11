@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.57
+" Version: 1.57.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,8 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.57'
-let s:VM        = {'mode':'v', 'count':0}
+let s:Version   = '1.57.2'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -256,14 +255,12 @@ function s:CheckRepeat(interval)
 endfunction
 
 function s:GetNextColor(num)
-  let l:next = a:num ? a:num : (s:VM.count ? s:VM.count : (v:count ? v:count : s:Number+1))
-  let s:VM.count = 0
+  let l:next = a:num ? a:num : (v:count ? v:count : s:Number+1)
   return hlexists(s:Group.l:next) ? l:next : 1
 endfunction
 
 function s:GetVisualBlock()
-  let l:block = {'mode': s:VM.mode, 'rect':[], 'pattern':''}
-  let s:VM.mode = 'v'
+  let l:block = {'mode': visualmode(), 'rect':[], 'pattern':''}
   let [l:upper, l:lower] = [getpos("'<"), getpos("'>")]
   let [l:top, l:left] = l:upper[1:2]
   let [l:bottom, l:right] = l:lower[1:2]
@@ -1971,13 +1968,6 @@ function highlighter#Search(key)
     call s:JumpLong(l:cmd, v:count)
     return 1
   endif
-endfunction
-
-function highlighter#SetBlock()
-  let s:VM.mode = mode()
-  let s:VM.count = v:count
-  call timer_start(100, {t -> highlighter#Command('+x')})
-  return "\<Esc>"
 endfunction
 
 function highlighter#Command(cmd, ...)
