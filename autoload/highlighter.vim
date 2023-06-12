@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.57.2
+" Version: 1.57.3
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.57.2'
+let s:Version   = '1.57.3'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -270,7 +270,7 @@ function s:GetVisualBlock()
 
   if l:left > l:right && (l:top == l:bottom || l:block.mode == "\<C-V>")
     let [l:left, l:right] = [l:right, l:left+1]
-  elseif !exclusive && l:block.mode =~? 'v'
+  elseif !exclusive && l:block.mode == 'v'
     let l:line = getline(l:bottom)
     let l:right += len(matchstr(l:line, '\%'.l:right.'c.'))
   endif
