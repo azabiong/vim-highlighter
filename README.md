@@ -15,7 +15,7 @@
 
  &nbsp;&nbsp;
  [Installation](#installation) <br> &nbsp;&nbsp;
- [Key Map](#key-map) <br> &nbsp;&nbsp;
+ [Key Map](#key-map) &nbsp;&nbsp;&nbsp;
  [Sync Mode](#sync-mode) <br> &nbsp;&nbsp;
  [Jump to Highlights](#jump-to-highlights) &nbsp;&nbsp;&nbsp;
  [Save & Load](#save--load-highlights) &nbsp;&nbsp;&nbsp;
@@ -181,8 +181,8 @@
 
  <img width="455" alt="onetime" src="https://user-images.githubusercontent.com/83812658/169995537-61725353-15b9-4d33-bccc-d0c471c15306.gif"><br>
 
- '**One Time Highlight**' displays matches in all windows on the current tab-page, and&nbsp;
- '**Jump to Highlights**' commands are also supported.
+ '**One Time Highlight**' displays matches in all windows on the current tab-page, and
+ `Jump` commands are also supported.
 
  <br>
 
@@ -194,8 +194,8 @@
  The highlight follows the cursor. Pressing `HiEarase` key turns off the mode.
 
  <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/162587365-64092e0a-0b2f-4947-855a-171da12c8da6.gif"> <br>  
- '**Following Highlight**' displays matches in all windows on the current tab-page, and&nbsp;
- '**Jump to Highlights**' commands are also supported.
+ '**Following Highlight**' displays matches in all windows on the current tab-page, and
+ `Jump` commands are also supported.
 
  <details>
  <summary><b>&nbsp;cWORD &nbsp;matching </b></summary> 
