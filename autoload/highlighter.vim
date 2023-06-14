@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.57.4
+" Version: 1.57.5
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.57.4'
+let s:Version   = '1.57.5'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -213,7 +213,7 @@ function s:SetHighlight(cmd, mode, num)
       endtry
       call s:UpdateJump(l:pattern)
       call s:UpdateSync('add', l:group, l:pattern)
-      let s:Search = match(@/, l:pattern.l:case) != -1
+      let s:Search = match(@/, l:pattern.l:case) != -1 || match(l:pattern, @/.l:case) != -1
       let s:Number = l:color
     endif
   else
@@ -239,7 +239,8 @@ function s:SetHighlight(cmd, mode, num)
       endif
     endif
     if !l:deleted && a:mode != '=' && l:pattern[:1] != '\%'
-      let s:Search = (s:SetFocusMode('.', l:pattern) == '=') && match(@/, l:pattern.l:case) != -1
+      let s:Search = (s:SetFocusMode('.', l:pattern) == '=') &&
+                   \ (match(@/, l:pattern.l:case) != -1 || match(l:pattern, @/.l:case) != -1)
     endif
   endif
 endfunction
@@ -782,7 +783,7 @@ function s:SetFindGuide(tid)
   let s:Guide.left += 1
 endfunction
 
-function s:SetJumpGuide(tid, length=0)
+function s:SetJumpGuide(tid, pos=[])
   if !g:HiCursorGuide | return | endif
   if s:Focus.tid
     call timer_stop(s:Focus.tid)
@@ -791,9 +792,9 @@ function s:SetJumpGuide(tid, length=0)
     call matchdelete(s:Focus.mid, s:Focus.win)
   endif
   let s:Focus = {'tid':0, 'win':0, 'mid':0}
-  if a:length
+  if !empty(a:pos)
     let s:Focus.win = win_getid()
-    let s:Focus.mid = matchaddpos('HiGuide', [[line('.'), col('.'), a:length]], 10, -1, {'window': s:Focus.win})
+    let s:Focus.mid = matchaddpos('HiGuide', [a:pos], 10, -1, {'window': s:Focus.win})
     let s:Focus.tid = timer_start(220, function('s:SetJumpGuide'))
   endif
 endfunction
@@ -951,7 +952,14 @@ function s:JumpTo(pattern, op, count, update)
       let l:jump = search(l:pattern, l:flag)
     endif
     if l:jump
-      call s:SetJumpGuide(0, l:length)
+      if a:pattern[:1] == '\%'
+        let l:from = matchstr(a:pattern, '\d\+c', 3)->str2nr() + 1
+        let l:to = matchstr(a:pattern, '\d\+\zec$')->str2nr()
+        let l:guide = [line('.'), l:from, l:to-l:from]
+      else
+        let l:guide = [line('.'), col('.'), l:length]
+      endif
+      call s:SetJumpGuide(0, l:guide)
       call feedkeys('zv', 'n')
     endif
   endif
