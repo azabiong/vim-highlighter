@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.57.4 </h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.57.5 </h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -460,13 +460,21 @@ in the search results. For example, in the mapping above, entering `1` `-` will 
 > <summary><b>&nbsp; lua </b></summary>
 >
 > ```lua
-> -- jump and find key mappings
+> -- key mappings
 > vim.cmd([[
+>   " default key mappings
+>   " let HiSet   = 'f<CR>'
+>   " let HiErase = 'f<BS>'
+>   " let HiClear = 'f<C-L>'
+>   " let HiFind  = 'f<Tab>'
+>
+>   " jump key mappings
 >   nn <CR>     <Cmd>Hi><CR>
 >   nn g<CR>    <Cmd>Hi<<CR>
 >   nn [<CR>    <Cmd>Hi{<CR>
 >   nn ]<CR>    <Cmd>Hi}<CR>
 >
+>   " find key mappings
 >   nn -        <Cmd>Hi/next<CR>
 >   nn _        <Cmd>Hi/previous<CR>
 >   nn f<Left>  <Cmd>Hi/older<CR>
