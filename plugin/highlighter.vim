@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.57.2
+" Version: 1.58
 
 scriptencoding utf-8
 if exists("g:loaded_vim_highlighter")
@@ -26,8 +26,8 @@ function s:MapKeys()
   \ ['nn', 'HiClear', 'f<C-L>', 'clear'],
   \ ['nn', 'HiFind',  'f<Tab>', '/'    ],
   \ ['xn', 'HiFind',  'f<Tab>', '/x'   ],
-  \ ['nn', 'HiSetSL', '',       '+%'   ],
-  \ ['xn', 'HiSetSL', '',       '+x%'  ],
+  \ ['nn', 'HiSetSL', 't<CR>',  '+%'   ],
+  \ ['xn', 'HiSetSL', 't<CR>',  '+x%'  ],
   \ ]
   for l:map in l:key_map
     let l:key = get(g:, l:map[1], l:map[2])

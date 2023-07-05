@@ -12,15 +12,16 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.57.4`
+                                                                    `ver 1.58`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
-                 Jump to Highlights    |Hi-Jump-To-Highlights|
-                 Save & Load           |Hi-Save-Load|
+                 Jump to Highlight     |Hi-Jump-To-Highlight|
                  One Time              |Hi-One-Time-Highlight|
                  Following             |Hi-Following-Highlight|
                  Find in Files         |Hi-Find-In-Files-Highlight|
+                 Positional Highlight  |Hi-Positional-Highlight|
+                 Save & Load           |Hi-Save-Load|
                  Customizing Colors    |Hi-Customizing-Colors|
                  Commands              |Hi-Commands|
                  Options               |Hi-Options|
@@ -37,7 +38,7 @@ capabilities with additional features such as jump to highlights, saving and
 loading, finding variables, and customizing colors.
 
 ------------------------------------------------------------------------------
-KEY-MAP                            *HiSet*  *HiErase*  *HiClear*  *HiFind*  *Hi-Key-Map*
+KEY-MAP                   *HiSet*  *HiErase*  *HiClear*  *HiFind*  *HiSetSL*  *Hi-Key-Map*
 
 The plugin uses the following default key mappings which you can assign in the
 configuration file.
@@ -46,10 +47,11 @@ configuration file.
     let HiErase = 'f<BS>'       " normal, visual
     let HiClear = 'f<C-L>'      " normal
     let HiFind  = 'f<Tab>'      " normal, visual
+    let HiSetSL = 't<CR>'       " normal, visual
 <
-    Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L` and `f Tab`
+    Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L`, `f Tab` and `t Enter`
 
-In normal mode, `HiSet` and `HiErase` keys set or erase highlights of the word
+In normal mode, `HiSet` and `HiErase` keys set or erase the highlighting of the word
 under the cursor. `HiClear` key clears all highlights.
 
 In visual mode, the highlight is selected as a partial pattern from the selection
@@ -78,7 +80,7 @@ and to switch back to single window highlighting mode:
 differently for each |tab-page|.
 
 ------------------------------------------------------------------------------
-JUMP TO HIGHLIGHTS                                       *Hi-Jump-To-Highlights*
+JUMP TO HIGHLIGHT                                         *Hi-Jump-To-Highlight*
 
 The plugin supports jumping to highlights using two sets of commands.
 
@@ -96,37 +98,9 @@ You can easily define key mappings for these commands. For example:
     nn ]<CR>  <Cmd>Hi}<CR>
 <
 Alternatively, you can map the `n` and `N` keys to |HiSearch()| function, which
-automatically selects the search type between native search and jump (|Hi>|, |Hi<|)
+automatically selects the search type between native search and |Hi<|, |Hi>|
+jump commands.
 
-------------------------------------------------------------------------------
-SAVE AND LOAD                                                     *Hi-Save-Load*
-
-Sometimes when you want to save highlights of the current window, and reload
-them next time, you can use:
->
-    :Hi save
-<
-and when loading:
->
-    :Hi load
-<
-You can name the file when saving, and use <Tab> completion when loading.
-For example:
->
-    :Hi save name
-    :Hi load <Tab>
-<
-Highlight files are stored in a user configurable |HiKeywords| directory. To
-browse and manage files in the directory, you can open |netrw| using the command:
->
-    :Hi ls
-<
-You can also use relative paths. For example, to save and load a highlight file
-in the current directory:
->
-    :Hi save ./name
-    :Hi load ./<Tab>
-<
 ------------------------------------------------------------------------------
 ONE TIME HIGHLIGHT                                       *Hi-One-Time-Highlight*
 
@@ -138,7 +112,7 @@ pressing |HiErase| key sets `ONE TIME HIGHLIGHT`, The highlight stays on while
 the cursor is not moving, and automatically turns off after the cursor moves.
 
 `ONE TIME HIGHLIGHT` displays matches in all windows on the current |tab-page|,
-and `JUMP TO HIGHLIGHTS` commands are also supported.
+and `Jump` commands |Hi<| and |Hi>| are also supported.
 
 ------------------------------------------------------------------------------
 FOLLOWING HIGHLIGHT                                     *Hi-Following-Highlight*
@@ -165,7 +139,7 @@ Matching option ~
       :Hi <>
 <
 `FOLLOWING HIGHLIGHT` displays matches in all windows on the current |tab-page|,
-and `JUMP TO HIGHLIGHTS` commands are also supported.
+and `Jump` commands |Hi<| and |Hi>| are also supported.
 
 ------------------------------------------------------------------------------
 FIND IN FILES HIGHLIGHT                             *Hi-Find-In-Files-Highlight*
@@ -210,17 +184,17 @@ highlight patterns to make them easier to find.
     style syntax which uses the standard regex syntax with fewer escape sequences.
 
   Example ~
-    * searching for "red" or "blue":
+    Searching for "red" or "blue":
 >
       :Hi/Find  red|blue
 <
-    * pattern with spaces:
+    Pattern with spaces:
 >
       :Hi/Find  "pattern with spaces"
      or
       :Hi/Find  pattern\ with\ spaces
 <
-    * class types or variables that start with an uppercase letter A or S:
+    Class types or variables that start with an uppercase letter A or S:
       Array, Set, String, Symbol...
 >
       :Hi/Find  \b[AS]\w+
@@ -282,6 +256,50 @@ highlight patterns to make them easier to find.
     in the mapping above, entering `1-` will jump to the first item.
 
 ------------------------------------------------------------------------------
+POSITIONAL HIGHLIGHT                                   *Hi-Positional-Highlight*
+
+There is another type of highlight that is set in a specific location.
+
+Unlike pattern-based highlighting, `POSITIONAL HIGHLIGHT` is associated with a buffer.
+Thanks to new APIs in Vim and Neovim, it's almost like drawing a mark on a specific
+line of text. The position is updated when inserting or deleting the line above.
+
+To set a `POSITIONAL HIGHLIGHT` on a specific line, press the |HiSetSL| key in normal
+or visual mode. Multiline highlighting is now automatically set to positional
+highlighting.
+
+Short `Jump` commands |Hi{| and |Hi}| are also supported after setting.
+
+------------------------------------------------------------------------------
+SAVE AND LOAD                                                     *Hi-Save-Load*
+
+Sometimes when you want to save highlights of the current window, and reload
+them next time, you can use:
+>
+    :Hi save
+<
+and when loading:
+>
+    :Hi load
+<
+You can name the file when saving, and use <Tab> completion when loading.
+For example:
+>
+    :Hi save name
+    :Hi load <Tab>
+<
+Highlight files are stored in a user configurable |HiKeywords| directory. To
+browse and manage files in the directory, you can open |netrw| using the command:
+>
+    :Hi ls
+<
+You can also use relative paths. For example, to save and load a highlight file
+in the current directory:
+>
+    :Hi save ./name
+    :Hi load ./<Tab>
+<
+------------------------------------------------------------------------------
 CUSTOMIZING COLORS                                       *Hi-Customizing-Colors*
 
 The plugin provides two default color sets which are automatically loaded based
@@ -310,6 +328,8 @@ Example 2 ~
 >
       :hi HiFind ctermfg=52 ctermbg=182 guifg=#570707 guibg=#e7bfe7
 <
+Multiline highlight color numbers start at 80, `HiColor80`.
+
 ------------------------------------------------------------------------------
 COMMANDS                                                 *:HI*  *:Hi*  *Hi-Commands*
 
@@ -318,7 +338,7 @@ with subsequent commands using an optional space.
 
 :Hi ~
     Print the plugin version
-                                                                    *:HI+*  *:Hi+*
+                                                                  *:HI+*  *:Hi+x*
 :Hi +  +x ~
     |HiSet| key function in normal mode (+), visual mode (+x)
     Set highlights of the word under the cursor, visual selection, or a given
@@ -338,7 +358,7 @@ with subsequent commands using an optional space.
     To highlight the pattern used in your search:
 >
         :Hi+ CTRL-R /
-<                                                                         *:Hi-*
+<                                                                  *:HI-*  *:Hi-x*
 :Hi -  -x ~
     |HiErase| key function in normal mode (-), visual mode (-x)
     Erase highlights of the word under the cursor, visual selection, patterns
@@ -358,8 +378,8 @@ with subsequent commands using an optional space.
                                                                    *:Hi}*  *:Hi{*
 :Hi } ~
 :Hi { ~
-    Jump forward | backward to the nearest highlight. These commands can also
-    be used when jumping to adjacent highlights in different patterns. It would
+    Jump forward | backward to the nearest highlight. These commands support
+    jumping to adjacent highlights in different patterns and types. It would
     also be convenient to use key mapping for these commands. For example:
 >
       nn [<CR>  <Cmd>Hi{<CR>
@@ -537,7 +557,7 @@ FUNCTIONS AND VARIABLES ~
         nn <Esc>n  <Cmd>noh<CR>
 <
     The function returns the current search type:
-        `0` (native search), `1` (jump to highlights)
+        `0` (native search), `1` (jump to highlight)
                                                                       *HiList()*
 |HiList()| function returns a list of highlight patterns for the current window,
     which can be used to generate a |Quickfix| or |Location| list for further
@@ -570,24 +590,6 @@ CUSTOM OPTIONS~
     This option can also be set during runtime, and the visual mode `ONE TIME`
     `HIGHLIGHT` function is supported independently of this option.
 
-ADDITIONAL FEATURES~
-                                                       *Hi-Positional-Highlight*
-There is another type of highlight that is set in |visual-block| mode.
-Unlike pattern-based highlighting, positional highlighting is set to a specific
-area. In a way, it's like a color filter on a transparent board that can slide
-over text.
-
-Select some area in |visual-block| mode using |Ctrl-V| keys, then press |HiSet| key
-to set positional highlight. Short `Jump` commands are supported after setting.
-
-                                                                       *HiSetSL*
-There is a combination of positional highlight and pattern highlight.
-When you want to apply pattern highlighting only to a Specific Line, `HiSetSL`
-key mapping can be useful. Highlighting is limited to the Specific Line, and
-`Jump` commands are also available.
->
-       let HiSetSL = 't<CR>'
-<
 ------------------------------------------------------------------------------
 ISSUES                                                               *Hi-Issues*
 
@@ -597,6 +599,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.58~
+    Support "Positional Highlight" associated with a buffer.
 1.57~
     Add "Positional Highlight" in |visual-block| mode (issue #22)
 1.56~
@@ -735,9 +739,9 @@ code contributions and help in resolving issues.
                    Jason Zheng   Upgraded visual selection
                                  Highlights in a specific line
 
-                     Jinq Qian   Jump to highlights
+                     Jinq Qian   Jump to highlight
 
-                   Amin Roosta   Using `n` and `N` keys for jumps
+                   Amin Roosta   Jump using `n` and `N` keys
 
 
 ------------------------------------------------------------------------------

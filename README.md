@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.57.5 </h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.58 </h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -17,13 +17,13 @@
  [Installation](#installation) <br> &nbsp;&nbsp;
  [Key Map](#key-map) &nbsp;&nbsp;&nbsp;
  [Sync Mode](#sync-mode) <br> &nbsp;&nbsp;
- [Jump to Highlights](#jump-to-highlights) &nbsp;&nbsp;&nbsp;
- [Save & Load](#save--load-highlights) &nbsp;&nbsp;&nbsp;
+ [Jump to Highlight](#jump-to-highlight) &nbsp;&nbsp;&nbsp;
  [One Time Highlight](#one-time-highlight) &nbsp;&nbsp;&nbsp;
  [Following Highlight](#following-highlight) &nbsp;&nbsp; &nbsp;
- [Find in Files Highlight](#find-in-files-highlight) <br> &nbsp;&nbsp;
- [Customizing Colors](#customizing-colors) &nbsp;&nbsp;
- [Additional Features](#additional-features) <br> &nbsp;&nbsp;
+ [Find in Files Highlight](#find-in-files-highlight) &nbsp;&nbsp;&nbsp;
+ [Positional Highlight](#positional-highlight) <br> &nbsp;&nbsp;
+ [Save & Load](#save--load) &nbsp;&nbsp;&nbsp;
+ [Customizing Colors](#customizing-colors) <br> &nbsp;&nbsp;
  [Configuration](#configuration-examples) <br> &nbsp;&nbsp;
 
  <details>
@@ -32,11 +32,10 @@
 
  | version | feature | key map |
  |:--:|:--|:--:|
- | 1.57 | [Positional Highlight](#positional-highlight)&nbsp; in visual-block mode | |
+ | 1.58 | [Positional Highlight](#positional-highlight)&nbsp; associated with a buffer | O |
  | 1.56 | [One Time Highlight](#one-time-highlight)&nbsp; and **Jump** | |
- | 1.55 | [Highlights in a specific line](#highlights-in-a-specific-line) | O |
  | 1.52 | [Find window](#find-window)&nbsp; View &nbsp;<kbd>i</kbd> | O |
- | 1.50 | [Jump to Highlights](#jump-to-highlights) | O |
+ | 1.50 | [Jump to Highlight](#jump-to-highlight) | O |
  | 1.38 | [Input](#input)&nbsp; patterns in the command-line | |
  | 1.35 | [Multifunction keys](#configuration-examples)&nbsp; for **Find** | O |
 
@@ -75,10 +74,11 @@
    let HiErase = 'f<BS>'
    let HiClear = 'f<C-L>'
    let HiFind  = 'f<Tab>'
+   let HiSetSL = 't<CR>'
  ```
-> Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L` and `f Tab`
+> Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L`, `f Tab` and `t Enter`
 
- In normal mode, `HiSet` and `HiErase` keys set or erase highlights of the word under the cursor. `HiClear` key clears all highlights.
+ In normal mode, `HiSet` and `HiErase` keys set or erase the highlighting of the word under the cursor. `HiClear` key clears all highlights.
 
  <img width="600" src="https://user-images.githubusercontent.com/83812658/117490057-482a5600-afa9-11eb-8b4a-e2b5018ece5a.gif">
 
@@ -110,11 +110,11 @@
  ```vim
   :Hi =
  ```
- '**Sync Mode**' applies to all windows in the current tab-page, and can be set differently for each tab-page.
+ **Sync Mode** applies to all windows in the current tab-page, and can be set differently for each tab-page.
 
  <br>
 
-## Jump to Highlights
+## Jump to Highlight
 
  The plugin supports jumping to highlights using two sets of commands.
 
@@ -135,40 +135,8 @@
    nn ]<CR>  <Cmd>Hi}<CR>
  ```
  > Alternatively, you can map the <kbd>n</kbd> and <kbd>N</kbd> keys to `HiSearch()` function, which automatically selects
- > the search type between native search and jump(`Hi>`, `Hi<`) &nbsp; → &nbsp;[Configuration](#configuration-examples)
+ > the search type between native search and `Hi<`, `Hi>` jump commands. &nbsp;→ &nbsp;[Configuration](#configuration-examples)
 
- <br>
-
-## Save & Load Highlights
-
- Sometimes when you want to save highlights of the current window and reload them next time, you can use:
- ```vim
-  :Hi save
- ```
- and when loading:
- ```vim
-  :Hi load
- ```
- You can name the file when saving, and use tab-completion when loading. For example:
- ```vim
-  :Hi save name
-  :Hi load <Tab>
- ```
- Highlight files are stored in a user configurable `HiKeywords` directory.
- To browse and manage files in the directory, you can open **netrw** using the command:
- ```vim
-  :Hi ls
- ```
- <details>
- <summary><b>&nbsp; relative path </b></summary>
- <br>
-
- You can also use relative paths. For example, to save and load a highlight file in the current directory:
- ```vim
-  :Hi save ./name
-  :Hi load ./<Tab>
- ```
- </details>
  <br>
 
 ## One Time Highlight
@@ -176,26 +144,26 @@
  The plugin has an automatic feature to clear highlights after use.
  This can be useful when you only need one quick scan from the cursor position.
 
- When the cursor is over a word or visual selection that is not highlighted, pressing `HiErase` key sets '**One Time Highlight**'.
+ When the cursor is over a word or visual selection that is not highlighted, pressing `HiErase` key sets **One Time Highlight**.
  The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
 
  <img width="455" alt="onetime" src="https://user-images.githubusercontent.com/83812658/169995537-61725353-15b9-4d33-bccc-d0c471c15306.gif"><br>
 
- '**One Time Highlight**' displays matches in all windows on the current tab-page, and
- `Jump` commands are also supported.
+ **One Time Highlight** displays matches in all windows on the current tab-page, and
+ **Jump** commands `Hi<` and `Hi>` are also supported.
 
  <br>
 
 ## Following Highlight
 
- When you need automatic matching based on cursor movement, '**Following Highlight**' mode can be useful.
+ When you need automatic matching based on cursor movement, **Following Highlight** mode can be useful.
 
- Pressing `HiSet` key over '**One Time Highlight**' without moving the cursor sets '**Following Highlight**' mode.
+ Pressing `HiSet` key over **One Time Highlight** without moving the cursor sets **Following Highlight** mode.
  The highlight follows the cursor. Pressing `HiEarase` key turns off the mode.
 
  <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/162587365-64092e0a-0b2f-4947-855a-171da12c8da6.gif"> <br>  
- '**Following Highlight**' displays matches in all windows on the current tab-page, and
- `Jump` commands are also supported.
+ **Following Highlight** displays matches in all windows on the current tab-page, and
+ **Jump** commands `Hi<` and `Hi>` are also supported.
 
  <details>
  <summary><b>&nbsp;cWORD &nbsp;matching </b></summary> 
@@ -266,15 +234,15 @@
 
 #### Examples
 
-> searching for "red" or "blue":
+> Searching for "red" or "blue":
 > ```
 >  :Hi/Find  red|blue
 > ```
-> pattern with spaces:
+> Pattern with spaces:
 > ```
 >  :Hi/Find  "pattern with spaces"
 > ```
-> class types or variables that start with an uppercase letter A or S: &nbsp; Array, Set, String, Symbol...
+> Class types or variables that start with an uppercase letter A or S: &nbsp; Array, Set, String, Symbol...
 > ```
 >  :Hi/Find  \b[AS]\w+
 > ```
@@ -333,7 +301,56 @@
 > Pressing the number `1` before the `Hi/next` command invokes a special function that jumps to the first item
 in the search results. For example, in the mapping above, entering `1` `-` will jump to the first item.
 
-  <br>
+ <br>
+
+## Positional Highlight
+
+There is another type of highlight that is set in a specific location.
+
+Unlike **pattern-based** highlighting, **Positional Highlight** is associated with a buffer.
+Thanks to new APIs in Vim and Neovim, it's almost like drawing a mark on a specific line of text.
+The position is updated when inserting or deleting the line above.
+
+To set a **Positional Highlight** on a specific line, press the `HiSetSL` key in normal or visual mode.  
+Multiline highlighting is now automatically set to positional highlighting.
+
+ <img width=400 alt="positional" src="https://github.com/azabiong/vim-highlighter/assets/83812658/25ba37c8-43ce-4eaf-9d43-663108bfb54b"><br>
+
+ Short **Jump** commands `Hi{` and `Hi}` are also supported after setting.
+
+ <br>
+
+## Save & Load
+
+ Sometimes when you want to save highlights of the current window and reload them next time, you can use:
+ ```vim
+  :Hi save
+ ```
+ and when loading:
+ ```vim
+  :Hi load
+ ```
+ You can name the file when saving, and use tab-completion when loading. For example:
+ ```vim
+  :Hi save name
+  :Hi load <Tab>
+ ```
+ Highlight files are stored in a user configurable `HiKeywords` directory.
+ To browse and manage files in the directory, you can open **netrw** using the command:
+ ```vim
+  :Hi ls
+ ```
+ <details>
+ <summary><b>&nbsp; relative path </b></summary>
+ <br>
+
+ You can also use relative paths. For example, to save and load a highlight file in the current directory:
+ ```vim
+  :Hi save ./name
+  :Hi load ./<Tab>
+ ```
+ </details>
+ <br>
 
 ## Customizing Colors
 
@@ -364,6 +381,8 @@ in the search results. For example, in the mapping above, entering `1` `-` will 
 > Now, move the cursor to any word, and then input the number `21` and `HiSet` key.
 > Does it work? if you press `HiSet` key again, the next `HiColor22` will be set.
 > You can try different values while seeing the results immediately.
+
+ <br>
  </details>
 
  <details>
@@ -371,50 +390,17 @@ in the search results. For example, in the mapping above, entering `1` `-` will 
 
 > <br>
 >
-> The following command changes the color of '**Find in Files Highlight**'
+> The following command changes the color of **Find in Files Highlight**
 > ```vim
 >  :hi HiFind ctermfg=52 ctermbg=182 guifg=#570707 guibg=#e7bfe7
 > ```
-
  </details>
-  <br>
-
-## Additional Features
-
-### Positional Highlight
-
- There is another type of highlight that is set in visual-block mode.
- Unlike pattern-based highlighting, positional highlighting is set to a specific area.
- In a way, it's like a color filter on a transparent board that can slide over text.
- 
- Select some area in visual-block mode using <kbd>Ctrl</kbd>+<kbd>V</kbd> keys, 
- then press `HiSet` key to set positional highlight.
- Short `Jump` commands are supported after setting.
-
- <img width=420 alt="positional" src="https://github.com/azabiong/vim-highlighter/assets/83812658/1bb30caf-c5e0-405f-98c9-204f5c897547"><br>
  <br>
 
-### Highlights in a specific line
-
- There is a combination of positional highlight and pattern highlight.
- When you want to apply pattern highlighting only to a Specific Line, `HiSetSL` key mapping can be useful.
- Highlighting is limited to the specific line, and `Jump` commands are also available.
-
- <img width="324" alt="specific_line" src="https://user-images.githubusercontent.com/83812658/207630276-49e31b01-4e27-4598-bb28-91ac5e68e544.gif"><br>
-
- Key mapping example:
- ```vim
- let HiSetSL = 't<CR>'
- ```
- <details>
- <summary><b>&nbsp; lua </b></summary>
-
- ```lua
- vim.g.HiSetSL = 't<CR>'
- ```
- </details>
+Multiline highlight color numbers start at 80, `HiColor80`.
 
  <br>
+
 
 ## Configuration Examples
 
@@ -430,6 +416,7 @@ in the search results. For example, in the mapping above, entering `1` `-` will 
 > " let HiErase = 'f<BS>'
 > " let HiClear = 'f<C-L>'
 > " let HiFind  = 'f<Tab>'
+> " let HiSetSL = 't<CR>'
 >
 > " jump key mappings
 > nn <CR>     <Cmd>Hi><CR>
@@ -467,6 +454,7 @@ in the search results. For example, in the mapping above, entering `1` `-` will 
 >   " let HiErase = 'f<BS>'
 >   " let HiClear = 'f<C-L>'
 >   " let HiFind  = 'f<Tab>'
+>   " let HiSetSL = 't<CR>'
 >
 >   " jump key mappings
 >   nn <CR>     <Cmd>Hi><CR>
@@ -562,7 +550,7 @@ in the search results. For example, in the mapping above, entering `1` `-` will 
  </details>
 
  <details>
- <summary><b>&nbsp;Jump to highlights with <kbd>n</kbd> and <kbd>N</kbd> keys</b></summary>
+ <summary><b>&nbsp;Jump to Highlight with <kbd>n</kbd> and <kbd>N</kbd> keys</b></summary>
 
 > &nbsp;  
 > You can also define <kbd>n</kbd> and <kbd>N</kbd> keys for both the native search and the plugin's jump commands.

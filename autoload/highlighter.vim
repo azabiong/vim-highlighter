@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.57.5
+" Version: 1.58
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.57.5'
+let s:Version   = '1.58'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -77,6 +77,12 @@ function s:Load()
     \ ['HiColor12', 'ctermfg=232 ctermbg=186 cterm=none guifg=#200000 guibg=#d8d880 gui=none'],
     \ ['HiColor13', 'ctermfg=52  ctermbg=213 cterm=none guifg=#470023 guibg=#ec96ec gui=none'],
     \ ['HiColor14', 'ctermfg=17  ctermbg=153 cterm=none guifg=#000047 guibg=#a0d0ec gui=none'],
+    \ ['HiColor80', 'ctermbg=61  guibg=#5757af'],
+    \ ['HiColor81', 'ctermbg=23  guibg=#005f37'],
+    \ ['HiColor82', 'ctermbg=94  guibg=#875f27'],
+    \ ['HiColor83', 'ctermbg=24  guibg=#005787'],
+    \ ['HiColor84', 'ctermbg=18  guibg=#27278f'],
+    \ ['HiColor85', 'ctermbg=240 guibg=#585858'],
     \ ]
   let s:ColorsLight = [
     \ ['HiOneTime', 'ctermfg=234 ctermbg=152 cterm=none guifg=#001828 guibg=#afd9d9 gui=none'],
@@ -97,6 +103,12 @@ function s:Load()
     \ ['HiColor12', 'ctermfg=52  ctermbg=229 cterm=none guifg=#371700 guibg=#f7f7a7 gui=none'],
     \ ['HiColor13', 'ctermfg=53  ctermbg=219 cterm=none guifg=#570027 guibg=#fcb7fc gui=none'],
     \ ['HiColor14', 'ctermfg=17  ctermbg=153 cterm=none guifg=#000057 guibg=#afd7fc gui=none'],
+    \ ['HiColor80', 'ctermbg=153 guibg=#afdfff'],
+    \ ['HiColor81', 'ctermbg=150 guibg=#afdf87'],
+    \ ['HiColor82', 'ctermbg=222 guibg=#ffdf87'],
+    \ ['HiColor83', 'ctermbg=116 guibg=#87dfdf'],
+    \ ['HiColor84', 'ctermbg=225 guibg=#ffd7ff'],
+    \ ['HiColor85', 'ctermbg=251 guibg=#c6c6c6'],
     \ ]
   let s:Colors16 = [
     \ ['HiOneTime', 'ctermfg=darkBlue ctermbg=lightCyan' ],
@@ -108,9 +120,10 @@ function s:Load()
     \ ['HiColor3',  'ctermfg=white   ctermbg=darkMagenta'],
     \ ['HiColor4',  'ctermfg=white   ctermbg=darkYellow' ],
     \ ['HiColor5',  'ctermfg=black   ctermbg=lightYellow'],
+    \ ['HiColor80', 'ctermfg=black   ctermbg=lightGray'  ],
     \ ]
   let s:Colors = (s:Check < 256) ? s:Colors16 : s:ColorsDark
-  let s:Number = 0
+  let s:Number = [1, 80]
   let s:Focus = deepcopy(s:Guide)
   let s:Wait = [g:HiOneTimeWait, g:HiFollowWait]
   let s:WaitRange = [[0, 320], [260, 520]]
@@ -122,6 +135,18 @@ function s:Load()
     let g:HiKeywords = isdirectory(l:keywords) ? l:keywords : ''
   endif
   call s:SetColors(0)
+
+  let s:PI = 0
+  if exists("*prop_type_add")
+    let s:PI = 1
+    let s:PTypes = []
+    for c in s:Colors
+      call prop_type_add(c[0], {'highlight': c[0]})
+      call add(s:PTypes, c[0])
+    endfor
+  else
+    let s:NS = nvim_create_namespace(s:Group)
+  endif
 
   aug Highlighter
     au!
@@ -137,6 +162,13 @@ function s:Load()
     au TabClosed   * call <SID>TabClosed()
   aug END
   return 1
+endfunction
+
+function s:SetPosType(type)
+  if index(s:PTypes, a:type) == -1
+    call prop_type_add(a:type, {'highlight': a:type})
+    call add(s:PTypes, a:type)
+  endif
 endfunction
 
 function s:SetColors(default)
@@ -155,54 +187,69 @@ function s:GetColor(color)
 endfunction
 
 function s:SetHighlight(cmd, mode, num)
-  if a:mode != '=' && s:CheckRepeat(60) | return | endif
+  if a:mode == 'n' && s:CheckRepeat(60) | return | endif
 
-  let l:match = getmatches()
-  let l:pos = getpos('.')
   if a:cmd == '--'
-    for l:m in l:match
+    call s:ClearPosHighlight()
+    for l:m in getmatches()
       if match(l:m.group, s:Group) == 0
         call matchdelete(l:m.id)
       endif
     endfor
     call s:UpdateJump('')
     call s:UpdateSync('del', '*', '')
-    let s:Number = 0
+    let s:Number = [1, 80]
     return
   elseif a:cmd == '+'
-    let l:color = s:GetNextColor(a:num)
+    let l:number = a:num ? a:num : (v:count ? v:count : 0)
+    let l:color = l:number ? l:number : s:Number[0]
+    let l:color = hlexists(s:Group.l:color) ? l:color : 1
   else
     let l:color = 0
   endif
 
-  if a:mode[0] == 'n'
-    let l:word = escape(expand('<cword>'), '\')
+  let l:pos = getpos('.')
+  let l:block = {}
+  if a:mode == 'n'
+    let l:word = expand('<cword>')
+    let l:len = len(l:word)
+    let l:word = escape(l:word, '\')
     let l:pattern = '\V\<'.l:word.'\>'
+  elseif a:mode == 'n%'
+    exe "normal! viwo\<Esc>"
+    call setpos('.', l:pos)
+    let l:block = s:GetVisualBlock()
+    return s:SetPosHighlight(l:block, l:number)
   elseif a:mode[0] == 'x'
     let l:block = s:GetVisualBlock()
-    let l:visual = trim(s:GetVisualLine(l:block))
-    let l:word = escape(l:visual, '\')
-    let l:pattern = !empty(l:block.pattern) ? l:block.pattern : '\V'.l:word
+    if l:color && (l:block.rect[0] != l:block.rect[2] || a:mode[1] == '%')
+      return s:SetPosHighlight(l:block, l:number)
+    elseif !l:color && l:block.mode ==? 'v' && l:block.rect[0] != l:block.rect[2]
+      return s:ClearHighlights(l:block)
+    else
+      let l:visual = trim(s:GetVisualLine(l:block))
+      let l:word = escape(l:visual, '\')
+      let l:pattern = '\V'.l:word
+    endif
   elseif a:mode == '='
     let l:word = escape(s:Input, "'\"")
     let l:magic = &magic ? '\m' : '\M'
     let l:pattern = l:magic.l:word
   endif
+
   if empty(l:word)
     if !l:color | call s:SetFocusMode('-', '') | endif
     return
   endif
 
+  let l:match = getmatches()
   let l:case = (&ic || stridx(@/, '\c') != -1) ? '\c' : ''
   if l:color
     call s:DeleteMatch(l:match, '==', l:pattern, l:pos)
+    let l:group = s:Group.l:color
     if a:mode == 'n' && s:GetFocusMode(1, l:pattern)
-      call s:SetFocusMode('>', '')
+      return s:SetFocusMode('>', '')
     else
-      let l:group = s:Group.l:color
-      if a:mode[1] == '%'
-        let l:pattern = '\V\%'.line('.').'l'.l:pattern
-      endif
       try
         call matchadd(l:group, l:pattern, 0)
       catch
@@ -214,8 +261,8 @@ function s:SetHighlight(cmd, mode, num)
       call s:UpdateJump(l:pattern)
       call s:UpdateSync('add', l:group, l:pattern)
       let s:Search = match(@/, l:pattern.l:case) != -1 || match(l:pattern, @/.l:case) != -1
-      let s:Number = l:color
     endif
+    let s:Number[0] = l:color + 1
   else
     if s:GetFocusMode('>', '')
       let l:deleted = 0
@@ -226,12 +273,11 @@ function s:SetHighlight(cmd, mode, num)
       let l:deleted = s:DeleteMatch(l:match, '==', l:pattern, l:pos)
       if !l:deleted
         if a:mode == 'n'
-          let l:deleted = s:DeleteMatch(l:match, '≈n', s:GetStringPart(), l:pos)
-          if !l:deleted
-            if get(g:, 'HiClearUsingOneTime', 0)
-              return s:ClearHighlights()
-            endif
-            let l:deleted = s:DeleteMatch(l:match, '%l', '', l:pos)
+          let l:deleted = s:DeleteMatch(l:match, '≈n', {'word':expand('<cWORD>'), 'line':getline('.')}, l:pos) ||
+                        \ s:DeleteMatch(l:match, '%l', '', l:pos) ||
+                        \ s:DeletePosHighlightAt(l:pos)
+          if !l:deleted && get(g:, 'HiClearUsingOneTime', 0)
+            return s:ClearHighlights()
           endif
         elseif a:mode == 'x'
           let l:deleted = s:DeleteMatch(l:match, '≈x', l:visual, l:pos)
@@ -255,48 +301,32 @@ function s:CheckRepeat(interval)
   return l:dt < a:interval
 endfunction
 
-function s:GetNextColor(num)
-  let l:next = a:num ? a:num : (v:count ? v:count : s:Number+1)
-  return hlexists(s:Group.l:next) ? l:next : 1
-endfunction
-
 function s:GetVisualBlock()
-  let l:block = {'mode': visualmode(), 'rect':[], 'pattern':''}
+  let l:mode = visualmode()
   let [l:upper, l:lower] = [getpos("'<"), getpos("'>")]
-  let [l:top, l:left] = l:upper[1:2]
-  let [l:bottom, l:right] = l:lower[1:2]
-  let l:left += l:upper[3]
-  let l:right += l:lower[3]
-  let l:exclusive = &selection == 'exclusive'
-
-  if l:left > l:right && (l:top == l:bottom || l:block.mode == "\<C-V>")
-    let [l:left, l:right] = [l:right, l:left+1]
-  elseif !exclusive && l:block.mode ==# 'v'
-    let l:line = getline(l:bottom)
-    let l:right += len(matchstr(l:line, '\%'.l:right.'c.'))
+  let [l:top, l:from] = l:upper[1:2]
+  let [l:bottom, l:to] = l:lower[1:2]
+  let l:from += l:upper[3]
+  let l:to += l:lower[3]
+  let l:inclusive = &selection != 'exclusive'
+  if l:mode == "\<C-V>" && l:from > l:to
+    let [l:from, l:to] = [l:to, l:from]
+    let l:to += !inclusive
   endif
-  let l:block.rect = [l:top, l:left, l:bottom, l:right]
-
-  if l:block.mode == "\<C-V>"
-    if l:top == l:bottom
-      let l:block.pattern = '\%'.l:top.'l\%>'.(l:left-1).'c'
-    else
-      let l:right += (l:left == l:right)
-      let l:block.pattern = '\%>'.(l:top-1).'l\%>'.(l:left-1).'c\%<'.(l:bottom+1).'l'
-    endif
-    let l:block.pattern .= '\%<'.l:right.'c'
+  if inclusive && l:mode !=# 'V'
+    let l:to += len(matchstr(getline(l:bottom), '\%'.l:to.'c.'))
   endif
-  return l:block
+  return {'mode':l:mode, 'rect':[l:top, l:from, l:bottom, l:to]}
 endfunction
 
 function s:GetVisualLine(block)
-  let [l:top, l:left, l:bottom, l:right] = a:block.rect
+  let [l:top, l:from, l:bottom, l:to] = a:block.rect
   if l:top != l:bottom && a:block.mode ==# 'v'
-    let l:right = v:maxcol
+    let l:to = v:maxcol
   endif
   let l:line = getline(l:top)
-  let l:right -= l:right > 1
-  return l:line[l:left-1 : l:right-1]
+  let l:to -= l:to > 1
+  return l:line[l:from-1 : l:to-1]
 endfunction
 
 function s:DeleteMatch(match, op, part, pos)
@@ -307,10 +337,7 @@ function s:DeleteMatch(match, op, part, pos)
     if match(l:m.group, s:Group) == 0
       let l:pattern = l:m.pattern
       let l:inside = 0
-      let l:percent = stridx(l:m.pattern, '\%')
-      if l:percent == 0
-        let l:inside = s:CheckRange(l:m.pattern, a:pos)
-      elseif l:percent == 2
+      if stridx(l:m.pattern, '\%') == 2
         if stridx(l:m.pattern, a:pos[1].'l') != 4 | continue | endif
         let l:inside = 1
         let l:offset = len(matchstr(l:m.pattern, '\v^\\.\\\%\d+l'))
@@ -344,31 +371,216 @@ function s:DeleteMatch(match, op, part, pos)
   endwhile
 endfunction
 
-function s:CheckRange(pattern, pos)
-  let [l:line, l:col] = [a:pos[1], a:pos[2]]
-  let l:from = matchstr(a:pattern, '\d\+l', 2)->str2nr() + (a:pattern[2] == '>')
-  if l:line < l:from | return | endif
-
-  let l:to = matchstr(a:pattern, '.*%<\zs\d\+\zel')->str2nr()
-  if !l:to
-    if l:line != l:from | return | endif
-  else
-    if l:line >= l:to | return | endif
+function s:SetPosHighlight(block, num)
+  let l:rect = a:block.rect
+  if l:rect[1] == l:rect[3] && (l:rect[0] == l:rect[2] || a:block.mode == "\<C-V>")
+    return
   endif
-  let l:from = matchstr(a:pattern, '\d\+c', 3)->str2nr() + 1
-  let l:to = matchstr(a:pattern, '\d\+\zec$')->str2nr()
-  return l:from <= l:col && l:col < l:to
+  let l:pack = (l:rect[0] != l:rect[2])
+  let l:color = a:num ? a:num : s:Number[l:pack]
+  let l:color = hlexists(s:Group.l:color) ? l:color : [1, 80][l:pack]
+  let l:group = s:Group.l:color
+
+  if s:PI
+    call s:SetPosType(l:group)
+    if a:block.mode == "\<C-V>"
+      let l:list = []
+      for i in range(l:rect[0], l:rect[2])
+        let l:end = len(getline(i))
+        if l:rect[1] < l:end
+          call add(l:list, [i, l:rect[1], i, l:rect[3]])
+        endif
+        call s:DeletePosHighlight(l:list[-1])
+      endfor
+      call prop_add_list({'id':s:PI, 'type':l:group}, l:list)
+    else
+      call s:DeletePosHighlight(l:rect)
+      call prop_add(l:rect[0], l:rect[1], {'id':s:PI, 'end_lnum':l:rect[2], 'end_col':l:rect[3], 'type':l:group})
+    endif
+    let s:PI += 1
+  else
+    if l:rect[3] == v:maxcol
+      let l:rect[3] = col("'>")
+    endif
+    call map(l:rect, {i,v -> v-1})
+    if a:block.mode == "\<C-V>"
+      for i in range(l:rect[0], l:rect[2])
+        let l:end = len(getline(i+1))
+        if l:rect[1] < l:end
+          let l:end = (l:end <= l:rect[3]) ? l:end : l:rect[3]
+          call s:DeletePosHighlight([i, l:rect[1], i, l:end])
+          call nvim_buf_set_extmark(0, s:NS, i, l:rect[1], {'end_row':i, 'end_col':l:end, 'hl_group':l:group})
+        endif
+      endfor
+    else
+      call s:DeletePosHighlight(l:rect)
+      call nvim_buf_set_extmark(0, s:NS, l:rect[0], l:rect[1], {'end_row':l:rect[2], 'end_col':l:rect[3], 'hl_group':l:group})
+    endif
+  endif
+  let s:Number[l:pack] = l:color + 1
 endfunction
 
-function s:GetStringPart()
-  let l:line = getline('.')
-  let l:col = col('.')
-  let l:low = max([l:col-1024, 0])
-  let l:left = strpart(l:line, l:low, l:col - l:low)
-  let l:right = strpart(l:line, l:col, l:col + 1024)
-  let l:word = matchstr(l:left, '\zs\S\+$')
-  let l:word .= matchstr(l:right, '^\S\+')
-  return {'word':l:word, 'line': l:left.l:right}
+function s:DeletePosHighlight(rect)
+  if s:PI
+    let l:props = prop_list(a:rect[0], {'end_lnum':a:rect[2]})
+    let l:pos = {}
+    for p in l:props
+      if match(p.type, s:Group) == 0
+        if p.start
+          let l:pos[p.id] = [a:rect[0], a:rect[1]]
+        endif
+        if p.end && has_key(l:pos, p.id)
+          call extend(l:pos[p.id], [p.lnum, p.col + p.length])
+          if l:pos[p.id] == a:rect
+            return prop_remove({'type':p.type, 'id': p.id, 'both':v:true})
+          endif
+          call remove(l:pos, p.id)
+        endif
+      endif
+    endfor
+  else
+    let [l:from, l:to] = [[a:rect[0], 0], [a:rect[0], -1]]
+    let l:marks = nvim_buf_get_extmarks(0, s:NS, l:from, l:to, {'details':v:true})
+    let i = len(l:marks)
+    while i > 0
+      let i -= 1
+      let m = l:marks[i]
+      if a:rect == [m[1], m[2], m[3].end_row, m[3].end_col]
+        return nvim_buf_del_extmark(0, s:NS, m[0])
+      endif
+    endwhile
+  endif
+endfunction
+
+function s:DeletePosHighlightAt(pos)
+  if s:PI
+    let l:props = prop_list(1, {'end_lnum':-1})
+    for p in l:props
+      if match(p.type, s:Group) == 0
+        if p.lnum == a:pos[1] && p.col <= a:pos[2] && a:pos[2] < p.col + p.length
+          return prop_remove({'type':p.type, 'id': p.id, 'both':v:true})
+        endif
+      endif
+    endfor
+  else
+    let [l:row, l:col] = [a:pos[1]-1, a:pos[2]-1]
+    let l:marks = nvim_buf_get_extmarks(0, s:NS, 0, -1, {'details':v:true})
+    for i in range(len(l:marks)-1, 0, -1)
+      let m = l:marks[i]
+      let r = [m[1], m[2], m[3].end_row, m[3].end_col]
+      if (r[0] == r[2] && l:r[0] == l:row)
+        let l:in = r[1] <= l:col && l:col < r[3]
+      else
+        let l:in = (r[0] < l:row && l:row < r[2]) || (r[0] == l:row && r[1] <= l:col) || (r[2] == l:row && l:col < r[3])
+      endif
+      if l:in
+        call nvim_buf_del_extmark(0, s:NS, m[0])
+        for l:id in range(m[0]+1, m[0]+1024)
+          if !s:DeletePosHighlightGroup(l:id, r[1], m[3].hl_group) | break | endif
+        endfor
+        for l:id in range(m[0]-1, 1, -1)
+          if !s:DeletePosHighlightGroup(l:id, r[1], m[3].hl_group) | break | endif
+        endfor
+        return 1
+      endif
+    endfor
+  endif
+endfunction
+
+function s:DeletePosHighlightGroup(id, col, group)
+  let l:m = nvim_buf_get_extmark_by_id(0, s:NS, a:id, {'details':v:true})
+  if !empty(l:m) && a:col == l:m[1] && l:m[0] == l:m[2].end_row && a:group == l:m[2].hl_group
+    return nvim_buf_del_extmark(0, s:NS, a:id)
+  endif
+endfunction
+
+function s:ClearPosHighlight()
+  if s:PI
+    call prop_remove({'types': s:PTypes, 'all':v:true})
+  else
+    call nvim_buf_clear_namespace(0, s:NS, 0, -1)
+  endif
+endfunction
+
+" returns [line, col, length, range]
+function s:GetNearPosHighlight(sign, pos, range)
+  let l:range = a:range
+  let l:list = []
+  if s:PI
+    let [l:row, l:col] = [a:pos[1], a:pos[2]]
+    let l:props = prop_list(1, {'end_lnum':-1})
+    for p in l:props
+      if match(p.type, s:Group) == 0 && p.start
+        let l:dist = a:sign * (p.lnum - l:row)
+        if l:dist >= 0 && l:dist < l:range
+          if p.lnum == l:row && a:sign * (p.col - l:col) <= 0
+            continue
+          endif
+          let l:list = [[p.lnum, p.col, p.length]]
+          let l:range = l:dist
+        elseif l:dist == l:range
+          let l:list += [[p.lnum, p.col, p.length]]
+        endif
+      endif
+    endfor
+    if !empty(l:list)
+      if l:row != l:list[0][0]
+        let l:col = (a:sign > 0) ? -1 : v:maxcol
+      endif
+      let l:length = v:maxcol
+      let l:index = -1
+      for i in range(len(l:list))
+        let p = l:list[i]
+        let l:dist = a:sign * (p[1] - l:col)
+        if l:dist > 0 && l:dist < l:length
+          let l:length = l:dist
+          let l:index = i
+        endif
+      endfor
+      if l:index >= 0
+        return l:list[l:index] + [l:range]
+      endif
+    endif
+  else
+    let [l:row, l:col] = [a:pos[1]-1, a:pos[2]-1]
+    let l:marks = nvim_buf_get_extmarks(0, s:NS, 0, -1, {'details':v:true})
+    for m in l:marks
+      if m[1] == m[3].end_row && m[2] >= m[3].end_col
+        call nvim_buf_del_extmark(0, s:NS, m[0])
+        continue
+      endif
+      let l:dist = a:sign * (m[1] - l:row)
+      if l:dist >= 0 && l:dist < l:range
+        if m[1] == l:row && a:sign * (m[2] - l:col) <= 0
+          continue
+        endif
+        let l:list = [[m[0], m[1], m[2]]]
+        let l:range = l:dist
+      elseif l:dist == l:range
+        let l:list += [[m[0], m[1], m[2]]]
+      endif
+    endfor
+    if !empty(l:list)
+      if l:row != l:list[0][1]
+        let l:col = (a:sign > 0) ? -1 : v:maxcol
+      endif
+      let l:length = v:maxcol + 1
+      let l:id = 0
+      for m in l:list
+        let l:dist = a:sign * (m[2] - l:col)
+        if l:dist > 0 && l:dist < l:length
+          let l:length = l:dist
+          let l:id = m[0]
+        endif
+      endfor
+      if l:id
+        let l:m = nvim_buf_get_extmark_by_id(0, s:NS, l:id, {'details':v:true})
+        let l:span = (l:m[0] == l:m[2].end_row) ? l:m[2].end_col - l:m[1] : len(getline(l:m[0]+1)) - l:m[1]
+        return [l:m[0]+1, l:m[1]+1, l:span, l:range]
+      endif
+    endif
+  endif
+  return []
 endfunction
 
 function s:GetFocusMode(mode, word)
@@ -504,10 +716,27 @@ function s:UpdateSync(op, group, pattern)
   call s:SetHiSyncWin(1)
 endfunction
 
-function s:ClearHighlights()
-  call s:SetHighlight('--', '=', 0)
-  call s:SetFocusMode('-', '')
-  call s:FindClear()
+function s:ClearHighlights(block={})
+  if empty(a:block)
+    call s:SetHighlight('--', '', 0)
+    call s:SetFocusMode('-', '')
+    call s:FindClear()
+  else
+    for i in range(a:block.rect[0], a:block.rect[2])
+      let l:pos = [0,i,1,0]
+      while s:DeleteMatch(getmatches(), '≈x', getline(i), l:pos)
+      endwhile
+    endfor
+    if s:PI
+      call prop_remove({'types': s:PTypes, 'all':v:true}, a:block.rect[0], a:block.rect[2])
+    else
+      let [l:from, l:to] = [[a:block.rect[0]-1, 0], [a:block.rect[2]-1, -1]]
+      let l:marks = nvim_buf_get_extmarks(0, s:NS, l:from, l:to, {})
+      for m in l:marks
+        call nvim_buf_del_extmark(0, s:NS, m[0])
+      endfor
+    endif
+  endif
 endfunction
 
 function s:NoOption(op)
@@ -791,8 +1020,9 @@ function s:SetJumpGuide(tid, pos=[])
   if s:Focus.mid && win_id2tabwin(s:Focus.win)[0]
     call matchdelete(s:Focus.mid, s:Focus.win)
   endif
-  let s:Focus = {'tid':0, 'win':0, 'mid':0}
-  if !empty(a:pos)
+  if empty(a:pos)
+    let s:Focus = {'tid':0, 'win':0, 'mid':0}
+  else
     let s:Focus.win = win_getid()
     let s:Focus.mid = matchaddpos('HiGuide', [a:pos], 10, -1, {'window': s:Focus.win})
     let s:Focus.tid = timer_start(220, function('s:SetJumpGuide'))
@@ -825,13 +1055,35 @@ function s:SaveHighlight(file)
   if empty(glob(l:dir, 0, 1))
     echo " * path not found: ".l:dir | return
   endif
+
   if g:HiBackup && !empty(glob(l:path, 0, 1)) && len(readfile(l:path, '', 3)) == 3
     let l:backup = l:path.'.o'
     call rename(l:path, l:backup)
   endif
   let l:list = ['# Highlighter Ver '.s:Version, '']
-  let l:list += map(filter(getmatches(), {i,v -> match(v.group, s:Group) == 0}),
-                                        \{i,v -> matchstr(v.group, '\d\+').':'.v.pattern})
+  let l:list += getmatches()->filter({i,v -> match(v.group, s:Group) == 0})
+              \ ->map({i,v -> matchstr(v.group, '\d\+').':'.v.pattern})
+  let l:format = '%%:%s,%d,%d,%d,%d'
+  if s:PI
+    let l:props = prop_list(1, {'end_lnum':-1})
+    let l:pos = {}
+    for p in l:props
+      if match(p.type, s:Group) == 0
+        if p.start
+          let l:pos[p.id] = [p.lnum, p.col]
+        endif
+        if p.end && has_key(l:pos, p.id)
+          let l:rect = l:pos[p.id] + [p.lnum, p.col + p.length]
+          call add(l:list, printf(l:format, matchstr(p.type, '\d\+'), l:rect[0], l:rect[1], l:rect[2], l:rect[3]))
+          call remove(l:pos, p.id)
+        endif
+      endif
+    endfor
+  else
+    let l:list += nvim_buf_get_extmarks(0, s:NS, 0, -1, {'details':v:true})
+                \ ->map({i,v -> printf(l:format, matchstr(v[3].hl_group, '\d\+'), v[1]+1, v[2]+1, v[3].end_row+1, v[3].end_col+1)})
+  endif
+
   if writefile(l:list, l:path) == 0
     echo  " Hi:save ".l:file
   else
@@ -851,21 +1103,36 @@ function s:LoadHighlight(file)
   endif
 
   echo  " Hi:load ".l:file
-  for l:m in getmatches()
-    if match(l:m.group, s:Group) == 0
-      call matchdelete(l:m.id)
-    endif
-  endfor
+  call s:SetHighlight('--', '', 0)
+
   let l:pattern = ''
   for l:line in readfile(l:path)
     if l:line[0] == '#' | continue | endif
     let l:exp = match(l:line, ':')
     if l:exp > 0
-      let s:Number = l:line[:l:exp-1]
+      let l:num = l:line[:l:exp-1]
       let l:pattern = l:line[l:exp+1:]
-      call matchadd(s:Group.s:Number, l:pattern, 0)
+      if l:num == '%'
+        let l:pos = split(l:pattern, ',')
+        let l:col = len(getline(l:pos[1]))
+        if l:col < l:pos[2] | continue | endif
+        let l:group = s:Group.l:pos[0]
+        if s:PI
+          call s:SetPosType(l:group)
+          call prop_add(l:pos[1], l:pos[2], {'id':s:PI, 'end_lnum':l:pos[3], 'end_col':l:pos[4], 'type':l:group})
+          let s:PI += 1
+        else
+          let l:pos[4] = min([l:pos[4], l:col+1])
+          call nvim_buf_set_extmark(0, s:NS, l:pos[1]-1, l:pos[2]-1, {'end_row':l:pos[3]-1, 'end_col':l:pos[4]-1, 'hl_group':l:group})
+        endif
+      else
+        call matchadd(s:Group.l:num, l:pattern, 0)
+        let s:Number[0] = l:num
+      endif
     endif
   endfor
+  let s:Number[0] += 1
+
   call s:UpdateJump(l:pattern)
   if s:GetSyncMode()
     call s:SetSyncMode('=', '*') | call s:SetSyncMode('==', '*')
@@ -930,15 +1197,11 @@ function s:UpdateJump(pattern)
   endif
 endfunction
 
-function s:JumpTo(pattern, op, count, update)
+function s:JumpTo(pattern, flag, count, update, align=0)
   let l:from = getpos('.')
-  let l:jump = 0
-  let l:flag = a:op[0]
   let l:pattern = '\C'.a:pattern
-  for i in range(a:count)
-    if !search(l:pattern, l:flag) | break | endif
-    let l:jump += 1
-  endfor
+  let l:jump = search(l:pattern, a:flag)
+
   if l:jump
     let l:to = getpos('.')
     if stridx(a:pattern, '\%') == 2
@@ -948,17 +1211,13 @@ function s:JumpTo(pattern, op, count, update)
       let l:word = l:pattern
     endif
     let l:length = len(matchstr(getline('.'), l:word, l:to[2]-1))
-    if a:op == 'b' && l:from[1] == l:to[1] && l:from[2] - l:to[2] < l:length
-      let l:jump = search(l:pattern, l:flag)
-    endif
+    let l:jump = (a:align || a:flag != 'b' || l:from[1] != l:to[1] || l:from[2] - l:to[2] >= l:length)
+    while l:jump < a:count
+      if !search(l:pattern, a:flag) | break | endif
+      let l:jump += 1
+    endwhile
     if l:jump
-      if a:pattern[:1] == '\%'
-        let l:from = matchstr(a:pattern, '\d\+c', 3)->str2nr() + 1
-        let l:to = matchstr(a:pattern, '\d\+\zec$')->str2nr()
-        let l:guide = [line('.'), l:from, l:to-l:from]
-      else
-        let l:guide = [line('.'), col('.'), l:length]
-      endif
+      let l:guide = [line('.'), col('.'), l:length]
       call s:SetJumpGuide(0, l:guide)
       call feedkeys('zv', 'n')
     endif
@@ -969,7 +1228,7 @@ function s:JumpTo(pattern, op, count, update)
 endfunction
 
 function s:JumpLong(op, count)
-  let l:op = (a:op == '<') ? 'b' : ''
+  let [l:op, l:rev] = (a:op == '<') ? ['b', ''] : ['', 'b']
   let l:count = a:count ? a:count : (v:count ? v:count : 1)
   if exists("s:HiMode")
     let l:jump = s:HiMode['w']
@@ -989,17 +1248,20 @@ function s:JumpLong(op, count)
 
   let l:matches = getmatches()
   let l:size = len(l:matches)
+  let i = l:size
+  while i > 0
+    let i -= 1
+    let l:m = l:matches[i]
+    if match(l:m.group, s:Group) == 0 && s:MatchPattern(l:line, l:pos, l:m.pattern)
+      return s:JumpTo(l:m.pattern, l:op, l:count, 1)
+    endif
+  endwhile
+
   if !empty(l:jump)
-    let i = l:size
-    while i > 0
-      let i -= 1
-      let l:m = l:matches[i]
-      if match(l:m.group, s:Group) == 0 && s:MatchPattern(l:line, l:pos, l:m.pattern)
-        return s:JumpTo(l:m.pattern, l:op, l:count, 1)
-      endif
-    endwhile
-    if search('\C'.l:jump, 'nw')
+    if search('\C'.l:jump, 'n'.l:op)
       return s:JumpTo(l:jump, l:op, l:count, 0)
+    elseif search('\C'.l:jump, 'n'.l:rev)
+      return s:JumpTo(l:jump, l:rev, 1, 0)
     endif
   endif
 
@@ -1007,20 +1269,23 @@ function s:JumpLong(op, count)
   while i > 0
     let i -= 1
     let l:m = l:matches[i]
-    if match(l:m.group, s:Group) == 0 && search('\C'.l:m.pattern, 'nw')
-      return s:JumpTo(l:m.pattern, l:op, l:count, 1)
+    if match(l:m.group, s:Group) == 0
+      if search('\C'.l:m.pattern, 'n'.l:op)
+        return s:JumpTo(l:m.pattern, l:op, 1, 1)
+      elseif search('\C'.l:m.pattern, 'n'.l:rev)
+        return s:JumpTo(l:m.pattern, l:rev, 1, 1)
+      endif
     endif
   endwhile
 endfunction
 
 function s:JumpNear(op)
-  let l:op = (a:op == '{') ? 'nWb' : 'nW'
+  let [l:op, l:sign, l:stop] = (a:op == '{') ? ['nWb', -1, 1] : ['nW', 1, line('$')]
   let l:matches = getmatches()
   let l:match = []
   let l:pos = getpos('.')
   let l:base = l:pos[1]
   let l:range = line('$')
-  let l:stop = (a:op == '{') ? 1 : line('$')
   let i = len(l:matches)
   while i > 0
     let i -= 1
@@ -1029,39 +1294,37 @@ function s:JumpNear(op)
       let l:line = search('\C'.l:m.pattern, l:op, l:stop)
       if l:line
         let l:dist = abs(l:line - l:base)
-        if l:dist <= l:range
-          if l:m.pattern[:1] == '\%' && s:CheckRange(l:m.pattern, l:pos)
-            continue
-          endif
-          if l:dist != l:range
-            let l:match = [l:m]
-            let l:range = l:dist
-            let l:stop = l:line
-          else
-            let l:match += [l:m]
-          endif
+        if l:dist < l:range
+          let l:match = [l:m]
+          let l:range = l:dist
+          let l:stop = l:line
+        elseif l:dist == l:range
+          let l:match += [l:m]
         endif
       endif
     endif
   endwhile
+
+  let l:next = {}
   if !empty(l:match)
     let l:flag = l:op[2]
-    if len(l:match) > 1
-      let l:sign = (l:flag == 'b') ? -1 : 1
-      let l:next = {}
-      for l:m in l:match
-        call search('\C'.l:m.pattern, l:flag, l:stop)
-        let l:col = l:sign * col('.')
-        if empty(l:next) || l:col < l:next.col
-          let l:next = {'col': l:col, 'pattern': l:m.pattern}
-        endif
-        call setpos('.', l:pos)
-      endfor
-      let l:flag = (l:flag == 'b') ? 'b0' : ''
-      call s:JumpTo(l:next.pattern, l:flag, 1, 1)
-    else
-      call s:JumpTo(l:match[0].pattern, l:flag, 1, 1)
-    endif
+    for l:m in l:match
+      call search('\C'.l:m.pattern, l:flag, l:stop)
+      let l:col = l:sign * col('.')
+      if empty(l:next) || l:col < l:next.col
+        let l:next = {'col': l:col, 'pattern': l:m.pattern}
+      endif
+      call setpos('.', l:pos)
+    endfor
+  endif
+
+  let l:near = s:GetNearPosHighlight(l:sign, l:pos, l:range)
+  if !empty(l:near) && (l:near[3] < l:range || (l:near[3] == l:range && l:sign * l:near[1] < l:next.col))
+    call cursor(l:near[0], l:near[1])
+    call s:SetJumpGuide(0, l:near)
+    call feedkeys('zv', 'n')
+  elseif !empty(l:next)
+    call s:JumpTo(l:next.pattern, l:flag, 1, 1, 1)
   endif
 endfunction
 
@@ -1964,7 +2227,7 @@ endfunction
 
 function highlighter#List()
   return getmatches()->filter({i,v -> match(v.group, s:Group) == 0})
-         \ ->map({i,v -> {'color':matchstr(v.group, '\d\+'), 'pattern':v.pattern}})
+       \ ->map({i,v -> {'color':matchstr(v.group, '\d\+'), 'pattern':v.pattern}})
 endfunction
 
 function highlighter#Search(key)
