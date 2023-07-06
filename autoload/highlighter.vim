@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.58'
+let s:Version   = '1.58.2'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
