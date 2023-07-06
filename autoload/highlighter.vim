@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.58
+" Version: 1.58.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -1122,6 +1122,9 @@ function s:LoadHighlight(file)
           call prop_add(l:pos[1], l:pos[2], {'id':s:PI, 'end_lnum':l:pos[3], 'end_col':l:pos[4], 'type':l:group})
           let s:PI += 1
         else
+          if l:pos[1] != l:pos[3]
+            let l:col = len(getline(l:pos[3]))
+          endif
           let l:pos[4] = min([l:pos[4], l:col+1])
           call nvim_buf_set_extmark(0, s:NS, l:pos[1]-1, l:pos[2]-1, {'end_row':l:pos[3]-1, 'end_col':l:pos[4]-1, 'hl_group':l:group})
         endif
