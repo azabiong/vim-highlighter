@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                    `ver 1.58`
+                                                                   `ver 1.58.2`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -599,6 +599,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.58.2~
+    Improve loading highlights for updated files.
 1.58~
     Support "Positional Highlight" associated with a buffer.
 1.57~
