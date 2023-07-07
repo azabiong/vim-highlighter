@@ -585,9 +585,9 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 
 ## Help tags
 
- For more information about commands and options, please refer to:
+ For more information about configurable options, please refer to:
  ```vim
-  :h HI
+  :h Hi-Options
  ```
  <br>
 
