@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.58.3
+" Version: 1.58.4
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.58.3'
+let s:Version   = '1.58.4'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -417,7 +417,9 @@ function s:SetPosHighlight(block, num)
       call nvim_buf_set_extmark(0, s:NS, l:rect[0], l:rect[1], {'end_row':l:rect[2], 'end_col':l:rect[3], 'hl_group':l:group})
     endif
   endif
-  let s:Number[l:pack] = l:color + 1
+  if l:pack == 0 || l:color >= 80
+    let s:Number[l:pack] = l:color + 1
+  endif
 endfunction
 
 function s:DeletePosHighlight(rect)
