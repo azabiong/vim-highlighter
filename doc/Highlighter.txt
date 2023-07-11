@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.58.3`
+                                                                   `ver 1.58.4`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -600,9 +600,11 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.58.3~
-    Improve "Find" window resize and rotation
-    Improve loading highlights for updated files
+1.58.4~
+    Improve:
+      . multiline color selection
+      . "Find" window resize and rotation
+      . loading highlights for updated files
 1.58~
     Support "Positional Highlight" associated with a buffer.
 1.57~
