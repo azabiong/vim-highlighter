@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.58.2`
+                                                                   `ver 1.58.3`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -474,14 +474,15 @@ OPTIONS                                                             *Hi-Options*
     Additional search tool options for `FIND IN FILES` can also be stored in the
     directory.
                                                                       *HiBackup*
-|HiBackup| option sets the plugin to create a backup file when an existing
-    highlight file is overwritten. The plugin appends a '.o' extension to the
-    backup file. You can restore the file by simply removing the '.o' extension.
+|HiBackup| option specifies whether to create a backup file when an existing highlight
+    file is overwritten by the |Hi:save| command. The plugin appends a '.o' extension
+    to the backup file. You can easily restore the file by simply removing the '.o'
+    extension.
 
     Default: 1 `(on)`
     Values:  0, 1
                                                                     *HiFindTool*
-|HiFindTool| In this variable, you can set your preferred search tool and options
+|HiFindTool|, in this variable, you can set your preferred search tool and options
     to run when using `FIND IN FILES` function. For example,
     "grep": >
           let HiFindTool = 'grep -H -EnrI --exclude-dir=.git'
@@ -511,13 +512,13 @@ OPTIONS                                                             *Hi-Options*
     Values:  0, 1
                                                                  *HiOneTimeWait*
 |HiOneTimeWait| defines the wait time before turning off the highlights after the
-    cursor stopped in `ONE TIME HIGHLIGHT` mode.
+    cursor stops moving in `ONE TIME HIGHLIGHT` mode.
 
     Default: 260 `(ms)`
     Values:  0 ~ 320
                                                                   *HiFollowWait*
 |HiFollowWait| defines the wait time before moving the highlights to the cursor
-    position after the cursor stopped in `FOLLOWING HIGHLIGHT` mode.
+    position after the cursor stops moving in `FOLLOWING HIGHLIGHT` mode.
 
     Default: 320 `(ms)`
     Values:  260 ~ 520
@@ -599,8 +600,9 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.58.2~
-    Improve loading highlights for updated files.
+1.58.3~
+    Improve "Find" window resize and rotation
+    Improve loading highlights for updated files
 1.58~
     Support "Positional Highlight" associated with a buffer.
 1.57~
@@ -736,14 +738,16 @@ CREDITS                                                             *Hi-Credits*
 I would like to thank the following people for their great feature suggestions,
 code contributions and help in resolving issues.
 
-        Miguel Pérez Pasalodos   Highlight using input pattern
+         Miguel Pérez Pasalodos   Highlight using Input Pattern
 
-                   Jason Zheng   Upgraded visual selection
-                                 Highlights in a specific line
+                    Jason Zheng   Upgraded Visual Selection
+                                  Highlights in a specific line
 
-                     Jinq Qian   Jump to highlight
+                      Jinq Qian   Jump to Highlight
 
-                   Amin Roosta   Jump using `n` and `N` keys
+                    Amin Roosta   Jump using `n` and `N` keys
+
+                      N. Dubray   Positional Highlight
 
 
 ------------------------------------------------------------------------------
