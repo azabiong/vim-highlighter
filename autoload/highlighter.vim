@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.58.2
+" Version: 1.58.3
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,13 +21,13 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.58.2'
+let s:Version   = '1.58.3'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
-let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'div':4, 'lines':0, 'edit':0,
+let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'edit':0,
                   \'logs':[{'list':[], 'status':'', 'select':0, 'hi':[], 'base':''}], 'index':0, 'log':''}
 let s:FindOpts  = ['--literal', '_li', '--fixed-strings', '_li', '--smart-case', '_sc', '--ignore-case',  '_ic',
                   \'--word-regexp', '_wr', '--regexp', '_re']
@@ -1728,29 +1728,28 @@ function s:FindStart(arg)
   call s:FindStatus(" searching...")
 endfunction
 
-function s:FindOpen(...)
+function s:FindOpen(pos=0)
   if s:FL.buf == -1 | echo ' no list' | return | endif
   let l:win = bufwinnr(s:FL.buf)
   if l:win == -1
-    if a:0
-      let l:pos = a:1
-      let l:div = a:2
-    else
-      let l:pos = 0
-      let l:div = 4
-      if !empty(&buftype)
-        for i in range(winnr('$'), 1, -1)
-          if empty(winbufnr(i)->getbufvar('&buftype'))
-            exe i "wincmd w"
-          endif
-        endfor
-      endif
+    if !empty(&buftype)
+      for i in range(winnr('$'), 1, -1)
+        if empty(winbufnr(i)->getbufvar('&buftype'))
+          exe i "wincmd w"
+          break
+        endif
+      endfor
     endif
-    let s:FL.pos = l:pos
-    let s:FL.div = l:div
-    exe ((l:pos % 2) ? 'vert' : '') ['bel', 'abo', 'abo', 'bel'][l:pos] 'sb' s:FL.buf
-    if !(l:pos % 2)
-      exe "resize" (winheight(0)/l:div + 1)
+    let l:height = winheight(0)
+    let s:FL.pos = a:pos
+    exe ((a:pos % 2) ? 'vert' : '') ['bel', 'abo', 'abo', 'bel'][a:pos] 'sb' s:FL.buf
+    if !(a:pos % 2) && l:height > 3
+      noa wincmd p
+      exe "resize" (l:height*7/8 - 1)
+      noa wincmd p
+      if &ea
+        exe "resize" (l:height/8 + 1)
+      endif
     endif
     let &l:statusline = '  Find | %<%{b:Status} %=%3.l / %L  '
     setl wfh nowrap nofen fdc=0
@@ -1759,8 +1758,9 @@ function s:FindOpen(...)
     endif
     call s:SetHiFindWin(1)
     let l:win = winnr()
+  else
+    exe l:win "wincmd w"
   endif
-  exe l:win "wincmd w"
   return l:win
 endfunction
 
@@ -1896,29 +1896,34 @@ function s:FindRotate()
   endfor                       " 1 → * ← 3
   let l:win += l:win           "     ↑
   let l:pos = s:FL.pos         "     0
-  let l:div = s:FL.div
-  let l:rotate = l:pos || s:CheckRepeat(660)
   for i in range(4)
     if l:win[l:pos] != l:find
       break
     endif
     let l:pos += 1
   endfor
+  let l:rotate = l:pos || (l:find == l:win[0] && l:find == l:win[2]) || s:CheckRepeat(600)
   let l:pivot = win_getid(l:win[l:pos])
-  if l:pos == 0
-    if l:div == 4
-      let l:rotate = 0
-    endif
-    let l:div = (4+1) - l:div
-  endif
+  let l:height = winheight(0)
   if l:rotate
     let l:pos = (l:pos + 1) % 4
     let l:pos += l:pos == 2
-    let l:div = 4
+    if (l:pos % 2) || l:height > 2
+      noa close
+      call win_gotoid(l:pivot)
+      call s:FindOpen(l:pos)
+    endif
+  else
+    let l:upper = (l:find != l:win[0]) ? winheight(l:win[0]) : 0
+    let l:lower = (l:find != l:win[2]) ? winheight(l:win[2]) : 0
+    let l:high = max([l:upper, l:lower])
+    if l:high > l:height
+      let l:height = (l:upper + l:lower + l:height)/2 + 1
+    else
+      let l:height = l:height/4 + 1
+    endif
+    exe "resize" l:height
   endif
-  noa close
-  call win_gotoid(l:pivot)
-  call s:FindOpen(l:pos, l:div)
 endfunction
 
 function s:FindEdit(op)
