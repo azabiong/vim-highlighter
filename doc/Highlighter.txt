@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.58.4`
+                                                                   `ver 1.58.5`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -600,8 +600,9 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.58.4~
+1.58.5~
     Improve:
+      . "Find" jump to position
       . multiline color selection
       . "Find" window resize and rotation
       . loading highlights for updated files
