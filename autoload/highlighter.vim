@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.58.4
+" Version: 1.58.5
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.58.4'
+let s:Version   = '1.58.5'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -1967,14 +1967,14 @@ function s:FindEdit(op)
 
   let [l:scroll, l:guide] = [0, 0]
   let l:height = winheight(0)
-  let l:buf = [bufnr(fnamemodify(bufname(), ':p')), bufnr(fnamemodify(l:file.name, ':p'))]
-  if l:buf[0] != -1 && l:buf[0] == l:buf[1]
+  let l:path = fnamemodify(bufname(), ':p')
+  if filereadable(l:path) && bufnr(l:path) == bufnr(fnamemodify(l:file.name, ':p'))
     let [l:top, l:bottom] = [line('w0'), line('w$')]
     exe "normal!" l:file.row.'G'
     let l:scroll = l:file.row < l:top || l:file.row > l:bottom
     if !l:scroll
-      let l:bottom = max([l:top + l:height, l:bottom]) - 6
-      let l:top += 4
+      let l:bottom = max([l:top + l:height, l:bottom]) - 4
+      let l:top += 3
       let l:guide = l:file.row < l:top || l:file.row > l:bottom
     endif
   else
