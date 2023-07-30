@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.58.5
+" Version: 1.58.6
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.58.5'
+let s:Version   = '1.58.6'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -186,6 +186,10 @@ function s:GetColor(color)
   return hlexists(a:color) ? matchstr(execute('hi '.a:color), '\(\<cterm\|\<gui\).*') : ''
 endfunction
 
+function s:MultilineColor(color)
+  return 80 <= a:color && a:color < 90
+endfunction
+
 function s:SetHighlight(cmd, mode, num)
   if a:mode == 'n' && s:CheckRepeat(60) | return | endif
 
@@ -262,7 +266,9 @@ function s:SetHighlight(cmd, mode, num)
       call s:UpdateSync('add', l:group, l:pattern)
       let s:Search = match(@/, l:pattern.l:case) != -1 || match(l:pattern, @/.l:case) != -1
     endif
-    let s:Number[0] = l:color + 1
+    if !s:MultilineColor(l:color)
+      let s:Number[0] = l:color + 1
+    endif
   else
     if s:GetFocusMode('>', '')
       let l:deleted = 0
@@ -417,7 +423,7 @@ function s:SetPosHighlight(block, num)
       call nvim_buf_set_extmark(0, s:NS, l:rect[0], l:rect[1], {'end_row':l:rect[2], 'end_col':l:rect[3], 'hl_group':l:group})
     endif
   endif
-  if l:pack == 0 || l:color >= 80
+  if l:pack == s:MultilineColor(l:color)
     let s:Number[l:pack] = l:color + 1
   endif
 endfunction
