@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.58.5`
+                                                                   `ver 1.58.6`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -88,7 +88,7 @@ The `Hi <` and `Hi >` commands move the cursor back and forth to recently
 highlighted words or matching highlights at the cursor position.
 
 The `Hi {` and `Hi }` commands, on the other hand, move the cursor to the nearest
-highlighted word, even if the pattern differs from the current selection.
+highlight, even if the pattern or type differs from the current selection.
 
 You can easily define key mappings for these commands. For example:
 >
@@ -600,10 +600,10 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.58.5~
+1.58.6~
     Improve:
-      . "Find" jump to position
       . multiline color selection
+      . "Find" jump to position
       . "Find" window resize and rotation
       . loading highlights for updated files
 1.58~
@@ -744,7 +744,6 @@ code contributions and help in resolving issues.
          Miguel Pérez Pasalodos   Highlight using Input Pattern
 
                     Jason Zheng   Upgraded Visual Selection
-                                  Highlights in a specific line
 
                       Jinq Qian   Jump to Highlight
 

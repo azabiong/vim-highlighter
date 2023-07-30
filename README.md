@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.58.5 </h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.58.6 </h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -121,8 +121,8 @@
  The `Hi <` and `Hi >` commands move the cursor back and forth to recently highlighted words
  or matching highlights at the cursor position.
 
- The `Hi {` and `Hi }` commands, on the other hand, move the cursor to the nearest highlighted word,
- even if the pattern differs from the current selection.
+ The `Hi {` and `Hi }` commands, on the other hand, move the cursor to the nearest highlight,
+ even if the pattern or type differs from the current selection.
 
  <img width="393" alt="jump" src="https://user-images.githubusercontent.com/83812658/169995084-4c623681-e54c-4174-bd30-81e6856b6f8d.gif"><br>
 
