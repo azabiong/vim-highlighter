@@ -8,8 +8,7 @@
  <h3> Introduction </h3>
 
  Highlighting keywords or lines can be useful when analyzing code, reviewing summaries, and quickly comparing spellings.
- This plugin extends Vim's highlighting capabilities with additional features such as jump to highlights,
- saving and loading, finding patterns, and customizing colors.
+ This plugin provides additional highlighting features such as Jump to Highlight, Save & Load, Find Patterns, and Customize Colors using easy commands and shortcuts.
 
 ### Contents
 
@@ -94,7 +93,7 @@
 
 ### Input
 
- To set highlights using a pattern:
+ To set highlighting by entering a pattern:
  ```vim
   :Hi + pattern
  ```
@@ -141,8 +140,7 @@
 
 ## One Time Highlight
 
- The plugin has an automatic feature to clear highlights after use.
- This can be useful when you only need one quick scan from the cursor position.
+ When you only need one quick scan at the cursor position without setting the highlight, **One Time Highlight** can be useful.
 
  When the cursor is over a word or visual selection that is not highlighted, pressing `HiErase` key sets **One Time Highlight**.
  The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
@@ -437,17 +435,15 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > " directory to store highlight files
 > " let HiKeywords = '~/.vim/after/vim-highlighter'
 >
-> " highlight colors
+> " additional highlight colors
 > " hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
 > " hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
-> " hi HiColor30 ctermfg=none cterm=bold guifg=none gui=bold
 >
 > ```
 > <details>
 > <summary><b>&nbsp; lua </b></summary>
 >
 > ```lua
-> -- key mappings
 > vim.cmd([[
 >   " default key mappings
 >   " let HiSet   = 'f<CR>'
@@ -467,10 +463,10 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 >   nn _        <Cmd>Hi/previous<CR>
 >   nn f<Left>  <Cmd>Hi/older<CR>
 >   nn f<Right> <Cmd>Hi/newer<CR>
-> ]])
 >
-> -- directory to store highlight files
-> vim.g.HiKeywords = '~/.vim/after/vim-highlighter'
+>   " directory to store highlight files
+>   " let HiKeywords = '~/.vim/after/vim-highlighter'
+> ]])
 > ```
 > </details>
 
@@ -488,7 +484,6 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > ```vim
 > hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
 > hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
-> hi HiColor30 ctermfg=none cterm=bold guifg=none gui=bold
 > ```
 >
 > You can now load colors using the **`colorscheme`** command:
@@ -569,8 +564,8 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > <summary><b>&nbsp; lua </b></summary>
 >
 > ```lua
-> -- jump key mappings
 > vim.cmd([[
+>   " jump key mappings
 >   nn n  <Cmd>call HiSearch('n')<CR>
 >   nn N  <Cmd>call HiSearch('N')<CR>
 >
@@ -585,7 +580,12 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 
 ## Help tags
 
- For more information about configurable options, please refer to:
+ For more information about commands and configurable options, please refer to:
+
+ ```vim
+  :h Hi
+ ```
+ and
  ```vim
   :h Hi-Options
  ```
