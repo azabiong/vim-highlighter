@@ -8,7 +8,7 @@
  <h3> Introduction </h3>
 
  Highlighting keywords or lines can be useful when analyzing code, reviewing summaries, and quickly comparing spellings.
- This plugin provides additional highlighting features such as Jump to Highlight, Save & Load, Find Patterns, and Customize Colors using easy commands and shortcuts.
+ This plugin provides easy commands and shortcuts for setting and deleting highlights, and additional features such as Move to Highlight, Save and Load, Find Pattern, and Customize Colors.
 
 ### Contents
 
@@ -306,7 +306,7 @@ in the search results. For example, in the mapping above, entering `1` `-` will 
 There is another type of highlight that is set in a specific location.
 
 Unlike **pattern-based** highlighting, **Positional Highlight** is associated with a buffer.
-Thanks to new APIs in Vim and Neovim, it's almost like drawing a mark on a specific line of text.
+Thanks to new APIs in Vim and Neovim, it's similar to coloring over text with a highlighter.
 The position is updated when inserting or deleting the line above.
 
 To set a **Positional Highlight** on a specific line, press the `HiSetSL` key in normal or visual mode.  

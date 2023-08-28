@@ -33,9 +33,9 @@ CONTENTS                                                           *Highlighter*
 INTRODUCTION                                                   *Hi-Introduction*
 
 Highlighting keywords or lines can be useful when analyzing code, reviewing
-summaries, and quickly comparing spellings. This plugin provides additional
-highlighting features such as Jump to Highlight, Save & Load, Find Patterns,
-and Customize Colors using easy commands and shortcuts.
+summaries, and quickly comparing spellings. This plugin provides easy commands
+and shortcuts for setting and deleting highlights, and additional features such
+as Move to Highlight, Save and Load, Find Pattern, and Customize Colors.
 
 ------------------------------------------------------------------------------
 KEY-MAP                   *HiSet*  *HiErase*  *HiClear*  *HiFind*  *HiSetSL*  *Hi-Key-Map*
@@ -261,8 +261,8 @@ POSITIONAL HIGHLIGHT                                   *Hi-Positional-Highlight*
 There is another type of highlight that is set in a specific location.
 
 Unlike pattern-based highlighting, `POSITIONAL HIGHLIGHT` is associated with a buffer.
-Thanks to new APIs in Vim and Neovim, it's almost like drawing a mark on a specific
-line of text. The position is updated when inserting or deleting the line above.
+Thanks to new APIs in Vim and Neovim, it's similar to coloring over text with a
+highlighter. The position is updated when inserting or deleting the line above.
 
 To set a `POSITIONAL HIGHLIGHT` on a specific line, press the |HiSetSL| key in normal
 or visual mode. Multiline highlighting is now automatically set to positional
