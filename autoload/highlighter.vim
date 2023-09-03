@@ -2251,7 +2251,7 @@ function highlighter#Search(key)
     call feedkeys(max([v:count, 1]).a:key.'zv', 'n')
     return 0
   else
-    let l:cmd = (a:key == 'n') ? '>' : '<'
+    let l:cmd = (a:key ==# 'n') ? '>' : '<'
     call s:JumpLong(l:cmd, v:count)
     return 1
   endif
