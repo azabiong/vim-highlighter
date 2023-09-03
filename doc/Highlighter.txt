@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.58.6`
+                                                                   `ver 1.58.8`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Sync Mode             |Hi-Sync-Mode|
@@ -600,11 +600,11 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.58.6~
-    Improve:
+1.58.8~
+    Fix HiSearch() when 'set ic' option is on (issue #24)
+    Improve
       . multiline color selection
-      . "Find" jump to position
-      . "Find" window resize and rotation
+      . "Find" window resize and rotation, jump to position
       . loading highlights for updated files
 1.58~
     Support "Positional Highlight" associated with a buffer.
