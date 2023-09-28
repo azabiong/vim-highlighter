@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.58.6
+" Version: 1.58.8
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.58.6'
+let s:Version   = '1.58.8'
 let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -366,7 +366,7 @@ function s:DeleteMatch(match, op, part, pos)
         endif
       endif
       if l:match
-        if l:m.pattern == get(w:, 'HiJump', '')
+        if l:m.pattern == s:GetJump()
           call s:UpdateJump('')
         endif
         call matchdelete(l:m.id)
@@ -1202,10 +1202,16 @@ function s:UpdateJump(pattern)
   if empty(a:pattern)
     if exists("w:HiJump")
       unlet w:HiJump
+      let s:HiJump = ''
     endif
   else
     let w:HiJump = a:pattern
+    let s:HiJump = a:pattern
   endif
+endfunction
+
+function s:GetJump()
+  return s:GetSyncMode() ? get(s:, 'HiJump', '') : get(w:, 'HiJump', '')
 endfunction
 
 function s:JumpTo(pattern, flag, count, update, align=0)
@@ -1252,7 +1258,7 @@ function s:JumpLong(op, count)
 
   let l:line = getline('.')
   let l:pos = getpos('.')
-  let l:jump = get(w:, 'HiJump', '')
+  let l:jump = s:GetJump()
   if !empty(l:jump) && s:MatchPattern(l:line, l:pos, l:jump)
     return s:JumpTo(l:jump, l:op, l:count, 0)
   endif
@@ -2247,7 +2253,7 @@ function highlighter#List()
 endfunction
 
 function highlighter#Search(key)
-  if v:hlsearch || empty(get(w:, 'HiJump', ''))
+  if v:hlsearch || empty(s:GetJump())
     call feedkeys(max([v:count, 1]).a:key.'zv', 'n')
     return 0
   else
