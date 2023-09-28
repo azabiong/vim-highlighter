@@ -51,7 +51,7 @@ configuration file.
 <
     Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L`, `f Tab` and `t Enter`
 
-In normal mode, `HiSet` and `HiErase` keys set or erase the highlighting of the word
+In normal mode, `HiSet` and `HiErase` keys set or erase highlighting of the word
 under the cursor. `HiClear` key clears all highlights.
 
 In visual mode, the highlight is selected as a partial pattern from the selection
@@ -67,7 +67,7 @@ To set highlighting by entering a pattern:
 ------------------------------------------------------------------------------
 SYNC MODE                                                         *Hi-Sync-Mode*
 
-When synchronizing the highlighting of the current window with other split windows,
+When synchronizing the current window's highlights with other split windows,
 you can use:
 >
     :Hi ==
@@ -601,11 +601,12 @@ like to add, please feel free to open an issue.
 LOG                                                                     *Hi-Log*
 
 1.58.8~
-    Fix HiSearch() when 'set ic' option is on (issue #24)
     Improve
-      . multiline color selection
+      . "Jump" in "Sync Mode"
       . "Find" window resize and rotation, jump to position
+      . multiline color selection
       . loading highlights for updated files
+    Fix HiSearch() when 'set ic' option is on (issue #24)
 1.58~
     Support "Positional Highlight" associated with a buffer.
 1.57~

@@ -77,7 +77,7 @@
  ```
 > Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L`, `f Tab` and `t Enter`
 
- In normal mode, `HiSet` and `HiErase` keys set or erase the highlighting of the word under the cursor. `HiClear` key clears all highlights.
+ In normal mode, `HiSet` and `HiErase` keys set or erase highlighting of the word under the cursor. `HiClear` key clears all highlights.
 
  <img width="600" src="https://user-images.githubusercontent.com/83812658/117490057-482a5600-afa9-11eb-8b4a-e2b5018ece5a.gif">
 
@@ -101,7 +101,7 @@
 
 ## Sync Mode
 
- When synchronizing the highlighting of the current window with other split windows, you can use:
+ When synchronizing the current window's highlights with other split windows, you can use:
  ```vim
   :Hi ==
  ```
