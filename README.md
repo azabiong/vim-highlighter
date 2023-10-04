@@ -66,7 +66,7 @@
 
 ## Key Map
 
- The plugin uses the following default key mappings which you can assign in the configuration file.
+ The plugin uses the following assignable key mapping variables that can be defined in the configuration file:
 
  ```vim
    let HiSet   = 'f<CR>'

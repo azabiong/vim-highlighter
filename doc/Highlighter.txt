@@ -40,8 +40,8 @@ as Move to Highlight, Save and Load, Find Pattern, and Customize Colors.
 ------------------------------------------------------------------------------
 KEY-MAP                   *HiSet*  *HiErase*  *HiClear*  *HiFind*  *HiSetSL*  *Hi-Key-Map*
 
-The plugin uses the following default key mappings which you can assign in the
-configuration file.
+The plugin uses the following assignable key mapping variables that can be defined
+in the configuration file:
 >
     let HiSet   = 'f<CR>'       " normal, visual
     let HiErase = 'f<BS>'       " normal, visual
@@ -358,7 +358,13 @@ with subsequent commands using an optional space.
     To highlight the pattern used in your search:
 >
         :Hi+ CTRL-R /
-<                                                                  *:HI-*  *:Hi-x*
+<                                                                *:HI+%*  *:Hi+x%*
+:Hi +%  +x% ~
+    |HiSetSL| key function in normal mode (+), visual mode (+x)
+    Set `POSITIONAL HIGHLIGHT` at the position of the word under the cursor,
+    visual selection. An optional color number can be specified before the
+    command.
+                                                                  *:HI-*  *:Hi-x*
 :Hi -  -x ~
     |HiErase| key function in normal mode (-), visual mode (-x)
     Erase highlights of the word under the cursor, visual selection, patterns
