@@ -67,7 +67,6 @@ command! -complete=customlist,highlighter#Complete -count -nargs=*
          \ Hi if highlighter#Command(<q-args>, <count>) | noh | endif
 command! -complete=customlist,highlighter#Complete -count -nargs=*
          \ HI if highlighter#Command(<q-args>, <count>) | noh | endif
-ca HI Hi
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
