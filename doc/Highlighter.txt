@@ -157,7 +157,7 @@ highlight patterns to make them easier to find.
 >
         let HiFindTool = 'grep -H -EnrI --exclude-dir=.git'
 <
-    Please refer to the |HiFindTool| section for more options.
+    Please see the |HiFindTool| section for more options.
 
 2.Input ~
 
@@ -260,13 +260,15 @@ POSITIONAL HIGHLIGHT                                   *Hi-Positional-Highlight*
 
 There is another type of highlight that is set in a specific location.
 
-Unlike pattern-based highlighting, `POSITIONAL HIGHLIGHT` is associated with a buffer.
-Thanks to new APIs in Vim and Neovim, it's similar to coloring over text with a
-highlighter. The position is updated when inserting or deleting the line above.
+Unlike pattern-based highlighting, `POSITIONAL HIGHLIGHT` is set to a specific
+position in the buffer. Thanks to new APIs in Vim and Neovim, it's similar to
+coloring over text with a highlighter. The position is updated when inserting
+or deleting the line above.
 
-To set a `POSITIONAL HIGHLIGHT` on a specific line, press the |HiSetSL| key in normal
-or visual mode. Multiline highlighting is now automatically set to positional
-highlighting.
+To set a `POSITIONAL HIGHLIGHT` on a specific line, press the |HiSetSL| key in
+normal or visual mode.
+
+Multiline highlighting is now automatically set to positional highlighting.
 
 Short `Jump` commands |Hi{| and |Hi}| are also supported after setting.
 

@@ -305,7 +305,7 @@ in the search results. For example, in the mapping above, entering `1` `-` will 
 
 There is another type of highlight that is set in a specific location.
 
-Unlike **pattern-based** highlighting, **Positional Highlight** is associated with a buffer.
+Unlike **pattern-based** highlighting, **Positional Highlight** is set to a specific position in the buffer.
 Thanks to new APIs in Vim and Neovim, it's similar to coloring over text with a highlighter.
 The position is updated when inserting or deleting the line above.
 
@@ -580,7 +580,7 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 
 ## Help tags
 
- For more information about commands and configurable options, please refer to:
+ For more information about commands and configurable options, please see:
 
  ```vim
   :h Hi
