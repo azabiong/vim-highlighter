@@ -504,7 +504,13 @@ endfunction
 
 function s:ClearPosHighlight()
   if s:PI
-    call prop_remove({'types': s:PTypes, 'all':v:true})
+      if v:version > 900
+        call prop_remove({'types': s:PTypes, 'all':v:true})
+      else
+        for p in prop_list(1, {'end_lnum':-1})
+          call prop_remove({'type':p.type, 'id': p.id, 'both':v:true})
+        endfor
+      endif
   else
     call nvim_buf_clear_namespace(0, s:NS, 0, -1)
   endif
@@ -738,7 +744,13 @@ function s:ClearHighlights(block={})
       endwhile
     endfor
     if s:PI
-      call prop_remove({'types': s:PTypes, 'all':v:true}, a:block.rect[0], a:block.rect[2])
+      if v:version > 900
+        call prop_remove({'types': s:PTypes, 'all':v:true}, a:block.rect[0], a:block.rect[2])
+      else
+        for p in prop_list(1, {'end_lnum':-1})
+          call prop_remove({'type':p.type, 'id': p.id, 'both':v:true}, a:block.rect[0], a:block.rect[2])
+        endfor
+      endif
     else
       let [l:from, l:to] = [[a:block.rect[0]-1, 0], [a:block.rect[2]-1, -1]]
       let l:marks = nvim_buf_get_extmarks(0, s:NS, l:from, l:to, {})
