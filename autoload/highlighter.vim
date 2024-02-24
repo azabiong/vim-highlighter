@@ -930,14 +930,14 @@ function s:SetHiSyncWin(op)
     noa windo unlet w:HiSync
   endif
   noa exe l:win "wincmd w"
-  let s:Sync.add = ''
-  let s:Sync.del = ''
+  let s:Sync.add = []
+  let s:Sync.del = []
 endfunction
 
 function s:SetHiSync(win)
   if winnr() == a:win | return | endif
   let l:jump = ''
-  if !exists("w:HiSync") || s:Sync.del[0] == '*'
+  if !exists("w:HiSync") || (!empty(s:Sync.del) && s:Sync.del[0] == '*')
     for l:m in getmatches()
       if match(l:m.group, s:Group) == 0
         call matchdelete(l:m.id)
