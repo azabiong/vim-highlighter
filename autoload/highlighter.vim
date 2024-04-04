@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.58.9
+" Version: 1.60
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -12,8 +12,8 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 let g:HiKeywords = get(g:, 'HiKeywords', '')
-let g:HiSyncMode = get(g:, 'HiSyncMode', 0)
 let g:HiFindTool = get(g:, 'HiFindTool', '')
+let g:HiSyncMode = get(g:, 'HiSyncMode', 1)
 let g:HiFindHistory = get(g:, 'HiFindHistory', 5)
 let g:HiCursorGuide = get(g:, 'HiCursorGuide', 1)
 let g:HiOneTimeWait = get(g:, 'HiOneTimeWait', 260)
@@ -21,8 +21,8 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.58.9'
-let s:Sync      = {'page':{'name':[]}, 'tag':0, 'add':[], 'del':[]}
+let s:Version   = '1.60'
+let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
@@ -61,7 +61,7 @@ function s:Load()
   let s:ColorsDark = [
     \ ['HiOneTime', 'ctermfg=233 ctermbg=152 cterm=none guifg=#001020 guibg=#a8d2d8 gui=none'],
     \ ['HiFollow',  'ctermfg=233 ctermbg=151 cterm=none guifg=#002f00 guibg=#a8d0b8 gui=none'],
-    \ ['HiFind',    'ctermfg=223 ctermbg=95  cterm=none guifg=#ffe7d7 guibg=#8c675f gui=none'],
+    \ ['HiFind',    'ctermfg=223 ctermbg=95  cterm=none guifg=#ffe7d7 guibg=#8a625a gui=none'],
     \ ['HiGuide',   'ctermfg=188 ctermbg=62  cterm=none guifg=#d0d0d8 guibg=#4848d8 gui=none'],
     \ ['HiColor1',  'ctermfg=234 ctermbg=113 cterm=none guifg=#001737 guibg=#82c85a gui=none'],
     \ ['HiColor2',  'ctermfg=52  ctermbg=179 cterm=none guifg=#500000 guibg=#e6b058 gui=none'],
@@ -75,8 +75,8 @@ function s:Load()
     \ ['HiColor10', 'ctermfg=195 ctermbg=23  cterm=none guifg=#cfefef guibg=#206838 gui=none'],
     \ ['HiColor11', 'ctermfg=22  ctermbg=187 cterm=bold guifg=#004700 guibg=#c8d6b8 gui=bold'],
     \ ['HiColor12', 'ctermfg=232 ctermbg=186 cterm=none guifg=#200000 guibg=#d8d880 gui=none'],
-    \ ['HiColor13', 'ctermfg=52  ctermbg=213 cterm=none guifg=#470023 guibg=#ec96ec gui=none'],
-    \ ['HiColor14', 'ctermfg=17  ctermbg=153 cterm=none guifg=#000047 guibg=#a0d0ec gui=none'],
+    \ ['HiColor13', 'ctermfg=52  ctermbg=213 cterm=none guifg=#470023 guibg=#ee8cee gui=none'],
+    \ ['HiColor14', 'ctermfg=17  ctermbg=153 cterm=none guifg=#000047 guibg=#9cceee gui=none'],
     \ ['HiColor80', 'ctermbg=61  guibg=#5757af'],
     \ ['HiColor81', 'ctermbg=23  guibg=#005f37'],
     \ ['HiColor82', 'ctermbg=94  guibg=#875f27'],
@@ -111,16 +111,16 @@ function s:Load()
     \ ['HiColor85', 'ctermbg=251 guibg=#c6c6c6'],
     \ ]
   let s:Colors16 = [
-    \ ['HiOneTime', 'ctermfg=darkBlue ctermbg=lightCyan' ],
-    \ ['HiFollow',  'ctermfg=darkBlue ctermbg=lightGreen'],
-    \ ['HiFind',    'ctermfg=yellow   ctermbg=darkGray'  ],
-    \ ['HiGuide',   'ctermfg=white    ctermbg=darkBlue'  ],
-    \ ['HiColor1',  'ctermfg=white    ctermbg=darkGreen' ],
-    \ ['HiColor2',  'ctermfg=white    ctermbg=darkCyan'  ],
-    \ ['HiColor3',  'ctermfg=white   ctermbg=darkMagenta'],
-    \ ['HiColor4',  'ctermfg=white   ctermbg=darkYellow' ],
-    \ ['HiColor5',  'ctermfg=black   ctermbg=lightYellow'],
-    \ ['HiColor80', 'ctermfg=black   ctermbg=lightGray'  ],
+    \ ['HiOneTime', 'ctermfg=DarkBlue ctermbg=LightCyan' ],
+    \ ['HiFollow',  'ctermfg=DarkBlue ctermbg=LightGreen'],
+    \ ['HiFind',    'ctermfg=Yellow   ctermbg=DarkGray'  ],
+    \ ['HiGuide',   'ctermfg=White    ctermbg=DarkBlue'  ],
+    \ ['HiColor1',  'ctermfg=White    ctermbg=DarkGreen' ],
+    \ ['HiColor2',  'ctermfg=White    ctermbg=DarkCyan'  ],
+    \ ['HiColor3',  'ctermfg=White   ctermbg=DarkMagenta'],
+    \ ['HiColor4',  'ctermfg=White   ctermbg=DarkYellow' ],
+    \ ['HiColor5',  'ctermfg=Black   ctermbg=LightYellow'],
+    \ ['HiColor80', 'ctermfg=Black   ctermbg=LightGray'  ],
     \ ]
   let s:Colors = (s:Check < 256) ? s:Colors16 : s:ColorsDark
   let s:Number = [1, 80]
@@ -134,6 +134,8 @@ function s:Load()
     let l:keywords = fnamemodify(s:Keywords.plug, ":h:h").'/keywords'
     let g:HiKeywords = isdirectory(l:keywords) ? l:keywords : ''
   endif
+  let s:Sync.mode = g:HiSyncMode
+  let s:HiJump = ''
   call s:SetColors(0)
 
   let s:PI = 0
@@ -159,7 +161,9 @@ function s:Load()
     else
       au BufHidden * call <SID>BufHidden()
     endif
-    au TabClosed   * call <SID>TabClosed()
+    au TabNew      * call <SID>TabNew()
+    au TabEnter    * call <SID>TabEnter()
+    au TabLeave    * call <SID>TabLeave()
   aug END
   return 1
 endfunction
@@ -200,8 +204,8 @@ function s:SetHighlight(cmd, mode, num)
         call matchdelete(l:m.id)
       endif
     endfor
-    call s:UpdateJump('')
     call s:UpdateSync('del', '*', '')
+    call s:UpdateJump('')
     let s:Number = [1, 80]
     return
   elseif a:cmd == '+'
@@ -262,8 +266,8 @@ function s:SetHighlight(cmd, mode, num)
         echohl None
         return
       endtry
-      call s:UpdateJump(l:pattern)
       call s:UpdateSync('add', l:group, l:pattern)
+      call s:UpdateJump(l:pattern)
       let s:Search = match(@/, l:pattern.l:case) != -1 || match(l:pattern, @/.l:case) != -1
     endif
     if !s:MultilineColor(l:color)
@@ -366,11 +370,11 @@ function s:DeleteMatch(match, op, part, pos)
         endif
       endif
       if l:match
-        if l:m.pattern == s:GetJump()
-          call s:UpdateJump('')
-        endif
         call matchdelete(l:m.id)
         call s:UpdateSync('del', l:m.group, l:m.pattern)
+        if s:GetJump() ==# l:m.pattern
+          call s:UpdateJump('')
+        endif
         return 1
       endif
     endif
@@ -664,54 +668,39 @@ function s:SetWordMode(op)
   endif
 endfunction
 
-function s:GetSyncMode()
-  if !exists("t:HiSync")
-    call s:SetSyncPage(g:HiSyncMode)
-  endif
-  return !empty(t:HiSync)
-endfunction
-
-function s:SetSyncMode(op, ...)
-  let l:op = index(['=', '==', '=!'], a:op)
+function s:SetSyncMode(op, msg=0)
+  let l:op = index(['=', '==', '==='], a:op)
   if  l:op == -1 | return s:NoOption(a:op) | endif
 
-  let l:sync = s:GetSyncMode()
-  if l:op == 2
-    let l:op = !l:sync
+  if a:msg
+    echo ' Hi '.['= Each window', '== Sync on each tab-page', '=== Sync across all tab-pages'][l:op]
   endif
-  if !a:0
-    echo ' Hi '.['= 1', '== Sync'][l:op]
-  endif
-  if l:op == l:sync | return | endif
+  if l:op == s:Sync.mode | return | endif
 
-  if l:op
-    call s:SetSyncPage(1)
-    let s:Sync.page[t:HiSync] = filter(getmatches(), {i,v -> match(v.group, s:Group) == 0 && v.pattern[:1] != '\%'})
-                              \ ->map({i,v -> [v.group, v.pattern]})
-  else
-    let s:Sync.page[t:HiSync] = []
-    let t:HiSync = ''
+  let s:Sync.mode = l:op
+  if l:op == 0
+    return
   endif
-  let w:HiSync = 1
-  call s:SetHiSyncWin(l:op)
-endfunction
 
-function s:SetSyncPage(op)
-  if a:op
-    let s:Sync.tag += 1
-    let l:name = 'HiSync'.s:Sync.tag
-    let t:HiSync = l:name
-    let s:Sync.page[l:name] = []
+  call s:SetPage()
+  let l:match = s:LoadMatch()
+  if l:op == 1
+    let t:HiSync.match = l:match
   else
-    let t:HiSync = ''
+    let s:Sync.match = l:match
   endif
+  call s:UpdateVer(1)
+  for w in range(1, winnr('$'))
+    call s:ApplySync(l:match, w, '*')
+  endfor
 endfunction
 
 function s:UpdateSync(op, group, pattern)
-  if !s:GetSyncMode() || a:pattern[:1] == '\%'
+  if !s:Sync.mode || a:pattern[:1] == '\%'
     return
   endif
-  let l:match = s:Sync.page[t:HiSync]
+  call s:SetPage()
+  let l:match = s:GetMatch()
   let s:Sync[a:op] = [a:group, a:pattern]
   if a:op == 'add'
     call add(l:match, s:Sync[a:op])
@@ -728,8 +717,74 @@ function s:UpdateSync(op, group, pattern)
       endfor
     endif
   endif
-  let w:HiSync = 1
-  call s:SetHiSyncWin(1)
+  call s:UpdateVer(1)
+  for w in range(1, winnr('$'))
+    call s:ApplySync(l:match, w, '')
+  endfor
+  let s:Sync.add = []
+  let s:Sync.del = []
+endfunction
+
+function s:ApplySync(match, win, flag)
+  let l:ver = getwinvar(a:win, 'HiSync', 0)
+  if l:ver == t:HiSync.ver | return | endif
+
+  call setwinvar(a:win, 'HiSync', t:HiSync.ver)
+  let l:match = getmatches(a:win)
+
+  if !l:ver || a:flag == '*'
+    for m in l:match
+      if match(m.group, s:Group) == 0
+        call matchdelete(m.id, a:win)
+      endif
+    endfor
+    for m in a:match
+      call matchadd(m[0], m[1], 0, -1, {'window': a:win})
+    endfor
+  else
+    if !empty(s:Sync.del)
+      if s:Sync.del[0] == '*'
+        for m in l:match
+          if match(m.group, s:Group) == 0
+            call matchdelete(m.id, a:win)
+          endif
+        endfor
+      else
+        for m in l:match
+          if (match(m.group, s:Group) == 0) && (m.pattern ==# s:Sync.del[1])
+            call matchdelete(m.id, a:win) | break
+          endif
+        endfor
+      endif
+    endif
+    if !empty(s:Sync.add)
+      call matchadd(s:Sync.add[0], s:Sync.add[1], 0, -1, {'window': a:win})
+    endif
+  endif
+endfunction
+
+function s:UpdateVer(win)
+  let s:Sync.ver += 1
+  let t:HiSync.ver = s:Sync.ver
+  if a:win
+    let w:HiSync = s:Sync.ver
+  endif
+endfunction
+
+function s:SetPage()
+  if !exists("t:HiSync")
+    let t:HiSync = {'mode':0, 'ver':0, 'match':[]}
+  endif
+  let t:HiSync.mode = s:Sync.mode
+endfunction
+
+function s:GetMatch()
+  return (s:Sync.mode == 1) ? t:HiSync.match : s:Sync.match
+endfunction
+
+function s:LoadMatch()
+  return filter(getmatches(), {i,v -> match(v.group, s:Group) == 0 && v.pattern[:1] != '\%'})
+         \ ->map({i,v -> [v.group, v.pattern]})
 endfunction
 
 function s:ClearHighlights(block={})
@@ -812,16 +867,16 @@ endfunction
 function s:EraseHiWord()
   if !empty(s:HiMode['w'])
     let s:HiMode['w'] = ''
-    call s:SetHiFocusWin('')
+    call s:SetHiFocus('')
   endif
 endfunction
 
 function s:SetHiWord(word)
   if empty(a:word) | return | endif
   if s:HiMode['>'] == '1'
-    call s:SetHiFocusWin(['HiOneTime', a:word, 10])
+    call s:SetHiFocus(['HiOneTime', a:word, 10])
   else
-    call s:SetHiFocusWin(['HiFollow', a:word, 0])
+    call s:SetHiFocus(['HiFollow', a:word, 0])
   endif
   let s:HiMode['w'] = a:word
 endfunction
@@ -922,50 +977,7 @@ function s:InsertLeave()
   call s:LinkCursorEvent('')
 endfunction
 
-function s:SetHiSyncWin(op)
-  let l:win = winnr()
-  if a:op
-    noa windo call s:SetHiSync(l:win)
-  else
-    noa windo unlet w:HiSync
-  endif
-  noa exe l:win "wincmd w"
-  let s:Sync.add = []
-  let s:Sync.del = []
-endfunction
-
-function s:SetHiSync(win)
-  if winnr() == a:win | return | endif
-  let l:jump = ''
-  if !exists("w:HiSync") || (!empty(s:Sync.del) && s:Sync.del[0] == '*')
-    for l:m in getmatches()
-      if match(l:m.group, s:Group) == 0
-        call matchdelete(l:m.id)
-      endif
-    endfor
-    for l:m in s:Sync.page[t:HiSync]
-      call matchadd(l:m[0], l:m[1], 0)
-      let l:jump = l:m[1]
-    endfor
-  else
-    if !empty(s:Sync.del)
-      for l:m in getmatches()
-        if (match(l:m.group, s:Group) == 0) && (l:m.pattern ==# s:Sync.del[1])
-          call matchdelete(l:m.id) | break
-        endif
-      endfor
-    endif
-    let l:m = s:Sync.add
-    if !empty(l:m)
-      call matchadd(l:m[0], l:m[1], 0)
-      let l:jump = l:m[1]
-    endif
-  endif
-  let w:HiSync = 1
-  call s:UpdateJump(l:jump)
-endfunction
-
-function s:SetHiFocusWin(hi)
+function s:SetHiFocus(hi)
   for w in range(1, winnr('$'))
     let l:focus = getwinvar(w, 'HiFocus')
     if l:focus
@@ -979,7 +991,7 @@ function s:SetHiFocusWin(hi)
   endfor
 endfunction
 
-function s:SetHiFindWin(on)
+function s:SetHiFind(on)
   for w in range(1, winnr('$'))
     let l:find = getwinvar(w, 'HiFind', '')
     if !empty(l:find)
@@ -999,7 +1011,8 @@ function s:SetHiFindWin(on)
       if empty(getwinvar(w, 'HiFind', ''))
         let l:find = {'tag':s:Find.hi_tag, 'id':[]}
         for h in s:Find.hi
-          call add(l:find.id, matchadd('HiFind', h, 0, -1, {'window': w}))
+          let l:exp = (l:buf == s:FL.buf) ? '\v('.h.'\v)(.*:\d+:)@!' : h
+          call add(l:find.id, matchadd('HiFind', l:exp, 0, -1, {'window': w}))
         endfor
         call setwinvar(w, 'HiFind', l:find)
       endif
@@ -1127,7 +1140,7 @@ function s:LoadHighlight(file)
   echo  " Hi:load ".l:file
   call s:SetHighlight('--', '', 0)
 
-  let l:pattern = ''
+  let [l:pattern, l:jump] = ['', '']
   for l:line in readfile(l:path)
     if l:line[0] == '#' | continue | endif
     let l:exp = match(l:line, ':')
@@ -1153,15 +1166,17 @@ function s:LoadHighlight(file)
       else
         call matchadd(s:Group.l:num, l:pattern, 0)
         let s:Number[0] = l:num
+        let l:jump = l:pattern
       endif
     endif
   endfor
   let s:Number[0] += 1
 
-  call s:UpdateJump(l:pattern)
-  if s:GetSyncMode()
-    call s:SetSyncMode('=', '*') | call s:SetSyncMode('==', '*')
+  if s:Sync.mode
+    call s:SetSyncMode('=')
+    call s:SetSyncMode(s:Sync.mode == 1 ? '==' : '===')
   endif
+  call s:UpdateJump(l:jump)
 endfunction
 
 function s:GetHiPathFile(op, file)
@@ -1169,8 +1184,8 @@ function s:GetHiPathFile(op, file)
     if isdirectory(a:file)
       call feedkeys(":Hi:".a:op." ".a:file, 'n')
     else
-        let l:file = (a:file =~ '\.hl$' ? a:file : a:file.'.hl')
-        return [l:file, l:file]
+      let l:file = (a:file =~ '\.hl$' ? a:file : a:file.'.hl')
+      return [l:file, l:file]
     endif
   else
     let l:path = s:GetKeywordsPath(a:op)
@@ -1213,19 +1228,17 @@ function s:MatchPattern(line, pos, pattern)
 endfunction
 
 function s:UpdateJump(pattern)
-  if empty(a:pattern)
-    if exists("w:HiJump")
-      unlet w:HiJump
-      let s:HiJump = ''
-    endif
-  else
-    let w:HiJump = a:pattern
-    let s:HiJump = a:pattern
-  endif
+  let [s:HiJump, t:HiJump, w:HiJump] = [a:pattern, a:pattern, a:pattern]
 endfunction
 
 function s:GetJump()
-  return s:GetSyncMode() ? get(s:, 'HiJump', '') : get(w:, 'HiJump', '')
+  if s:Sync.mode == 0
+    return get(w:, 'HiJump', '')
+  elseif s:Sync.mode == 1
+    return get(t:, 'HiJump', '')
+  else
+    return s:HiJump
+  endif
 endfunction
 
 function s:JumpTo(pattern, flag, count, update, align=0)
@@ -1739,13 +1752,13 @@ function s:FindStart(arg)
 
   call s:FindSet([], '=')
   call s:FindOpen()
-  call s:SetHiFindWin(0)
+  call s:SetHiFind(0)
   let w:HiFind = {'tag':s:Find.hi_tag, 'id':[]}
   let b:Status = l:status
 
   try
     for l:exp in s:Find.hi_exp
-      let l:id = matchadd('HiFind', l:exp, 0)
+      let l:id = matchadd('HiFind', '\v('.l:exp.'\v)(.*:\d+:)@!', 0)
       call add(w:HiFind.id, l:id)
       call add(s:Find.hi, l:exp)
       call add(s:FL.log.hi, l:exp)
@@ -1784,7 +1797,7 @@ function s:FindOpen(pos=0)
     if !empty(s:FL.log)
       let s:Find.hi = s:FL.log.hi
     endif
-    call s:SetHiFindWin(1)
+    call s:SetHiFind(1)
     let l:win = winnr()
   else
     exe l:win "wincmd w"
@@ -1866,7 +1879,7 @@ function s:FindClose(ch)
     let l:msg .= ' * '.s:Find.hi_err
   endif
   echo l:msg
-  call s:SetHiFindWin(1)
+  call s:SetHiFind(1)
 endfunction
 
 function s:FindStdOut(job, data, event)
@@ -2021,7 +2034,7 @@ function s:FindEdit(op)
   if l:view
     call win_gotoid(l:find)
   endif
-  call s:SetHiFindWin(1)
+  call s:SetHiFind(1)
 endfunction
 
 function s:FindNextPrevious(op, num)
@@ -2063,7 +2076,7 @@ function s:FindOlderNewer(op, n)
     let s:Find.hi_tag += 1
     call s:FindSet(s:FL.log.list, '=')
     call s:FindSelect(0)
-    call s:SetHiFindWin(1)
+    call s:SetHiFind(1)
     noa exe l:find "wincmd w"
   endif
 endfunction
@@ -2077,7 +2090,7 @@ endfunction
 
 function s:FindClear()
   if !empty(s:Find.hi)
-    call s:SetHiFindWin(0)
+    call s:SetHiFind(0)
     let s:Find.hi = []
   endif
 endfunction
@@ -2095,16 +2108,19 @@ endfunction
 
 function s:BufHidden()
   if expand('<afile>') ==# s:FL.name
-    call s:SetHiFindWin(0)
+    call s:SetHiFind(0)
   endif
 endfunction
 
 function s:WinEnter()
-  if s:GetSyncMode() && !exists("w:HiSync")
-    call s:SetHiSync(0)
-  endif
   if exists("s:HiMode")
     call s:LinkCursorEvent('')
+  endif
+  if !s:Sync.mode | return | endif
+
+  if !s:Sync.prev && !get(w:, 'HiSync', 0)
+    call s:SetPage()
+    call s:ApplySync(s:GetMatch(), winnr(), '*')
   endif
 endfunction
 
@@ -2116,17 +2132,47 @@ endfunction
 
 function s:WinClosed()
   if expand('<afile>') == bufwinid(s:FL.buf)
-    call s:SetHiFindWin(0)
+    call s:SetHiFind(0)
   endif
 endfunction
 
-function s:TabClosed()
-  let l:sync = map(gettabinfo(), {i,v -> get(v.variables, 'HiSync', '')})
-  for k in keys(s:Sync.page)
-    if (index(l:sync, k)) == -1
-      unlet s:Sync.page[k]
+function s:TabNew()
+  if !s:Sync.mode | return | endif
+
+  call s:SetPage()
+  if s:Sync.mode == 1
+    let t:HiSync.match = deepcopy(gettabvar(s:Sync.prev, 'HiSync', []).match)
+  endif
+  call s:UpdateVer(0)
+  call s:ApplySync(s:GetMatch(), winnr(), '*')
+
+  if bufnr() == s:FL.buf
+    call s:SetHiFind(1)
+  endif
+endfunction
+
+function s:TabEnter()
+  let l:mode = exists("t:HiSync") ? t:HiSync.mode : 0
+  let s:Sync.prev = 0
+
+  if s:Sync.mode > l:mode  " 1:0 2:0 2:1
+    call s:SetPage()
+    if s:Sync.mode == 1
+      let t:HiSync.match = s:LoadMatch()
+      call s:UpdateVer(1)
+    else
+      call s:UpdateVer(0)
     endif
-  endfor
+    for w in range(1, winnr('$'))
+      call s:ApplySync(s:GetMatch(), w, '*')
+    endfor
+  elseif s:Sync.mode < l:mode  " 0:1 0:2 1:2
+    let t:HiSync.mode = s:Sync.mode
+  endif
+endfunction
+
+function s:TabLeave()
+  let s:Sync.prev = tabpagenr()
 endfunction
 
 function highlighter#Status()
@@ -2305,7 +2351,7 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd ==# '+x%'     | call s:SetHighlight('+', 'x%', l:num)
   elseif l:cmd ==# '>>'      | call s:SetFocusMode('>', '')
   elseif l:cmd =~# '^<\w*>'  | call s:SetWordMode(l:cmd)
-  elseif l:cmd =~# '^=.\?'   | call s:SetSyncMode(l:cmd)
+  elseif l:cmd =~# '^='      | call s:SetSyncMode(l:cmd, 1)
   elseif l:cmd =~# '[<>]'    | call s:JumpLong(l:cmd, l:num)
   elseif l:cmd =~# '[{}]'    | call s:JumpNear(l:cmd)
   elseif l:cmd ==# 'Find'    | call s:Find(a:cmd[5:])

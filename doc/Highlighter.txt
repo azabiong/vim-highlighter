@@ -12,16 +12,16 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.58.9`
+                                                                   `ver 1.60`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
-                 Sync Mode             |Hi-Sync-Mode|
                  Jump to Highlight     |Hi-Jump-To-Highlight|
                  One Time              |Hi-One-Time-Highlight|
                  Following             |Hi-Following-Highlight|
                  Find in Files         |Hi-Find-In-Files-Highlight|
                  Positional Highlight  |Hi-Positional-Highlight|
                  Save & Load           |Hi-Save-Load|
+                 Sync Mode             |Hi-Sync-Mode|
                  Customizing Colors    |Hi-Customizing-Colors|
                  Commands              |Hi-Commands|
                  Options               |Hi-Options|
@@ -65,21 +65,6 @@ To set highlighting by entering a pattern:
 `HiFind` key is the shortcut for `FIND IN FILES HIGHLIGHT`
 
 ------------------------------------------------------------------------------
-SYNC MODE                                                         *Hi-Sync-Mode*
-
-When synchronizing the current window's highlights with other split windows,
-you can use:
->
-    :Hi ==
-<
-and to switch back to single window highlighting mode:
->
-    :Hi =
-<
-`SYNC MODE` applies to all windows in the current |tab-page|, and can be set
-differently for each |tab-page|.
-
-------------------------------------------------------------------------------
 JUMP TO HIGHLIGHT                                         *Hi-Jump-To-Highlight*
 
 The plugin supports jumping to highlights using two sets of commands.
@@ -94,8 +79,8 @@ You can easily define key mappings for these commands. For example:
 >
     nn <CR>   <Cmd>Hi><CR>
     nn g<CR>  <Cmd>Hi<<CR>
-    nn [<CR>  <Cmd>Hi{<CR>
     nn ]<CR>  <Cmd>Hi}<CR>
+    nn [<CR>  <Cmd>Hi{<CR>
 <
 Alternatively, you can map the `n` and `N` keys to |HiSearch()| function, which
 automatically selects the search type between native search and |Hi<|, |Hi>|
@@ -302,6 +287,26 @@ in the current directory:
     :Hi load ./<Tab>
 <
 ------------------------------------------------------------------------------
+SYNC MODE                                                         *Hi-Sync-Mode*
+
+The plugin supports three highlight synchronization commands and configuration
+options.
+
+For each single window highlighting mode:
+>
+    :Hi =
+<
+To synchronize window highlighting on each tab-page:
+>
+    :Hi ==
+<
+When synchronizing window highlighting across all tab-pages:
+>
+    :Hi ===
+<
+The initial option can be set using the |HiSyncMode| configuration variable.
+
+------------------------------------------------------------------------------
 CUSTOMIZING COLORS                                       *Hi-Customizing-Colors*
 
 The plugin provides two default color sets which are automatically loaded based
@@ -390,8 +395,8 @@ with subsequent commands using an optional space.
     jumping to adjacent highlights in different patterns and types. It would
     also be convenient to use key mapping for these commands. For example:
 >
-      nn [<CR>  <Cmd>Hi{<CR>
       nn ]<CR>  <Cmd>Hi}<CR>
+      nn [<CR>  <Cmd>Hi{<CR>
 <                                                                        *:Hi>>*
 :Hi >> ~
     Set `FOLLOWING HIGHLIGHT` mode
@@ -399,15 +404,14 @@ with subsequent commands using an optional space.
 :Hi clear ~
     |HiClear| key function
     Clear all highlights in the current window
-                                                                         *:Hi==*
-:Hi == ~
-    Synchronize highlighting of all windows in the current |tab-page|
-                                                                         *:Hi=*
+                                                          *:Hi=*  *:Hi==*  *:Hi===*
 :Hi = ~
-    Switch back to the default single window highlighting mode
-                                                                         *:Hi=!*
-:Hi =! ~
-    Toggle `SYNC MODE` of the current |tab-page|
+    Set single window highlighting mode
+:Hi == ~
+    Synchronize window highlighting on each |tab-page|
+:Hi === ~
+    Synchronize window highlighting across all |tab-page|s
+
                                                  *:Hi<>*  *:Hi<cword>*  *:Hi<cWORD>*
 :Hi <>  <cword>  <cWORD> ~
     Set word matching mode in `FOLLOWING HIGHLIGHT`
@@ -461,15 +465,16 @@ OPTIONS                                                             *Hi-Options*
 |HiMapKeys| option enables key mapping on load.
 
     Default: 1 `(enable)`
-    Values:  0, 1
+    Values:  0 `(off)`
                                                                     *HiSyncMode*
-|HiSyncMode| specifies whether to turn on |Hi-Sync-Mode| by default.
+|HiSyncMode| specifies the initial highlight synchronization mode, `SYNC MODE`
 
-    Default: 0 `(off)`
-    Values:  0, 1
+    Default: 1 `(synchronize highlighting of windows on each tab-page)`
+    Values:  2 `(synchronize highlighting of all windows across all tab-pages)`
+             0 `(off)`
                                                                     *HiKeywords*
-|HiKeywords| specifies the directory in which to save the highlights of the
-    current window to a file. The default setting is:
+|HiKeywords| specifies the directory in which to save the highlights of the current
+window to a file. The default setting is:
 >
         let HiKeywords = '~/.vim/after/vim-highlighter'
 <
@@ -488,7 +493,7 @@ OPTIONS                                                             *Hi-Options*
     extension.
 
     Default: 1 `(on)`
-    Values:  0, 1
+    Values:  0 `(off)`
                                                                     *HiFindTool*
 |HiFindTool|, in this variable, you can set your preferred search tool and options
     to run when using `FIND IN FILES` function. For example,
@@ -517,7 +522,7 @@ OPTIONS                                                             *Hi-Options*
     commands or in `FIND IN FILES` mode.
 
     Default: 1 `(on)`
-    Values:  0, 1
+    Values:  0 `(off)`
                                                                  *HiOneTimeWait*
 |HiOneTimeWait| defines the wait time before turning off the highlights after the
     cursor stops moving in `ONE TIME HIGHLIGHT` mode.
@@ -594,7 +599,7 @@ CUSTOM OPTIONS~
         let HiClearUsingOneTime = 1
 <
     Default: 0 `(off)`
-    Values:  0, 1
+    Values:  1 `(on)`
 
     This option can also be set during runtime, and the visual mode `ONE TIME`
     `HIGHLIGHT` function is supported independently of this option.
@@ -608,14 +613,14 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.58.9~
-    Fix highlight loading in HiSyncMode (issue #28)
-    Improve
-      . "Jump" in "Sync Mode"
-      . "Find" window resize and rotation, jump to position
-      . multiline color selection
-      . loading highlights for updated files
-    Fix HiSearch() when 'set ic' option is on (issue #24)
+1.60~
+    Support "Hi ===" command across |tab-page|s with |HiSyncMode|=2 option
+    Fix highlighting in |command-line-window|
+    Fix highlight loading in |HiSyncMode| (issue #28)
+    Fix |HiSearch()| when 'set ic' option is on (issue #24)
+    Improve "Find" window highlight, resize, rotation, jump to position
+    Improve jump in |Hi-Sync-Mode|
+    Improve multiline color selection
 1.58~
     Support "Positional Highlight" associated with a buffer.
 1.57~
@@ -745,11 +750,13 @@ LOG                                                                     *Hi-Log*
 1.0~
     Initial upload
 
+
 ------------------------------------------------------------------------------
 CREDITS                                                             *Hi-Credits*
 
 I would like to thank the following people for their great feature suggestions,
 code contributions and help in resolving issues.
+
 
          Miguel Pérez Pasalodos   Highlight using Input Pattern
 

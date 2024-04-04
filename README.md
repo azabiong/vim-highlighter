@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.58.9 </h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.60 </h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -14,14 +14,14 @@
 
  &nbsp;&nbsp;
  [Installation](#installation) <br> &nbsp;&nbsp;
- [Key Map](#key-map) &nbsp;&nbsp;&nbsp;
- [Sync Mode](#sync-mode) <br> &nbsp;&nbsp;
+ [Key Map](#key-map) <br> &nbsp;&nbsp;
  [Jump to Highlight](#jump-to-highlight) &nbsp;&nbsp;&nbsp;
  [One Time Highlight](#one-time-highlight) &nbsp;&nbsp;&nbsp;
  [Following Highlight](#following-highlight) &nbsp;&nbsp; &nbsp;
  [Find in Files Highlight](#find-in-files-highlight) &nbsp;&nbsp;&nbsp;
  [Positional Highlight](#positional-highlight) <br> &nbsp;&nbsp;
- [Save & Load](#save--load) &nbsp;&nbsp;&nbsp;
+ [Save & Load](#save--load) &nbsp;&nbsp;&nbsp; <br> &nbsp;&nbsp;
+ [Sync Mode](#sync-mode) <br> &nbsp;&nbsp;
  [Customizing Colors](#customizing-colors) <br> &nbsp;&nbsp;
  [Configuration](#configuration-examples) <br> &nbsp;&nbsp;
 
@@ -31,6 +31,7 @@
 
  | version | feature | key map |
  |:--:|:--|:--:|
+ | 1.60 | [Sync Mode](#sync-mode)&nbsp; across all tab-pages | |
  | 1.58 | [Positional Highlight](#positional-highlight)&nbsp; associated with a buffer | O |
  | 1.56 | [One Time Highlight](#one-time-highlight)&nbsp; and **Jump** | |
  | 1.52 | [Find window](#find-window)&nbsp; View &nbsp;<kbd>i</kbd> | O |
@@ -99,20 +100,6 @@
  ```
  <br>
 
-## Sync Mode
-
- When synchronizing the current window's highlights with other split windows, you can use:
- ```vim
-  :Hi ==
- ```
- and to switch back to single window highlighting mode:
- ```vim
-  :Hi =
- ```
- **Sync Mode** applies to all windows in the current tab-page, and can be set differently for each tab-page.
-
- <br>
-
 ## Jump to Highlight
 
  The plugin supports jumping to highlights using two sets of commands.
@@ -130,8 +117,8 @@
  ```vim
    nn <CR>   <Cmd>Hi><CR>
    nn g<CR>  <Cmd>Hi<<CR>
-   nn [<CR>  <Cmd>Hi{<CR>
    nn ]<CR>  <Cmd>Hi}<CR>
+   nn [<CR>  <Cmd>Hi{<CR>
  ```
  > Alternatively, you can map the <kbd>n</kbd> and <kbd>N</kbd> keys to `HiSearch()` function, which automatically selects
  > the search type between native search and `Hi<`, `Hi>` jump commands. &nbsp;→ &nbsp;[Configuration](#configuration-examples)
@@ -350,6 +337,31 @@ Multiline highlighting is now automatically set to positional highlighting.
  </details>
  <br>
 
+## Sync Mode
+
+ The plugin supports three highlight synchronization commands and configuration options.
+ <br>
+
+ For each single window highlighting mode:
+ ```vim
+  :Hi =
+ ```
+
+ To synchronize window highlighting on each tab-page:
+ ```vim
+  :Hi ==
+ ```
+
+ When synchronizing window highlighting across all tab-pages:
+ ```vim
+  :Hi ===
+ ```
+ <br>
+
+> The initial option can be set using the `HiSyncMode` configuration variable.
+
+ <br>
+
 ## Customizing Colors
 
   The plugin provides two default color sets which are automatically loaded based on the current `background` mode.
@@ -405,6 +417,10 @@ Multiline highlight color numbers start at 80, `HiColor80`.
  <details>
  <summary><b>&nbsp;Basic </b></summary>
 
+> <br>
+> <details open>
+> <summary><b>&nbsp; .vim </b></summary>
+>
 > ```vim
 > " Unicode
 > set encoding=utf-8
@@ -419,14 +435,17 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > " jump key mappings
 > nn <CR>     <Cmd>Hi><CR>
 > nn g<CR>    <Cmd>Hi<<CR>
-> nn [<CR>    <Cmd>Hi{<CR>
 > nn ]<CR>    <Cmd>Hi}<CR>
+> nn [<CR>    <Cmd>Hi{<CR>
 >
 > " find key mappings
 > nn -        <Cmd>Hi/next<CR>
 > nn _        <Cmd>Hi/previous<CR>
 > nn f<Left>  <Cmd>Hi/older<CR>
 > nn f<Right> <Cmd>Hi/newer<CR>
+>
+> " sync mode
+> " let HiSyncMode = 1
 >
 > " command abbreviations
 > ca HL Hi:load
@@ -438,10 +457,12 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > " additional highlight colors
 > " hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
 > " hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
->
 > ```
+> </details>
+>
+> <br>
 > <details>
-> <summary><b>&nbsp; lua </b></summary>
+> <summary><b>&nbsp; .lua </b></summary>
 >
 > ```lua
 > vim.cmd([[
@@ -455,14 +476,17 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 >   " jump key mappings
 >   nn <CR>     <Cmd>Hi><CR>
 >   nn g<CR>    <Cmd>Hi<<CR>
->   nn [<CR>    <Cmd>Hi{<CR>
 >   nn ]<CR>    <Cmd>Hi}<CR>
+>   nn [<CR>    <Cmd>Hi{<CR>
 >
 >   " find key mappings
 >   nn -        <Cmd>Hi/next<CR>
 >   nn _        <Cmd>Hi/previous<CR>
 >   nn f<Left>  <Cmd>Hi/older<CR>
 >   nn f<Right> <Cmd>Hi/newer<CR>
+>
+>   " sync mode
+>   " let HiSyncMode = 1
 >
 >   " directory to store highlight files
 >   " let HiKeywords = '~/.vim/after/vim-highlighter'
@@ -504,6 +528,9 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > The following example defines the `-` `_` and `f-` keys to execute the **Hi** command while
 > the **Find** window is visible, otherwise execute the original function.
 >
+> <details open>
+> <summary><b>&nbsp; .vim </b></summary>
+>
 > ```vim
 > " find key mappings
 > nn -   <Cmd>call <SID>HiOptional('next', '-')<CR>
@@ -518,9 +545,11 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 >   endif
 > endfunction
 > ```
+> </details>
 >
+> <br>
 > <details>
-> <summary><b>&nbsp; lua </b></summary>
+> <summary><b>&nbsp; .lua </b></summary>
 >
 > ```lua
 > -- find key mappings
@@ -540,8 +569,8 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > ```
 >
 > </details>
-  <br>
 
+ <br>
  </details>
 
  <details>
@@ -549,6 +578,10 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 
 > &nbsp;  
 > You can also define <kbd>n</kbd> and <kbd>N</kbd> keys for both the native search and the plugin's jump commands.
+>
+> <details open>
+> <summary><b>&nbsp; .vim </b></summary>
+>
 > ```vim
 > " jump key mappings
 > nn n  <Cmd>call HiSearch('n')<CR>
@@ -560,8 +593,11 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > ```vim
 > nn <Esc>n  <Cmd>noh<CR>
 > ```
+> </details>
+>
+> <br>
 > <details>
-> <summary><b>&nbsp; lua </b></summary>
+> <summary><b>&nbsp; .lua </b></summary>
 >
 > ```lua
 > vim.cmd([[
