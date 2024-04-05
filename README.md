@@ -44,12 +44,25 @@
 
 ## Installation
 
- You can use your preferred plugin manager using the string `'azabiong/vim-highlighter'`. For example:
+ You can use your preferred plugin manager using the string `'azabiong/vim-highlighter'`. For example: <br>
+
+ **vim-plug** &nbsp;` .vim  `
  ```vim
    Plug 'azabiong/vim-highlighter'
  ```
+ **lazy.nvim** &nbsp;` .lua  `
+ ```lua
+   {
+     "azabiong/vim-highlighter",
+     init = function()
+       vim.cmd([[
+         " settings
+       ]])
+     end,
+   },
+ ```
  <details>
- <summary>&nbsp; or,&nbsp; Vim's built-in package feature: </summary>
+ <summary>&nbsp; <b>or</b>, &nbsp;Vim's built-in package feature: </summary>
 
 > <br>
 >
@@ -67,7 +80,10 @@
 
 ## Key Map
 
- The plugin uses the following assignable key mapping variables that can be defined in the configuration file:
+ The plugin uses the following default key mapping variables that can be easily assigned in the configuration file.
+
+ <details open>
+ <summary><b>&nbsp; .vim </b></summary>
 
  ```vim
    let HiSet   = 'f<CR>'
@@ -76,7 +92,23 @@
    let HiFind  = 'f<Tab>'
    let HiSetSL = 't<CR>'
  ```
-> Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L`, `f Tab` and `t Enter`
+ </details>
+
+ <details>
+ <summary><b>&nbsp; .lua </b></summary>
+
+ ```lua
+  vim.cmd([[
+    let HiSet   = 'f<CR>'
+    let HiErase = 'f<BS>'
+    let HiClear = 'f<C-L>'
+    let HiFind  = 'f<Tab>'
+    let HiSetSL = 't<CR>'
+  ]])
+ ```
+ </details>
+
+ > Default key mappings: `f Enter`, `f Backspace`, `f Ctrl+L`, `f Tab` and `t Enter`
 
  In normal mode, `HiSet` and `HiErase` keys set or erase highlighting of the word under the cursor. `HiClear` key clears all highlights.
 
@@ -458,9 +490,9 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > " hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
 > " hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
 > ```
+> <br>
 > </details>
 >
-> <br>
 > <details>
 > <summary><b>&nbsp; .lua </b></summary>
 >
@@ -545,9 +577,9 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 >   endif
 > endfunction
 > ```
+> <br>
 > </details>
 >
-> <br>
 > <details>
 > <summary><b>&nbsp; .lua </b></summary>
 >
@@ -593,9 +625,9 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > ```vim
 > nn <Esc>n  <Cmd>noh<CR>
 > ```
+> <br>
 > </details>
 >
-> <br>
 > <details>
 > <summary><b>&nbsp; .lua </b></summary>
 >
