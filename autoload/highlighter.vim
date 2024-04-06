@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.60
+" Version: 1.60.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.60'
+let s:Version   = '1.60.2'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -673,16 +673,16 @@ function s:SetSyncMode(op, msg=0)
   if  l:op == -1 | return s:NoOption(a:op) | endif
 
   if a:msg
-    echo ' Hi '.['= Each window', '== Sync on each tab-page', '=== Sync across all tab-pages'][l:op]
+    echo ' Hi '.['= Single window', '== Sync on each tab-page', '=== Sync across all tab-pages'][l:op]
   endif
   if l:op == s:Sync.mode | return | endif
 
   let s:Sync.mode = l:op
+  call s:SetPage()
   if l:op == 0
     return
   endif
 
-  call s:SetPage()
   let l:match = s:LoadMatch()
   if l:op == 1
     let t:HiSync.match = l:match
@@ -763,12 +763,12 @@ function s:ApplySync(match, win, flag)
   endif
 endfunction
 
-function s:UpdateVer(win)
-  let s:Sync.ver += 1
-  let t:HiSync.ver = s:Sync.ver
-  if a:win
+function s:UpdateVer(op)
+  if a:op
+    let s:Sync.ver += 1
     let w:HiSync = s:Sync.ver
   endif
+  let t:HiSync.ver = s:Sync.ver
 endfunction
 
 function s:SetPage()
@@ -2155,12 +2155,12 @@ function s:TabEnter()
   let l:mode = exists("t:HiSync") ? t:HiSync.mode : 0
   let s:Sync.prev = 0
 
-  if s:Sync.mode > l:mode  " 1:0 2:0 2:1
+  if s:Sync.mode > l:mode || s:Sync.mode == 2  " 1:0 2:0 2:1 2:2
     call s:SetPage()
     if s:Sync.mode == 1
       let t:HiSync.match = s:LoadMatch()
       call s:UpdateVer(1)
-    else
+    elseif s:Sync.ver != t:HiSync.ver
       call s:UpdateVer(0)
     endif
     for w in range(1, winnr('$'))
