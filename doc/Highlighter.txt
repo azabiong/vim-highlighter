@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.60.2`
+                                                                   `ver 1.60.3`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Jump to Highlight     |Hi-Jump-To-Highlight|
@@ -613,8 +613,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.60.2~
-    Fix |Hi-Sync-Mode| update
+1.60.3~
+    Improve |Hi-Sync-Mode| update, jump
 1.60~
     Support "Hi ===" command across |tab-page|s with |HiSyncMode|=2 option
     Fix highlighting in |command-line-window|
@@ -771,5 +771,8 @@ code contributions and help in resolving issues.
                       N. Dubray   Positional Highlight
 
 
+
 ------------------------------------------------------------------------------
 Vim:tw=80:ts=4:ft=help:nowrap:norl
+
+
