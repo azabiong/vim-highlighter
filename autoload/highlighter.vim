@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.60.3
+" Version: 1.61
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.60.3'
+let s:Version   = '1.61'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -253,7 +253,7 @@ function s:SetHighlight(cmd, mode, num)
   let l:match = getmatches()
   let l:case = (&ic || stridx(@/, '\c') != -1) ? '\c' : ''
   if l:color
-    call s:DeleteMatch(l:match, '==', l:pattern, l:pos)
+    call s:DeleteMatch(l:match, '==', l:pattern)
     let l:group = s:Group.l:color
     if a:mode == 'n' && s:GetFocusMode(1, l:pattern)
       return s:SetFocusMode('>', '')
@@ -280,17 +280,12 @@ function s:SetHighlight(cmd, mode, num)
         let s:HiMode['>'] = '<'
       endif
     else
-      let l:deleted = s:DeleteMatch(l:match, '==', l:pattern, l:pos)
-      if !l:deleted
-        if a:mode == 'n'
-          let l:deleted = s:DeleteMatch(l:match, '≈n', {'word':expand('<cWORD>'), 'line':getline('.')}, l:pos) ||
-                        \ s:DeleteMatch(l:match, '%l', '', l:pos) ||
-                        \ s:DeletePosHighlightAt(l:pos)
-          if !l:deleted && get(g:, 'HiClearUsingOneTime', 0)
-            return s:ClearHighlights()
-          endif
-        elseif a:mode == 'x'
-          let l:deleted = s:DeleteMatch(l:match, '≈x', l:visual, l:pos)
+      if a:mode == 'x'
+        let l:deleted = s:DeleteMatch(l:match, '[=]', l:visual)
+      else
+        let l:deleted = s:DeletePattern(l:match, getline('.'), l:pos) || s:DeletePosHighlightAt(l:pos)
+        if !l:deleted && get(g:, 'HiClearUsingOneTime', 0)
+          return s:ClearHighlights()
         endif
       endif
     endif
@@ -339,37 +334,51 @@ function s:GetVisualLine(block)
   return l:line[l:from-1 : l:to-1]
 endfunction
 
-function s:DeleteMatch(match, op, part, pos)
+function s:DeleteMatch(match, op, part)
+  let l:i = len(a:match)
+  let l:count = 0
+  while l:i > 0
+    let l:i -= 1
+    let l:m = a:match[l:i]
+    if match(l:m.group, s:Group) != 0 | continue | endif
+
+    let l:match = 0
+    if a:op == '=='
+      let l:match = (a:part ==# l:m.pattern)
+    elseif a:op == '[=]'
+      let l:match = match(a:part, '\C'.l:m.pattern) != -1
+    endif
+    if l:match
+      call matchdelete(l:m.id)
+      call s:UpdateSync('del', l:m.group, l:m.pattern)
+      if s:GetJump() ==# l:m.pattern
+        call s:UpdateJump('')
+      endif
+      if a:op != '[=]' | return 1 | endif
+      let l:count += 1
+    endif
+  endwhile
+  return l:count
+endfunction
+
+function s:DeletePattern(match, line, pos)
   let l:i = len(a:match)
   while l:i > 0
     let l:i -= 1
     let l:m = a:match[l:i]
-    if match(l:m.group, s:Group) == 0
-      let l:pattern = l:m.pattern
-      let l:inside = 0
-      if stridx(l:m.pattern, '\%') == 2
-        if stridx(l:m.pattern, a:pos[1].'l') != 4 | continue | endif
-        let l:inside = 1
-        let l:offset = len(matchstr(l:m.pattern, '\v^\\.\\\%\d+l'))
-        let l:pattern = l:m.pattern[l:offset:]
-      endif
-      let l:match = 0
-      if a:op == '=='
-        let l:match = (a:part ==# l:pattern)
-      else
-        if (a:op == '≈n')
-          if l:pattern[:3] !=# '\V\<'
-            let l:pattern = '\C'.l:pattern
-            let l:match = (match(a:part.word, l:pattern) != -1) ||
-                        \ (stridx(l:pattern, ' ') != -1 && match(a:part.line, l:pattern) != -1)
-          endif
-        elseif a:op == '≈x'
-          let l:match = match(a:part, '\C'.l:pattern) != -1
-        elseif a:op == '%l'
-          let l:match = l:inside
-        endif
-      endif
-      if l:match
+    if match(l:m.group, s:Group) != 0 | continue | endif
+
+    let l:pattern = l:m.pattern
+    if stridx(l:m.pattern, '\%') == 2
+      if stridx(l:m.pattern, a:pos[1].'l') != 4 | continue | endif
+      let l:offset = len(matchstr(l:m.pattern, '\v^\\.\\\%\d+l'))
+      let l:pattern = l:m.pattern[l:offset:]
+    endif
+
+    let [l:num, l:col] = searchpos('\C'.l:pattern, 'bnc', a:pos[1])
+    if l:num
+      let l:len = len(matchstr(a:line, l:pattern, l:col-1))
+      if a:pos[2] < l:col + l:len
         call matchdelete(l:m.id)
         call s:UpdateSync('del', l:m.group, l:m.pattern)
         if s:GetJump() ==# l:m.pattern
@@ -795,9 +804,7 @@ function s:ClearHighlights(block={})
     call s:FindClear()
   else
     for i in range(a:block.rect[0], a:block.rect[2])
-      let l:pos = [0,i,1,0]
-      while s:DeleteMatch(getmatches(), '≈x', getline(i), l:pos)
-      endwhile
+      call s:DeleteMatch(getmatches(), '[=]', getline(i))
     endfor
     if s:PI
       if v:version > 900
@@ -1220,10 +1227,9 @@ function s:ListFiles()
 endfunction
 
 function s:MatchPattern(line, pos, pattern)
-  if search('\C'.a:pattern, 'bc', a:pos[1])
-    let l:col = col('.')
+  let [l:num, l:col] = searchpos('\C'.a:pattern, 'bnc', a:pos[1])
+  if l:num
     let l:len = len(matchstr(a:line, a:pattern, l:col-1))
-    call setpos('.', a:pos)
     return a:pos[2] < l:col + l:len
   endif
 endfunction
@@ -1363,14 +1369,12 @@ function s:JumpNear(op)
 
   let l:next = {}
   if !empty(l:match)
-    let l:flag = l:op[2]
     for l:m in l:match
-      call search('\C'.l:m.pattern, l:flag, l:stop)
-      let l:col = l:sign * col('.')
+      let [l:num, l:col] =  searchpos('\C'.l:m.pattern, l:op, l:stop)
+      let l:col *= l:sign
       if empty(l:next) || l:col < l:next.col
         let l:next = {'col': l:col, 'pattern': l:m.pattern}
       endif
-      call setpos('.', l:pos)
     endfor
   endif
 
@@ -1380,7 +1384,7 @@ function s:JumpNear(op)
     call s:SetJumpGuide(0, l:near)
     call feedkeys('zv', 'n')
   elseif !empty(l:next)
-    call s:JumpTo(l:next.pattern, l:flag, 1, 1, 1)
+    call s:JumpTo(l:next.pattern, l:op[1:], 1, 1, 1)
   endif
 endfunction
 
