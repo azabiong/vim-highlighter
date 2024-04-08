@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.61.2
+" Version: 1.61.3
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.61.2'
+let s:Version   = '1.61.3'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -1350,7 +1350,6 @@ function s:JumpNear(op, count)
   let [l:op, l:sign, l:end] = (a:op == '{') ? ['nWb', -1, 1] : ['nW', 1, line('$')]
   let l:count = a:count ? a:count : (v:count ? v:count : 1)
   let l:matches = getmatches()
-  let l:range = line('$')
 
   while l:count
     let l:count -= 1
@@ -1358,6 +1357,8 @@ function s:JumpNear(op, count)
     let l:pos = getpos('.')
     let l:base = l:pos[1]
     let l:stop = l:end
+    let l:range = v:maxcol
+
     let i = len(l:matches)
     while i > 0
       let i -= 1
