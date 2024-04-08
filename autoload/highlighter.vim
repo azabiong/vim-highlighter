@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.61
+" Version: 1.61.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.61'
+let s:Version   = '1.61.2'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -1346,51 +1346,59 @@ function s:JumpLong(op, count)
   endwhile
 endfunction
 
-function s:JumpNear(op)
-  let [l:op, l:sign, l:stop] = (a:op == '{') ? ['nWb', -1, 1] : ['nW', 1, line('$')]
+function s:JumpNear(op, count)
+  let [l:op, l:sign, l:end] = (a:op == '{') ? ['nWb', -1, 1] : ['nW', 1, line('$')]
+  let l:count = a:count ? a:count : (v:count ? v:count : 1)
   let l:matches = getmatches()
-  let l:match = []
-  let l:pos = getpos('.')
-  let l:base = l:pos[1]
   let l:range = line('$')
-  let i = len(l:matches)
-  while i > 0
-    let i -= 1
-    let l:m = l:matches[i]
-    if match(l:m.group, s:Group) == 0
-      let l:line = search('\C'.l:m.pattern, l:op, l:stop)
-      if l:line
-        let l:dist = abs(l:line - l:base)
-        if l:dist < l:range
-          let l:match = [l:m]
-          let l:range = l:dist
-          let l:stop = l:line
-        elseif l:dist == l:range
-          let l:match += [l:m]
+
+  while l:count
+    let l:count -= 1
+    let l:match = []
+    let l:pos = getpos('.')
+    let l:base = l:pos[1]
+    let l:stop = l:end
+    let i = len(l:matches)
+    while i > 0
+      let i -= 1
+      let l:m = l:matches[i]
+      if match(l:m.group, s:Group) == 0
+        let l:line = search('\C'.l:m.pattern, l:op, l:stop)
+        if l:line
+          let l:dist = abs(l:line - l:base)
+          if l:dist < l:range
+            let l:match = [l:m]
+            let l:range = l:dist
+            let l:stop = l:line
+          elseif l:dist == l:range
+            let l:match += [l:m]
+          endif
         endif
       endif
+    endwhile
+
+    let l:next = {}
+    if !empty(l:match)
+      for l:m in l:match
+        let [l:num, l:col] =  searchpos('\C'.l:m.pattern, l:op, l:stop)
+        let l:col *= l:sign
+        if empty(l:next) || l:col < l:next.col
+          let l:next = {'col': l:col, 'pattern': l:m.pattern}
+        endif
+      endfor
+    endif
+
+    let l:near = s:GetNearPosHighlight(l:sign, l:pos, l:range)
+    if !empty(l:near) && (l:near[3] < l:range || (l:near[3] == l:range && l:sign*l:near[1] < l:next.col))
+      call cursor(l:near[0], l:near[1])
+      call s:SetJumpGuide(0, l:near)
+      call feedkeys('zv', 'n')
+    elseif !empty(l:next)
+      call s:JumpTo(l:next.pattern, l:op[1:], 1, 1, 1)
+    else
+      break
     endif
   endwhile
-
-  let l:next = {}
-  if !empty(l:match)
-    for l:m in l:match
-      let [l:num, l:col] =  searchpos('\C'.l:m.pattern, l:op, l:stop)
-      let l:col *= l:sign
-      if empty(l:next) || l:col < l:next.col
-        let l:next = {'col': l:col, 'pattern': l:m.pattern}
-      endif
-    endfor
-  endif
-
-  let l:near = s:GetNearPosHighlight(l:sign, l:pos, l:range)
-  if !empty(l:near) && (l:near[3] < l:range || (l:near[3] == l:range && l:sign * l:near[1] < l:next.col))
-    call cursor(l:near[0], l:near[1])
-    call s:SetJumpGuide(0, l:near)
-    call feedkeys('zv', 'n')
-  elseif !empty(l:next)
-    call s:JumpTo(l:next.pattern, l:op[1:], 1, 1, 1)
-  endif
 endfunction
 
 function s:Find(input)
@@ -2374,7 +2382,7 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd =~# '^<\w*>'  | call s:SetWordMode(l:cmd)
   elseif l:cmd =~# '^='      | call s:SetSyncMode(l:cmd, 1)
   elseif l:cmd =~# '[<>]'    | call s:JumpLong(l:cmd, l:num)
-  elseif l:cmd =~# '[{}]'    | call s:JumpNear(l:cmd)
+  elseif l:cmd =~# '[{}]'    | call s:JumpNear(l:cmd, l:num)
   elseif l:cmd ==# 'Find'    | call s:Find(a:cmd[5:])
   elseif l:cmd ==# 'next'    | call s:FindNextPrevious('+', l:num)
   elseif l:cmd ==# 'previous'| call s:FindNextPrevious('-', l:num)

@@ -614,6 +614,7 @@ like to add, please feel free to open an issue.
 LOG                                                                     *Hi-Log*
 
 1.61.2~
+    Support optional count in short jump commands |Hi{| and |Hi}|
     Improve "Hi- pattern" command
 1.61~
     Upgrade highlight jump and delete function
