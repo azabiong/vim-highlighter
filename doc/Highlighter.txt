@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.61`
+                                                                   `ver 1.61.2`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Jump to Highlight     |Hi-Jump-To-Highlight|
@@ -613,6 +613,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.61.2~
+    Improve "Hi- pattern" command
 1.61~
     Upgrade highlight jump and delete function
     Improve |Hi-Sync-Mode|

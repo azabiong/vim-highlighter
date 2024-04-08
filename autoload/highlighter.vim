@@ -279,6 +279,8 @@ function s:SetHighlight(cmd, mode, num)
       if a:mode == 'x'
         let s:HiMode['>'] = '<'
       endif
+    elseif a:mode == '='
+        let l:deleted = s:DeleteMatch(l:match, '==', l:pattern)
     else
       if a:mode == 'x'
         let l:deleted = s:DeleteMatch(l:match, '[=]', l:visual)
@@ -373,6 +375,9 @@ function s:DeletePattern(match, line, pos)
       if stridx(l:m.pattern, a:pos[1].'l') != 4 | continue | endif
       let l:offset = len(matchstr(l:m.pattern, '\v^\\.\\\%\d+l'))
       let l:pattern = l:m.pattern[l:offset:]
+      if empty(l:pattern)
+        let l:pattern = '.*'
+      endif
     endif
 
     let [l:num, l:col] = searchpos('\C'.l:pattern, 'bnc', a:pos[1])
