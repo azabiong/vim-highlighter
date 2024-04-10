@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.61.3`
+                                                                   `ver 1.61.4`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Jump to Highlight     |Hi-Jump-To-Highlight|
@@ -304,7 +304,7 @@ When synchronizing window highlighting across all tab-pages:
 >
     :Hi ===
 <
-The initial option can be set using the |HiSyncMode| configuration variable.
+The initial mode can be set using the |HiSyncMode| configuration variable.
 
 ------------------------------------------------------------------------------
 CUSTOMIZING COLORS                                       *Hi-Customizing-Colors*
@@ -474,9 +474,9 @@ OPTIONS                                                             *Hi-Options*
              0 `(off)`
                                                                     *HiKeywords*
 |HiKeywords| specifies the directory in which to save the highlights of the current
-window to a file. The default setting is:
+window to a file. Now the default setting is:
 >
-        let HiKeywords = '~/.vim/after/vim-highlighter'
+        let HiKeywords = '~/.config/keywords'
 <
     The |Hi:ls| command opens |netrw| window for browsing and managing files in
     the directory.
@@ -613,7 +613,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.61.3~
+1.61.4~
+    Update "HiKeywords" default path
     Support optional count in short jump commands |Hi{| and |Hi}|
     Improve "Hi- pattern" command
 1.61~

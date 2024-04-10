@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.61.3 </h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.61.4 </h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -390,7 +390,7 @@ Multiline highlighting is now automatically set to positional highlighting.
  ```
  <br>
 
-> The initial option can be set using the `HiSyncMode` configuration variable.
+> The initial mode can be set using the `HiSyncMode` configuration variable.
 
  <br>
 
@@ -484,7 +484,7 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > ca HS Hi:save
 >
 > " directory to store highlight files
-> " let HiKeywords = '~/.vim/after/vim-highlighter'
+> " let HiKeywords = '~/.config/keywords'
 >
 > " additional highlight colors
 > " hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
@@ -521,7 +521,7 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 >   " let HiSyncMode = 1
 >
 >   " directory to store highlight files
->   " let HiKeywords = '~/.vim/after/vim-highlighter'
+>   " let HiKeywords = '~/.config/keywords'
 > ]])
 > ```
 > </details>
