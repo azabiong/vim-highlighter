@@ -112,7 +112,7 @@
 
  In normal mode, `HiSet` and `HiErase` keys set or erase highlighting of the word under the cursor. `HiClear` key clears all highlights.
 
- <img width="600" src="https://user-images.githubusercontent.com/83812658/117490057-482a5600-afa9-11eb-8b4a-e2b5018ece5a.gif">
+ <img width="585" alt="key_map2" src="https://github.com/azabiong/vim-highlighter/assets/83812658/0bf4d9ac-96d1-4c8c-b1d0-2dffba9ecf95">
 
 ### Visual Selection
 
