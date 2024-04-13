@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.61.4`
+                                                                   `ver 1.61.5`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Jump to Highlight     |Hi-Jump-To-Highlight|
@@ -611,7 +611,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.61.4~
+1.61.5~
+    Fix "TabNew" error
     Update "HiKeywords" default path
     Support optional count in short jump commands |Hi{| and |Hi}|
     Improve "Hi- pattern" command

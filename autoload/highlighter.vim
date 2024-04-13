@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.61.4
+" Version: 1.61.5
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.61.4'
+let s:Version   = '1.61.5'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -2180,7 +2180,7 @@ function s:TabNew()
 
   call s:SetPage()
   if s:Sync.mode == 1
-    let t:HiSync.match = deepcopy(gettabvar(s:Sync.prev, 'HiSync', []).match)
+    let t:HiSync.match = deepcopy(gettabvar(s:Sync.prev, 'HiSync', {'match':[]}).match)
   endif
   call s:UpdateVer(0)
   call s:ApplySync(s:GetMatch(), winnr(), '*')
