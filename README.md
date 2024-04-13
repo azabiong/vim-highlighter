@@ -34,7 +34,7 @@
  | 1.60 | [Sync Mode](#sync-mode)&nbsp; across all tab-pages | |
  | 1.58 | [Positional Highlight](#positional-highlight)&nbsp; associated with a buffer | O |
  | 1.56 | [One Time Highlight](#one-time-highlight)&nbsp; and **Jump** | |
- | 1.52 | [Find window](#find-window)&nbsp; View &nbsp;<kbd>i</kbd> | O |
+ | 1.52 | [Find window](#find-window)&nbsp; key <kbd>i</kbd> for View | O |
  | 1.50 | [Jump to Highlight](#jump-to-highlight) | O |
  | 1.38 | [Input](#input)&nbsp; patterns in the command-line | |
  | 1.35 | [Multifunction keys](#configuration-examples)&nbsp; for **Find** | O |
@@ -55,9 +55,7 @@
    {
      "azabiong/vim-highlighter",
      init = function()
-       vim.cmd([[
-         " settings
-       ]])
+       -- settings
      end,
    },
  ```
@@ -112,17 +110,17 @@
 
  In normal mode, `HiSet` and `HiErase` keys set or erase highlighting of the word under the cursor. `HiClear` key clears all highlights.
 
- <img width="585" alt="key_map2" src="https://github.com/azabiong/vim-highlighter/assets/83812658/0bf4d9ac-96d1-4c8c-b1d0-2dffba9ecf95">
+ <img width="585" alt="key_map" src="https://github.com/azabiong/vim-highlighter/assets/83812658/0bf4d9ac-96d1-4c8c-b1d0-2dffba9ecf95"> <br>
 
 ### Visual Selection
 
  In visual mode, the highlight is selected as a partial pattern from the selection and applied to other words.
 
- <img width="290" alt="visual" src="https://user-images.githubusercontent.com/83812658/117488190-11534080-afa7-11eb-8731-bf382f71fd4e.png"> <br>
+ <img width="336" alt="visual" src="https://github.com/azabiong/vim-highlighter/assets/83812658/4c2c82a2-d5f1-4246-85f6-f77468db61e5"> <br>
 
  You can also select an entire line and highlight it.
 
- <img width="296" alt="visual_line" src="https://user-images.githubusercontent.com/83812658/125556295-356322d3-4992-40fe-81f1-299ca5eb7007.png"> <br>
+ <img width="336" alt="visual_line" src="https://github.com/azabiong/vim-highlighter/assets/83812658/222c3cf8-a44e-41ef-9474-2f96e1ce39f8"> <br>
 
 ### Input
 
@@ -142,7 +140,7 @@
  The `Hi {` and `Hi }` commands, on the other hand, move the cursor to the nearest highlight,
  even if the pattern or type differs from the current selection.
 
- <img width="393" alt="jump" src="https://user-images.githubusercontent.com/83812658/169995084-4c623681-e54c-4174-bd30-81e6856b6f8d.gif"><br>
+ <img width="420" alt="jump" src="https://github.com/azabiong/vim-highlighter/assets/83812658/a4af37af-f4c1-4bdf-9cfa-04200026af22"> <br>
 
  You can easily define key mappings for these commands. For example:
 
@@ -162,9 +160,9 @@
  When you only need one quick scan at the cursor position without setting the highlight, **One Time Highlight** can be useful.
 
  When the cursor is over a word or visual selection that is not highlighted, pressing `HiErase` key sets **One Time Highlight**.
- The highlight stays on while the cursor is not moving, and automatically turns off after the cursor moves.
+ The highlight remains on while the cursor is stationary, and automatically turns off after the cursor moves.
 
- <img width="455" alt="onetime" src="https://user-images.githubusercontent.com/83812658/169995537-61725353-15b9-4d33-bccc-d0c471c15306.gif"><br>
+ <img width="455" alt="onetime" src="https://user-images.githubusercontent.com/83812658/169995537-61725353-15b9-4d33-bccc-d0c471c15306.gif"> <br>
 
  **One Time Highlight** displays matches in all windows on the current tab-page, and
  **Jump** commands `Hi<` and `Hi>` are also supported.
@@ -178,7 +176,8 @@
  Pressing `HiSet` key over **One Time Highlight** without moving the cursor sets **Following Highlight** mode.
  The highlight follows the cursor. Pressing `HiEarase` key turns off the mode.
 
- <img width="450" alt="following" src="https://user-images.githubusercontent.com/83812658/162587365-64092e0a-0b2f-4947-855a-171da12c8da6.gif"> <br>  
+ <img width="493" alt="following" src="https://github.com/azabiong/vim-highlighter/assets/83812658/69dbc2ce-2bd9-4a3d-acac-e889cdffdd5e"> <br>
+
  **Following Highlight** displays matches in all windows on the current tab-page, and
  **Jump** commands `Hi<` and `Hi>` are also supported.
 
@@ -331,7 +330,7 @@ The position is updated when inserting or deleting the line above.
 To set a **Positional Highlight** on a specific line, press the `HiSetSL` key in normal or visual mode.  
 Multiline highlighting is now automatically set to positional highlighting.
 
- <img width=400 alt="positional" src="https://github.com/azabiong/vim-highlighter/assets/83812658/25ba37c8-43ce-4eaf-9d43-663108bfb54b"><br>
+ <img width=400 alt="positional" src="https://github.com/azabiong/vim-highlighter/assets/83812658/25ba37c8-43ce-4eaf-9d43-663108bfb54b"> <br>
 
  Short **Jump** commands `Hi{` and `Hi}` are also supported after setting.
 
