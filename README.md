@@ -151,7 +151,7 @@
    nn [<CR>  <Cmd>Hi{<CR>
  ```
  > Alternatively, you can map the <kbd>n</kbd> and <kbd>N</kbd> keys to `HiSearch()` function, which automatically selects
- > the search type between native search and `Hi<`, `Hi>` jump commands. &nbsp;→ &nbsp;[Configuration](#configuration-examples)
+ > the search type between native search and jump commands. &nbsp;→ &nbsp;[Configuration](#configuration-examples)
 
  <br>
 
@@ -370,7 +370,7 @@ Multiline highlighting is now automatically set to positional highlighting.
 
 ## Sync Mode
 
- The plugin supports three highlight synchronization commands and configuration options.
+ The plugin supports three highlight sync mode commands.
  <br>
 
  For each single window highlighting mode:
