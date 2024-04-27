@@ -446,7 +446,7 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 ## Configuration Examples
 
  <details>
- <summary><b>&nbsp;Basic </b></summary>
+ <summary><b>&nbsp;Summary </b></summary>
 
 > <br>
 > <details open>
@@ -454,7 +454,7 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 >
 > ```vim
 > " Unicode
-> set encoding=utf-8
+> " set encoding=utf-8
 >
 > " default key mappings
 > " let HiSet   = 'f<CR>'
@@ -521,6 +521,10 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 >
 >   " directory to store highlight files
 >   " let HiKeywords = '~/.config/keywords'
+>
+>   " additional highlight colors
+>   " hi HiColor21 ctermfg=52  ctermbg=181 guifg=#8f5f5f guibg=#d7cfbf cterm=bold gui=bold
+>   " hi HiColor22 ctermfg=254 ctermbg=246 guifg=#e7efef guibg=#979797 cterm=bold gui=bold
 > ]])
 > ```
 > </details>
