@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.61.5
+" Version: 1.61.6
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -21,7 +21,7 @@ let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.61.5'
+let s:Version   = '1.61.6'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -63,6 +63,7 @@ function s:Load()
     \ ['HiFollow',  'ctermfg=233 ctermbg=151 cterm=none guifg=#002f00 guibg=#a8d0b8 gui=none'],
     \ ['HiFind',    'ctermfg=223 ctermbg=95  cterm=none guifg=#ffe7d7 guibg=#8a625a gui=none'],
     \ ['HiGuide',   'ctermfg=188 ctermbg=62  cterm=none guifg=#d0d0d8 guibg=#4848d8 gui=none'],
+    \ ['HiList',    'ctermfg=210 cterm=bold  guifg=#f89888 gui=bold'],
     \ ['HiColor1',  'ctermfg=234 ctermbg=113 cterm=none guifg=#001737 guibg=#82c85a gui=none'],
     \ ['HiColor2',  'ctermfg=52  ctermbg=179 cterm=none guifg=#500000 guibg=#e6b058 gui=none'],
     \ ['HiColor3',  'ctermfg=225 ctermbg=90  cterm=none guifg=#f8dff6 guibg=#8f2f8f gui=none'],
@@ -89,6 +90,7 @@ function s:Load()
     \ ['HiFollow',  'ctermfg=234 ctermbg=151 cterm=none guifg=#002800 guibg=#b3dfb4 gui=none'],
     \ ['HiFind',    'ctermfg=52  ctermbg=187 cterm=none guifg=#481808 guibg=#e3d3b7 gui=none'],
     \ ['HiGuide',   'ctermfg=231 ctermbg=62  cterm=none guifg=#f8f8f8 guibg=#6868e8 gui=none'],
+    \ ['HiList',    'ctermfg=94  cterm=bold  guifg=#8c3028 gui=bold'],
     \ ['HiColor1',  'ctermfg=17  ctermbg=113 cterm=none guifg=#001767 guibg=#8fd757 gui=none'],
     \ ['HiColor2',  'ctermfg=52  ctermbg=221 cterm=none guifg=#570000 guibg=#fcd757 gui=none'],
     \ ['HiColor3',  'ctermfg=225 ctermbg=90  cterm=none guifg=#ffdff7 guibg=#8f2f8f gui=none'],
@@ -115,8 +117,9 @@ function s:Load()
     \ ['HiFollow',  'ctermfg=DarkBlue ctermbg=LightGreen'],
     \ ['HiFind',    'ctermfg=Yellow   ctermbg=DarkGray'  ],
     \ ['HiGuide',   'ctermfg=White    ctermbg=DarkBlue'  ],
-    \ ['HiColor1',  'ctermfg=White    ctermbg=DarkGreen' ],
-    \ ['HiColor2',  'ctermfg=White    ctermbg=DarkCyan'  ],
+    \ ['HiList',    'ctermfg=DarkRed'],
+    \ ['HiColor1',  'ctermfg=White   ctermbg=DarkGreen'  ],
+    \ ['HiColor2',  'ctermfg=White   ctermbg=DarkCyan'   ],
     \ ['HiColor3',  'ctermfg=White   ctermbg=DarkMagenta'],
     \ ['HiColor4',  'ctermfg=White   ctermbg=DarkYellow' ],
     \ ['HiColor5',  'ctermfg=Black   ctermbg=LightYellow'],
@@ -1023,10 +1026,15 @@ function s:SetHiFind(on)
     if empty(getbufvar(l:buf, '&buftype')) || l:buf == s:FL.buf
       if empty(getwinvar(w, 'HiFind', ''))
         let l:find = {'tag':s:Find.hi_tag, 'id':[]}
-        for h in s:Find.hi
-          let l:exp = (l:buf == s:FL.buf) ? '\v('.h.'\v)(.*:\d+:)@!' : h
-          call add(l:find.id, matchadd('HiFind', l:exp, 0, -1, {'window': w}))
-        endfor
+        if l:buf == s:FL.buf
+          for h in s:Find.hi
+            call add(l:find.id, matchadd('HiList', '\v('.h.'\v)(.*:\d+:)@!', 0, -1, {'window': w}))
+          endfor
+        else
+          for h in s:Find.hi
+            call add(l:find.id, matchadd('HiFind', h, 0, -1, {'window': w}))
+          endfor
+        endif
         call setwinvar(w, 'HiFind', l:find)
       endif
     endif
@@ -1797,7 +1805,7 @@ function s:FindStart(arg)
 
   try
     for l:exp in s:Find.hi_exp
-      let l:id = matchadd('HiFind', '\v('.l:exp.'\v)(.*:\d+:)@!', 0)
+      let l:id = matchadd('HiList', '\v('.l:exp.'\v)(.*:\d+:)@!', 0)
       call add(w:HiFind.id, l:id)
       call add(s:Find.hi, l:exp)
       call add(s:FL.log.hi, l:exp)
