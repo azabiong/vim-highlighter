@@ -2,17 +2,18 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.61
+" Version: 1.62
 
 scriptencoding utf-8
 if exists("g:loaded_vim_highlighter")
   finish
 endif
+let g:loaded_vim_highlighter = 1
+
 if !has('reltime') || !has('timers')
   echoe ' Highlighter: plugin uses features of Vim version 8.2 or higher '
   finish
 endif
-let g:loaded_vim_highlighter = 1
 
 let s:cpo_save = &cpo
 set cpo&vim

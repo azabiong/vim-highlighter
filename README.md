@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.61.6 </h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.62 </h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -31,6 +31,7 @@
 
  | version | feature | key map |
  |:--:|:--|:--:|
+ | 1.62 | [Jump to Highlight](#jump-to-highlight)&nbsp; of the same color | O |
  | 1.60 | [Sync Mode](#sync-mode)&nbsp; across all tab-pages | |
  | 1.58 | [Positional Highlight](#positional-highlight)&nbsp; associated with a buffer | O |
  | 1.56 | [One Time Highlight](#one-time-highlight)&nbsp; and **Jump** | |
@@ -78,7 +79,8 @@
 
 ## Key Map
 
- The plugin uses the following default key mapping variables that can be easily assigned in the configuration file.
+ The plugin uses the following default key mapping variables that work in both normal and visual modes,
+ and each key can be easily assigned in the configuration file.
 
  <details open>
  <summary><b>&nbsp; .vim </b></summary>
@@ -132,23 +134,27 @@
 
 ## Jump to Highlight
 
- The plugin supports jumping to highlights using two sets of commands.
+ The plugin supports jumping to highlights using three sets of commands.
 
- The `Hi <` and `Hi >` commands move the cursor back and forth to recently highlighted words
- or matching highlights at the cursor position.
+ **1. Pattern** &nbsp; &nbsp;
+ The `Hi <` and `Hi >` commands move the cursor back and forth to highlights of the same pattern at the cursor position,
+ or recently set highlights.
 
- The `Hi {` and `Hi }` commands, on the other hand, move the cursor to the nearest highlight,
+ **2. Position** &nbsp;
+ The `Hi {` and `Hi }` commands, move the cursor to the nearest highlight,
  even if the pattern or type differs from the current selection.
+
+ **3. Color** &nbsp; &nbsp; &nbsp;
+ The `Hi [` and `Hi ]` commands support moving to highlights of the same color with different patterns or types,
+ which can be useful when grouping highlights by content.
 
  <img width="420" alt="jump" src="https://github.com/azabiong/vim-highlighter/assets/83812658/a4af37af-f4c1-4bdf-9cfa-04200026af22"> <br>
 
  You can easily define key mappings for these commands. For example:
 
  ```vim
-   nn <CR>   <Cmd>Hi><CR>
-   nn g<CR>  <Cmd>Hi<<CR>
-   nn ]<CR>  <Cmd>Hi}<CR>
-   nn [<CR>  <Cmd>Hi{<CR>
+   nn <CR>  <Cmd>Hi><CR>
+   nn g<CR> <Cmd>Hi<<CR>
  ```
  > Alternatively, you can map the <kbd>n</kbd> and <kbd>N</kbd> keys to `HiSearch()` function, which automatically selects
  > the search type between native search and jump commands. &nbsp;→ &nbsp;[Configuration](#configuration-examples)
@@ -290,11 +296,11 @@
 
   |key|function|
   |:--:|--|
-  |<kbd>Ctrl</kbd>+<kbd>C</kbd>| Stop searching |
   |<kbd>r</kbd>                | Resize / Rotate |
   |<kbd>i</kbd>                | View |
   |<kbd>s</kbd>                | Split and View |
   |<kbd>Enter</kbd>            | Jump to position |
+  |<kbd>Ctrl</kbd>+<kbd>C</kbd>| Stop searching |
 
 ### Navigation
 
@@ -332,7 +338,7 @@ Multiline highlighting is now automatically set to positional highlighting.
 
  <img width=400 alt="positional" src="https://github.com/azabiong/vim-highlighter/assets/83812658/25ba37c8-43ce-4eaf-9d43-663108bfb54b"> <br>
 
- Short **Jump** commands `Hi{` and `Hi}` are also supported after setting.
+**Jump** commands `Hi{}` and `Hi[]` are also supported after setting.
 
  <br>
 
@@ -464,10 +470,12 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > " let HiSetSL = 't<CR>'
 >
 > " jump key mappings
-> nn <CR>     <Cmd>Hi><CR>
-> nn g<CR>    <Cmd>Hi<<CR>
-> nn ]<CR>    <Cmd>Hi}<CR>
-> nn [<CR>    <Cmd>Hi{<CR>
+> nn <CR>  <Cmd>Hi><CR>
+> nn g<CR> <Cmd>Hi<<CR>
+> nn gl    <Cmd>Hi}<CR>
+> nn gh    <Cmd>Hi{<CR>
+> nn gj    <Cmd>Hi]<CR>
+> nn gk    <Cmd>Hi[<CR>
 >
 > " find key mappings
 > nn -        <Cmd>Hi/next<CR>
@@ -505,10 +513,12 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 >   " let HiSetSL = 't<CR>'
 >
 >   " jump key mappings
->   nn <CR>     <Cmd>Hi><CR>
->   nn g<CR>    <Cmd>Hi<<CR>
->   nn ]<CR>    <Cmd>Hi}<CR>
->   nn [<CR>    <Cmd>Hi{<CR>
+>   nn <CR>  <Cmd>Hi><CR>
+>   nn g<CR> <Cmd>Hi<<CR>
+>   nn gl    <Cmd>Hi}<CR>
+>   nn gh    <Cmd>Hi{<CR>
+>   nn gj    <Cmd>Hi]<CR>
+>   nn gk    <Cmd>Hi[<CR>
 >
 >   " find key mappings
 >   nn -        <Cmd>Hi/next<CR>
@@ -568,9 +578,9 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 >
 > ```vim
 > " find key mappings
-> nn -   <Cmd>call <SID>HiOptional('next', '-')<CR>
-> nn _   <Cmd>call <SID>HiOptional('previous', '_')<CR>
-> nn f-  <Cmd>call <SID>HiOptional('close', 'f-')<CR>
+> nn -  <Cmd>call <SID>HiOptional('next', '-')<CR>
+> nn _  <Cmd>call <SID>HiOptional('previous', '_')<CR>
+> nn f- <Cmd>call <SID>HiOptional('close', 'f-')<CR>
 >
 > function s:HiOptional(cmd, key)
 >   if HiFind()
@@ -589,9 +599,9 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > ```lua
 > -- find key mappings
 > vim.cmd([[
->   nn -   <Cmd>call v:lua.hi_optional('next', '-')<CR>
->   nn _   <Cmd>call v:lua.hi_optional('previous', '_')<CR>
->   nn f-  <Cmd>call v:lua.hi_optional('close', 'f-')<CR>
+>   nn -  <Cmd>call v:lua.hi_optional('next', '-')<CR>
+>   nn _  <Cmd>call v:lua.hi_optional('previous', '_')<CR>
+>   nn f- <Cmd>call v:lua.hi_optional('close', 'f-')<CR>
 > ]])
 >
 > function _G.hi_optional(cmd, key)
@@ -619,14 +629,14 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 >
 > ```vim
 > " jump key mappings
-> nn n  <Cmd>call HiSearch('n')<CR>
-> nn N  <Cmd>call HiSearch('N')<CR>
+> nn n <Cmd>call HiSearch('n')<CR>
+> nn N <Cmd>call HiSearch('N')<CR>
 > ```
 > While `hlsearch` is displayed, the function executes the native search command assigned to each key,
 > otherwise, it executes the `Hi>` or `Hi<` command. When switching from native search to jump mode, 
 > you can simply turn off `hlsearch` using the **`:noh`** command. For example:
 > ```vim
-> nn <Esc>n  <Cmd>noh<CR>
+> nn <Esc>n <Cmd>noh<CR>
 > ```
 > <br>
 > </details>
@@ -637,11 +647,11 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > ```lua
 > vim.cmd([[
 >   " jump key mappings
->   nn n  <Cmd>call HiSearch('n')<CR>
->   nn N  <Cmd>call HiSearch('N')<CR>
+>   nn n <Cmd>call HiSearch('n')<CR>
+>   nn N <Cmd>call HiSearch('N')<CR>
 >
 >   " :noh commmand mapping, if there isn't
->   nn <Esc>n  <Cmd>noh<CR>
+>   nn <Esc>n <Cmd>noh<CR>
 > ]])
 > ```
 > </details>

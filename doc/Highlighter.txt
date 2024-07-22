@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.61.6`
+                                                                    `ver 1.62`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Jump to Highlight     |Hi-Jump-To-Highlight|
@@ -40,8 +40,9 @@ as Move to Highlight, Save and Load, Find Pattern, and Customize Colors.
 ------------------------------------------------------------------------------
 KEY-MAP                   *HiSet*  *HiErase*  *HiClear*  *HiFind*  *HiSetSL*  *Hi-Key-Map*
 
-The plugin uses the following assignable key mapping variables that can be defined
-in the configuration file:
+The plugin uses the following default key mapping variables that work in both
+normal and visual modes, and each key can be easily assigned in the configuration
+file.
 >
     let HiSet   = 'f<CR>'       " normal, visual
     let HiErase = 'f<BS>'       " normal, visual
@@ -67,21 +68,26 @@ To set highlighting by entering a pattern:
 ------------------------------------------------------------------------------
 JUMP TO HIGHLIGHT                                         *Hi-Jump-To-Highlight*
 
-The plugin supports jumping to highlights using two sets of commands.
+The plugin supports jumping to highlights using three sets of commands.
 
-The `Hi <` and `Hi >` commands move the cursor back and forth to recently
-highlighted words or matching highlights at the cursor position.
+Pattern ~
+  The `Hi<` and `Hi>` commands move the cursor back and forth to highlights of the
+  same pattern at the cursor position, or recently set highlights.
 
-The `Hi {` and `Hi }` commands, on the other hand, move the cursor to the nearest
-highlight, even if the pattern or type differs from the current selection.
+Position ~
+  The `Hi{` and `Hi}` commands, move the cursor to the nearest highlight, even if
+  the pattern or type differs from the current selection.
+
+Color ~
+  The `Hi[` and `Hi]` commands support moving to highlights of the same color with
+  different patterns or types, which can be useful when grouping highlights by
+  content.
 
 You can easily define key mappings for these commands. For example:
 >
-    nn <CR>   <Cmd>Hi><CR>
-    nn g<CR>  <Cmd>Hi<<CR>
-    nn ]<CR>  <Cmd>Hi}<CR>
-    nn [<CR>  <Cmd>Hi{<CR>
-<
+    nn <CR>  <Cmd>Hi><CR>
+    nn g<CR> <Cmd>Hi<<CR>
+
 Alternatively, you can map the `n` and `N` keys to |HiSearch()| function, which
 automatically selects the search type between native search and jump commands.
 
@@ -213,11 +219,11 @@ highlight patterns to make them easier to find.
 
     The following keys and functions are available in the `Find` window.
 
-     CTRL-C   Stop searching
        r      Resize / Rotate
        i      View
        s      Split and View
     <Enter>   Jump to position
+     CTRL-C   Stop searching
 
 7.Navigation ~
 
@@ -254,7 +260,7 @@ normal or visual mode.
 
 Multiline highlighting is now automatically set to positional highlighting.
 
-Short `Jump` commands |Hi{| and |Hi}| are also supported after setting.
+`Jump` commands `Hi{}` and `Hi[]` are also supported after setting.
 
 ------------------------------------------------------------------------------
 SAVE AND LOAD                                                     *Hi-Save-Load*
@@ -349,23 +355,24 @@ with subsequent commands using an optional space.
     Set highlights of the word under the cursor, visual selection, or a given
     expression. An optional color number can be specified before the command.
 >
-        :[number] Hi+ [expression]
+      :[number] Hi+ [expression]
 <
-  Example >
-        :Hi+            " HiSet key function in normal mode
-        :8 Hi+          " pick color number 8 and set highlight
-        :Hi+ pattern    " set highlights using this pattern
+  Example ~
+>
+      :Hi+            " HiSet key function in normal mode
+      :8 Hi+          " pick color number 8 and set highlight
+      :Hi+ pattern    " set highlights using this pattern
 <  Tip ~
     It may be convenient to type in all uppercase letters.
 >
-        :HI+
+      :HI+
 <
     To highlight the pattern used in your search:
 >
-        :Hi+ CTRL-R /
+      :Hi+ CTRL-R /
 <                                                                *:HI+%*  *:Hi+x%*
 :Hi +%  +x% ~
-    |HiSetSL| key function in normal mode (+), visual mode (+x)
+    |HiSetSL| key function in normal mode (+%), visual mode (+x%)
     Set `POSITIONAL HIGHLIGHT` at the position of the word under the cursor,
     visual selection. An optional color number can be specified before the
     command.
@@ -377,13 +384,13 @@ with subsequent commands using an optional space.
                                                                    *:Hi>*  *:Hi<*
 :Hi > ~
 :Hi < ~
-    Jump forward | backward to recently set highlights, or matching highlights
-    at the cursor position. An optional jump count can be specified before the
-    command. It would be convenient to use shortcut keys for these commands.
-    For example:
+    Jump forward | backward to highlights of the same pattern at the cursor
+    position, or recently set highlights. An optional jump count before the
+    command is supported. It would be convenient to use shortcut keys for these
+    commands. For example:
 >
-      nn <CR>   <Cmd>Hi><CR>
-      nn g<CR>  <Cmd>Hi<<CR>
+      nn <CR>  <Cmd>Hi><CR>
+      nn g<CR> <Cmd>Hi<<CR>
 <
     Alternatively, you can map `n` and `N` keys to the |HiSearch()| function.
                                                                    *:Hi}*  *:Hi{*
@@ -393,8 +400,19 @@ with subsequent commands using an optional space.
     jumping to adjacent highlights in different patterns and types. It would
     also be convenient to use key mapping for these commands. For example:
 >
-      nn ]<CR>  <Cmd>Hi}<CR>
-      nn [<CR>  <Cmd>Hi{<CR>
+      nn gl <Cmd>Hi}<CR>
+      nn gh <Cmd>Hi{<CR>
+<                                                                   *:Hi]*  *:Hi[*
+:Hi ] ~
+:Hi [ ~
+    Jump forward | backward to highlights of the same color.
+    These commands support moving to highlights of the same color with different
+    patterns or types. This can be useful when grouping highlights by content.
+    When setting the highlights, you can specify a color number before the |Hi+|
+    command. For key mapping, for example:
+>
+      nn gj <Cmd>Hi]<CR>
+      nn gk <Cmd>Hi[<CR>
 <                                                                        *:Hi>>*
 :Hi >> ~
     Set `FOLLOWING HIGHLIGHT` mode
@@ -434,8 +452,8 @@ with subsequent commands using an optional space.
     It will be convenient to use keyboard shortcuts for these commands to easily
     navigate the search list. For example:
 >
-      nn -  <Cmd>Hi/next<CR>
-      nn _  <Cmd>Hi/previous<CR>
+      nn - <Cmd>Hi/next<CR>
+      nn _ <Cmd>Hi/previous<CR>
 <
     You can also define multifunction keys using |HiFind()| function.
                                                           *:Hi/older*  *:Hi/newer*
@@ -533,6 +551,11 @@ window to a file. Now the default setting is:
 
     Default: 320 `(ms)`
     Values:  260 ~ 520
+                                                                  *HiEffectOne*
+|HiEffectOne| option activates a slight glow effect in |termguicolors| mode.
+
+    Default: 1 `(on)`
+    Values:  0 `(off)`
 
 FUNCTIONS AND VARIABLES ~
                                                                       *HiFind()*
@@ -543,9 +566,9 @@ FUNCTIONS AND VARIABLES ~
     to execute the |Hi| command while the `Find` window is visible, otherwise
     execute the original function.
 >
-        nn -   <Cmd>call <SID>HiOptional('next', '-')<CR>
-        nn _   <Cmd>call <SID>HiOptional('previous', '_')<CR>
-        nn f-  <Cmd>call <SID>HiOptional('close', 'f-')<CR>
+        nn -  <Cmd>call <SID>HiOptional('next', '-')<CR>
+        nn _  <Cmd>call <SID>HiOptional('previous', '_')<CR>
+        nn f- <Cmd>call <SID>HiOptional('close', 'f-')<CR>
 
         function s:HiOptional(cmd, key)
           if HiFind()
@@ -558,15 +581,15 @@ FUNCTIONS AND VARIABLES ~
 |HiSearch()| function supports `n` and `N` key mappings for both the native search
     and the plugin's jump commands (issue #12).
 >
-        nn n  <Cmd>call HiSearch('n')<CR>
-        nn N  <Cmd>call HiSearch('N')<CR>
+        nn n <Cmd>call HiSearch('n')<CR>
+        nn N <Cmd>call HiSearch('N')<CR>
 <
     While |hlsearch| is displayed, the function executes the native search command
     assigned to each key, otherwise, it executes the |Hi>| or |Hi<| command. When
     switching from native search to jump mode, you can simply turn off |hlsearch|
     using the |:noh| command. For example:
 >
-        nn <Esc>n  <Cmd>noh<CR>
+        nn <Esc>n <Cmd>noh<CR>
 <
     The function returns the current search type:
         `0` (native search), `1` (jump to highlight)
@@ -611,15 +634,17 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.61.6~
+1.62
+    Add |Hi]| command to jump to highlights of the same color
+    Add glow effects option |HiEffectOne| on HiOneTime and HiFollow highlights
+1.61~
     Add "HiList" color
     Fix "TabNew" error
     Update "HiKeywords" default path
     Support optional count in short jump commands |Hi{| and |Hi}|
     Improve "Hi- pattern" command
-1.61~
-    Upgrade highlight jump and delete function
     Improve |Hi-Sync-Mode|
+    Upgrade highlight jump and delete function
 1.60~
     Support "Hi ===" command across |tab-page|s with |HiSyncMode|=2 option
     Fix highlighting in |command-line-window|
@@ -654,7 +679,7 @@ LOG                                                                     *Hi-Log*
     Add |Hi}| command to jump to adjacent highlights.
 1.40~
     Upgrade visual mode selection (issue #7)
-    Add |Hi>| command to jump to the most recently set highlight
+    Add |Hi>| command to jump to highlights of the same pattern
     Support "Find" navigation after changing current directory
 1.39~
     Improve "Following Highlight" mode focusing, clear default skip keywords

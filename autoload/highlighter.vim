@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.61.6
+" Version: 1.62
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -18,10 +18,11 @@ let g:HiFindHistory = get(g:, 'HiFindHistory', 5)
 let g:HiCursorGuide = get(g:, 'HiCursorGuide', 1)
 let g:HiOneTimeWait = get(g:, 'HiOneTimeWait', 260)
 let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
+let g:HiEffectOne = get(g:, 'HiEffectOne', 1)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.61.6'
+let s:Version   = '1.62'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -38,17 +39,17 @@ let s:FindTools = ['rg -H --color=never --no-heading --column --smart-case',
                   \'ggrep -H -EnrI --exclude-dir=.git',
                   \'grep -H -EnrI --exclude-dir=.git',
                   \'git grep -EnI --no-color --column']
+let s:EffectOne = {'tid':0, 'color':'', 'rgb':[], 'frame':{}}
+
 const s:FL = s:FindList
 const s:Group = 'HiColor'
 
 function s:Load()
   if !exists("s:Check")
-    let s:Check = 0
-  endif
-  if s:Check < 256
-    if has('gui_running') || (has('termguicolors') && &termguicolors) || &t_Co >= 256
+    let s:GuiMode = has('gui_running')
+    if s:GuiColors() || &t_Co >= 256
       let s:Check = 256
-    elseif s:Check == 0
+    else
       echo "\n Highlighter:\n\n"
           \" It seems that current color mode is lower than 256 colors:\n"
           \"     &t_Co=".&t_Co."\n\n"
@@ -64,8 +65,8 @@ function s:Load()
     \ ['HiFind',    'ctermfg=223 ctermbg=95  cterm=none guifg=#ffe7d7 guibg=#8a625a gui=none'],
     \ ['HiGuide',   'ctermfg=188 ctermbg=62  cterm=none guifg=#d0d0d8 guibg=#4848d8 gui=none'],
     \ ['HiList',    'ctermfg=210 cterm=bold  guifg=#f89888 gui=bold'],
-    \ ['HiColor1',  'ctermfg=234 ctermbg=113 cterm=none guifg=#001737 guibg=#82c85a gui=none'],
-    \ ['HiColor2',  'ctermfg=52  ctermbg=179 cterm=none guifg=#500000 guibg=#e6b058 gui=none'],
+    \ ['HiColor1',  'ctermfg=234 ctermbg=113 cterm=none guifg=#001737 guibg=#82c65a gui=none'],
+    \ ['HiColor2',  'ctermfg=52  ctermbg=179 cterm=none guifg=#500000 guibg=#e4ac58 gui=none'],
     \ ['HiColor3',  'ctermfg=225 ctermbg=90  cterm=none guifg=#f8dff6 guibg=#8f2f8f gui=none'],
     \ ['HiColor4',  'ctermfg=195 ctermbg=68  cterm=none guifg=#dffcfc guibg=#5783c7 gui=none'],
     \ ['HiColor5',  'ctermfg=18  ctermbg=152 cterm=bold guifg=#000098 guibg=#b8c8e8 gui=bold'],
@@ -141,6 +142,7 @@ function s:Load()
   let s:HiJump = ''
   call s:SetColors(0)
 
+  let s:EO = s:EffectOne
   let s:PI = 0
   if exists("*prop_type_add")
     let s:PI = 1
@@ -169,6 +171,10 @@ function s:Load()
     au TabLeave    * call <SID>TabLeave()
   aug END
   return 1
+endfunction
+
+function s:GuiColors()
+  return s:GuiMode || (has('termguicolors') && &termguicolors)
 endfunction
 
 function s:SetPosType(type)
@@ -497,7 +503,7 @@ function s:DeletePosHighlightAt(pos)
     for i in range(len(l:marks)-1, 0, -1)
       let m = l:marks[i]
       let r = [m[1], m[2], m[3].end_row, m[3].end_col]
-      if (r[0] == r[2] && l:r[0] == l:row)
+      if (r[0] == r[2] && r[0] == l:row)
         let l:in = r[1] <= l:col && l:col < r[3]
       else
         let l:in = (r[0] < l:row && l:row < r[2]) || (r[0] == l:row && r[1] <= l:col) || (r[2] == l:row && l:col < r[3])
@@ -523,6 +529,35 @@ function s:DeletePosHighlightGroup(id, col, group)
   endif
 endfunction
 
+function s:FindPosHighlightGroupAt(pos)
+  if s:PI
+    let l:props = prop_list(1, {'end_lnum':-1})
+    for p in l:props
+      if match(p.type, s:Group) == 0
+        if p.lnum == a:pos[1] && p.col <= a:pos[2] && a:pos[2] < p.col + p.length
+          return p.type
+        endif
+      endif
+    endfor
+  else
+    let [l:row, l:col] = [a:pos[1]-1, a:pos[2]-1]
+    let l:marks = nvim_buf_get_extmarks(0, s:NS, 0, -1, {'details':v:true})
+    for i in range(len(l:marks)-1, 0, -1)
+      let m = l:marks[i]
+      let r = [m[1], m[2], m[3].end_row, m[3].end_col]
+      if (r[0] == r[2] && r[0] == l:row)
+        let l:in = r[1] <= l:col && l:col < r[3]
+      else
+        let l:in = (r[0] < l:row && l:row < r[2]) || (r[0] == l:row && r[1] <= l:col) || (r[2] == l:row && l:col < r[3])
+      endif
+      if l:in
+        return m[3].hl_group
+      endif
+    endfor
+  endif
+  return ''
+endfunction
+
 function s:ClearPosHighlight()
   if s:PI
       if v:version > 900
@@ -538,14 +573,14 @@ function s:ClearPosHighlight()
 endfunction
 
 " returns [line, col, length, range]
-function s:GetNearPosHighlight(sign, pos, range)
+function s:GetNearPosHighlight(sign, pos, range, group)
   let l:range = a:range
   let l:list = []
   if s:PI
     let [l:row, l:col] = [a:pos[1], a:pos[2]]
     let l:props = prop_list(1, {'end_lnum':-1})
     for p in l:props
-      if match(p.type, s:Group) == 0 && p.start
+      if match(p.type, a:group) == 0 && p.start
         let l:dist = a:sign * (p.lnum - l:row)
         if l:dist >= 0 && l:dist < l:range
           if p.lnum == l:row && a:sign * (p.col - l:col) <= 0
@@ -582,6 +617,9 @@ function s:GetNearPosHighlight(sign, pos, range)
     for m in l:marks
       if m[1] == m[3].end_row && m[2] >= m[3].end_col
         call nvim_buf_del_extmark(0, s:NS, m[0])
+        continue
+      endif
+      if match(m[3].hl_group, a:group) != 0
         continue
       endif
       let l:dist = a:sign * (m[1] - l:row)
@@ -885,16 +923,17 @@ function s:EraseHiWord()
     let s:HiMode['w'] = ''
     call s:SetHiFocus('')
   endif
+  call s:StopEffectOne()
 endfunction
 
 function s:SetHiWord(word)
   if empty(a:word) | return | endif
-  if s:HiMode['>'] == '1'
-    call s:SetHiFocus(['HiOneTime', a:word, 10])
-  else
-    call s:SetHiFocus(['HiFollow', a:word, 0])
-  endif
+  let [l:group, l:priority] = (s:HiMode['>'] == '1') ? ['HiOneTime', 10] : ['HiFollow', 0]
+  call s:SetHiFocus([l:group, a:word, l:priority])
   let s:HiMode['w'] = a:word
+  if g:HiEffectOne && s:GuiColors()
+    call s:StartEffectOne(l:group)
+  endif
 endfunction
 
 function s:GetKeywords()
@@ -993,7 +1032,7 @@ function s:InsertLeave()
   call s:LinkCursorEvent('')
 endfunction
 
-function s:SetHiFocus(hi)
+function s:SetHiFocus(hi)  " hi[group, pattern, priority]
   for w in range(1, winnr('$'))
     let l:focus = getwinvar(w, 'HiFocus')
     if l:focus
@@ -1301,7 +1340,7 @@ function s:JumpTo(pattern, flag, count, update, align=0)
 endfunction
 
 function s:JumpLong(op, count)
-  let [l:op, l:rev] = (a:op == '<') ? ['b', ''] : ['', 'b']
+  let [l:op, l:rev] = (a:op =~ '[<\[]') ? ['b', ''] : ['', 'b']
   let l:count = a:count ? a:count : (v:count ? v:count : 1)
   if exists("s:HiMode")
     let l:jump = s:HiMode['w']
@@ -1313,6 +1352,7 @@ function s:JumpLong(op, count)
   endif
 
   let l:matches = getmatches()
+  let l:size = len(l:matches)
   let l:line = getline('.')
   let l:pos = getpos('.')
   let l:pattern = s:GetJump()
@@ -1331,7 +1371,6 @@ function s:JumpLong(op, count)
     return s:JumpTo(l:jump, l:op, l:count, 0)
   endif
 
-  let l:size = len(l:matches)
   let i = l:size
   while i > 0
     let i -= 1
@@ -1363,10 +1402,12 @@ function s:JumpLong(op, count)
   endwhile
 endfunction
 
-function s:JumpNear(op, count)
-  let [l:op, l:sign, l:end] = (a:op == '{') ? ['nWb', -1, 1] : ['nW', 1, line('$')]
+function s:JumpNear(op, count, group='')
+  let [l:op, l:sign, l:end] = (a:op =~ '[{\[]') ? ['nWb', -1, 1] : ['nW', 1, line('$')]
   let l:count = a:count ? a:count : (v:count ? v:count : 1)
   let l:matches = getmatches()
+  let l:size = len(l:matches)
+  let l:group = empty(a:group) ? s:Group : a:group
 
   while l:count
     let l:count -= 1
@@ -1376,11 +1417,11 @@ function s:JumpNear(op, count)
     let l:stop = l:end
     let l:range = v:maxcol
 
-    let i = len(l:matches)
+    let i = l:size
     while i > 0
       let i -= 1
       let l:m = l:matches[i]
-      if match(l:m.group, s:Group) == 0
+      if match(l:m.group, l:group) == 0
         let l:line = search('\C'.l:m.pattern, l:op, l:stop)
         if l:line
           let l:dist = abs(l:line - l:base)
@@ -1398,7 +1439,7 @@ function s:JumpNear(op, count)
     let l:next = {}
     if !empty(l:match)
       for l:m in l:match
-        let [l:num, l:col] =  searchpos('\C'.l:m.pattern, l:op, l:stop)
+        let [l:num, l:col] = searchpos('\C'.l:m.pattern, l:op, l:stop)
         let l:col *= l:sign
         if empty(l:next) || l:col < l:next.col
           let l:next = {'col': l:col, 'pattern': l:m.pattern}
@@ -1406,7 +1447,7 @@ function s:JumpNear(op, count)
       endfor
     endif
 
-    let l:near = s:GetNearPosHighlight(l:sign, l:pos, l:range)
+    let l:near = s:GetNearPosHighlight(l:sign, l:pos, l:range, l:group)
     if !empty(l:near) && (l:near[3] < l:range || (l:near[3] == l:range && l:sign*l:near[1] < l:next.col))
       call cursor(l:near[0], l:near[1])
       call s:SetJumpGuide(0, l:near)
@@ -1417,6 +1458,76 @@ function s:JumpNear(op, count)
       break
     endif
   endwhile
+endfunction
+
+function s:JumpGroup(op, count)
+  if exists("s:HiMode")
+    return s:JumpLong(a:op, a:count)
+  endif
+  let l:matches = getmatches()
+  let l:line = getline('.')
+  let l:pos = getpos('.')
+
+  let i = len(l:matches)
+  while i > 0
+    let i -= 1
+    let l:m = l:matches[i]
+    if match(l:m.group, s:Group) == 0 && s:MatchPattern(l:line, l:pos, l:m.pattern)
+      return s:JumpNear(a:op, a:count, l:m.group.'\>')
+    endif
+  endwhile
+
+  let l:group = s:FindPosHighlightGroupAt(l:pos)
+  if !empty(l:group)
+    return s:JumpNear(a:op, a:count, l:group.'\>')
+  endif
+endfunction
+
+function s:StartEffectOne(group)
+  let l:color = matchstr(s:GetColor(a:group), '\cguibg=#\zs\w\+\ze')
+  if l:color !~# '\v[0-9a-fA-F]{6}'
+    return
+  endif
+  let l:rgb = [str2nr(l:color[:1],16), str2nr(l:color[2:3],16), str2nr(l:color[4:5],16)]
+  let s:EO = #{group:a:group, color:l:color, rgb:l:rgb, tid:0}
+  let s:EO.frame = #{rgb:s:EO.rgb, count:5, stage:0, step:0}
+  let s:EO.frame.delta = (&background == 'dark') ? -6 : 3
+  call s:UpdateEffectOne(0)
+endfunction
+
+function s:UpdateEffectOne(tid)
+  if a:tid == 0
+    let l:next = 600
+  else
+    let l:f = s:EO.frame
+    let l:f.step += 1
+    if l:f.step >= l:f.count
+      let l:f.step = 0
+      let l:f.delta = -l:f.delta
+      let l:f.stage += 1
+      let l:next = (l:f.stage % 2) ? 300 : 1200
+    else
+      let l:next = (l:f.delta > 0) ? 90 : 60
+    endif
+    for i in range(3)
+      if l:f.delta < 0
+        let l:f.rgb[i] = max([l:f.rgb[i] + l:f.delta, 0])
+      else
+        let l:f.rgb[i] = min([l:f.rgb[i] + l:f.delta, 0xff])
+      endif
+    endfor
+    let l:color = printf("%02x%02x%02x", l:f.rgb[0], l:f.rgb[1], l:f.rgb[2])
+    exe "hi" s:EO.group "guibg=#".l:color
+  endif
+  let s:EO.tid = timer_start(l:next, function('s:UpdateEffectOne'))
+endfunction
+
+function s:StopEffectOne()
+  if s:EO.tid
+    call timer_stop(s:EO.tid)
+    let s:EO.tid = 0
+    exe "hi" s:EO.group "guibg=#".s:EO.color
+  endif
 endfunction
 
 function s:Find(input)
@@ -2401,6 +2512,7 @@ function highlighter#Command(cmd, ...)
   elseif l:cmd =~# '^='      | call s:SetSyncMode(l:cmd, 1)
   elseif l:cmd =~# '[<>]'    | call s:JumpLong(l:cmd, l:num)
   elseif l:cmd =~# '[{}]'    | call s:JumpNear(l:cmd, l:num)
+  elseif l:cmd =~# '[\[\]]'  | call s:JumpGroup(l:cmd, l:num)
   elseif l:cmd ==# 'Find'    | call s:Find(a:cmd[5:])
   elseif l:cmd ==# 'next'    | call s:FindNextPrevious('+', l:num)
   elseif l:cmd ==# 'previous'| call s:FindNextPrevious('-', l:num)
