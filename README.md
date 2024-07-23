@@ -36,7 +36,6 @@
  | 1.58 | [Positional Highlight](#positional-highlight)&nbsp; associated with a buffer | O |
  | 1.56 | [One Time Highlight](#one-time-highlight)&nbsp; and **Jump** | |
  | 1.52 | [Find window](#find-window)&nbsp; key <kbd>i</kbd> for View | O |
- | 1.50 | [Jump to Highlight](#jump-to-highlight) | O |
  | 1.38 | [Input](#input)&nbsp; patterns in the command-line | |
  | 1.35 | [Multifunction keys](#configuration-examples)&nbsp; for **Find** | O |
 
@@ -137,8 +136,8 @@
  The plugin supports jumping to highlights using three sets of commands.
 
  **1. Pattern** &nbsp; &nbsp;
- The `Hi <` and `Hi >` commands move the cursor back and forth to highlights of the same pattern at the cursor position,
- or recently set highlights.
+ The `Hi <` and `Hi >` commands move the cursor back and forth to highlights that
+ matches the pattern at the cursor position or to the recently set highlight.
 
  **2. Position** &nbsp;
  The `Hi {` and `Hi }` commands, move the cursor to the nearest highlight,

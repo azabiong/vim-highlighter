@@ -71,8 +71,8 @@ JUMP TO HIGHLIGHT                                         *Hi-Jump-To-Highlight*
 The plugin supports jumping to highlights using three sets of commands.
 
 Pattern ~
-  The `Hi<` and `Hi>` commands move the cursor back and forth to highlights of the
-  same pattern at the cursor position, or recently set highlights.
+  The `Hi<` and `Hi>` commands move the cursor back and forth to highlights that
+  matches the pattern at the cursor position or to the recently set highlight.
 
 Position ~
   The `Hi{` and `Hi}` commands, move the cursor to the nearest highlight, even if
@@ -87,7 +87,7 @@ You can easily define key mappings for these commands. For example:
 >
     nn <CR>  <Cmd>Hi><CR>
     nn g<CR> <Cmd>Hi<<CR>
-
+<
 Alternatively, you can map the `n` and `N` keys to |HiSearch()| function, which
 automatically selects the search type between native search and jump commands.
 
@@ -552,7 +552,8 @@ window to a file. Now the default setting is:
     Default: 320 `(ms)`
     Values:  260 ~ 520
                                                                   *HiEffectOne*
-|HiEffectOne| option activates a slight glow effect in |termguicolors| mode.
+|HiEffectOne| option enables a slight glow effect on `ONE TIME HIGHLIGHT` and
+    `FOLLOWING HIGHLIGHT` in |termguicolors| mode.
 
     Default: 1 `(on)`
     Values:  0 `(off)`
@@ -634,7 +635,7 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.62
+1.62~
     Add |Hi]| command to jump to highlights of the same color
     Add glow effects option |HiEffectOne| on HiOneTime and HiFollow highlights
 1.61~
