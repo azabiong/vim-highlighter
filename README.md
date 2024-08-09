@@ -26,7 +26,7 @@
  [Configuration](#configuration-examples) <br> &nbsp;&nbsp;
 
  <details>
- <summary><b>&nbsp; What's New </b></summary>
+ <summary><b>&nbsp; What's New </b>&nbsp;✨</summary>
  <br>
 
  | version | feature | key map |
