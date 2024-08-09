@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.62
+" Version: 1.62.2
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -22,7 +22,7 @@ let g:HiEffectOne = get(g:, 'HiEffectOne', 1)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.62'
+let s:Version   = '1.62.2'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -139,7 +139,7 @@ function s:Load()
     let g:HiKeywords = isdirectory(l:keywords) ? l:keywords : ''
   endif
   let s:Sync.mode = g:HiSyncMode
-  let s:HiJump = ''
+  let s:HiJump = ['', '']
   call s:SetColors(0)
 
   let s:EO = s:EffectOne
@@ -214,7 +214,7 @@ function s:SetHighlight(cmd, mode, num)
       endif
     endfor
     call s:UpdateSync('del', '*', '')
-    call s:UpdateJump('')
+    call s:UpdateJump('', '')
     let s:Number = [1, 80]
     return
   elseif a:cmd == '+'
@@ -276,7 +276,7 @@ function s:SetHighlight(cmd, mode, num)
         return
       endtry
       call s:UpdateSync('add', l:group, l:pattern)
-      call s:UpdateJump(l:pattern)
+      call s:UpdateJump(l:pattern, l:group)
       let s:Search = match(@/, l:pattern.l:case) != -1 || match(l:pattern, @/.l:case) != -1
     endif
     if !s:MultilineColor(l:color)
@@ -362,8 +362,8 @@ function s:DeleteMatch(match, op, part)
     if l:match
       call matchdelete(l:m.id)
       call s:UpdateSync('del', l:m.group, l:m.pattern)
-      if s:GetJump() ==# l:m.pattern
-        call s:UpdateJump('')
+      if s:GetJump()[0] ==# l:m.pattern
+        call s:UpdateJump('', '')
       endif
       if a:op != '[=]' | return 1 | endif
       let l:count += 1
@@ -395,8 +395,8 @@ function s:DeletePattern(match, line, pos)
       if a:pos[2] < l:col + l:len
         call matchdelete(l:m.id)
         call s:UpdateSync('del', l:m.group, l:m.pattern)
-        if s:GetJump() ==# l:m.pattern
-          call s:UpdateJump('')
+        if s:GetJump()[0] ==# l:m.pattern
+          call s:UpdateJump('', '')
         endif
         return 1
       endif
@@ -453,6 +453,7 @@ function s:SetPosHighlight(block, num)
   if l:pack == s:MultilineColor(l:color)
     let s:Number[l:pack] = l:color + 1
   endif
+  call s:UpdateJump(s:GetJump()[0], l:group)
 endfunction
 
 function s:DeletePosHighlight(rect)
@@ -572,7 +573,7 @@ function s:ClearPosHighlight()
   endif
 endfunction
 
-" returns [line, col, length, range]
+" returns [line, col, length, range, group]
 function s:GetNearPosHighlight(sign, pos, range, group)
   let l:range = a:range
   let l:list = []
@@ -586,10 +587,10 @@ function s:GetNearPosHighlight(sign, pos, range, group)
           if p.lnum == l:row && a:sign * (p.col - l:col) <= 0
             continue
           endif
-          let l:list = [[p.lnum, p.col, p.length]]
+          let l:list = [[p.lnum, p.col, p.length, l:dist, p.type]]
           let l:range = l:dist
         elseif l:dist == l:range
-          let l:list += [[p.lnum, p.col, p.length]]
+          let l:list += [[p.lnum, p.col, p.length, l:dist, p.type]]
         endif
       endif
     endfor
@@ -608,7 +609,9 @@ function s:GetNearPosHighlight(sign, pos, range, group)
         endif
       endfor
       if l:index >= 0
-        return l:list[l:index] + [l:range]
+        let l:pos = l:list[l:index]
+        let l:pos[3] = l:range
+        return l:pos
       endif
     endif
   else
@@ -649,7 +652,7 @@ function s:GetNearPosHighlight(sign, pos, range, group)
       if l:id
         let l:m = nvim_buf_get_extmark_by_id(0, s:NS, l:id, {'details':v:true})
         let l:span = (l:m[0] == l:m[2].end_row) ? l:m[2].end_col - l:m[1] : len(getline(l:m[0]+1)) - l:m[1]
-        return [l:m[0]+1, l:m[1]+1, l:span, l:range]
+        return [l:m[0]+1, l:m[1]+1, l:span, l:range, l:m[2].hl_group]
       endif
     endif
   endif
@@ -1209,7 +1212,7 @@ function s:LoadHighlight(file)
   echo  " Hi:load ".l:file
   call s:SetHighlight('--', '', 0)
 
-  let [l:pattern, l:jump] = ['', '']
+  let l:jump = ['', '']
   for l:line in readfile(l:path)
     if l:line[0] == '#' | continue | endif
     let l:exp = match(l:line, ':')
@@ -1233,9 +1236,10 @@ function s:LoadHighlight(file)
           call nvim_buf_set_extmark(0, s:NS, l:pos[1]-1, l:pos[2]-1, {'end_row':l:pos[3]-1, 'end_col':l:pos[4]-1, 'hl_group':l:group})
         endif
       else
-        call matchadd(s:Group.l:num, l:pattern, 0)
+        let l:group = s:Group.l:num
+        call matchadd(l:group, l:pattern, 0)
         let s:Number[0] = l:num
-        let l:jump = l:pattern
+        let l:jump = [l:pattern, l:group]
       endif
     endif
   endfor
@@ -1245,7 +1249,7 @@ function s:LoadHighlight(file)
     call s:SetSyncMode('=')
     call s:SetSyncMode(s:Sync.mode == 1 ? '==' : '===')
   endif
-  call s:UpdateJump(l:jump)
+  call s:UpdateJump(l:jump[0], l:jump[1])
 endfunction
 
 function s:GetHiPathFile(op, file)
@@ -1295,21 +1299,23 @@ function s:MatchPattern(line, pos, pattern)
   endif
 endfunction
 
-function s:UpdateJump(pattern)
-  let [s:HiJump, t:HiJump, w:HiJump] = [a:pattern, a:pattern, a:pattern]
+function s:UpdateJump(pattern, group)
+  let l:info = [a:pattern, a:group]
+  let [s:HiJump, t:HiJump, w:HiJump] = [l:info, l:info, l:info]
 endfunction
 
+" returns [pattern, group]
 function s:GetJump()
   if s:Sync.mode == 0
-    return get(w:, 'HiJump', '')
+    return get(w:, 'HiJump', ['',''])
   elseif s:Sync.mode == 1
-    return get(t:, 'HiJump', '')
+    return get(t:, 'HiJump', ['',''])
   else
     return s:HiJump
   endif
 endfunction
 
-function s:JumpTo(pattern, flag, count, update, align=0)
+function s:JumpTo(pattern, group, flag, count, align=0)
   let l:from = getpos('.')
   let l:pattern = '\C'.a:pattern
   let l:jump = search(l:pattern, a:flag)
@@ -1334,8 +1340,8 @@ function s:JumpTo(pattern, flag, count, update, align=0)
       call feedkeys('zv', 'n')
     endif
   endif
-  if a:update
-    call s:UpdateJump(a:pattern)
+  if !empty(a:group)
+    call s:UpdateJump(a:pattern, a:group)
   endif
 endfunction
 
@@ -1345,7 +1351,7 @@ function s:JumpLong(op, count)
   if exists("s:HiMode")
     let l:jump = s:HiMode['w']
     if !empty(l:jump)
-      call s:JumpTo(l:jump, l:op, l:count, 0)
+      call s:JumpTo(l:jump, 0, l:op, l:count)
       let s:HiMode['p'] = getpos('.')
       return
     endif
@@ -1355,7 +1361,7 @@ function s:JumpLong(op, count)
   let l:size = len(l:matches)
   let l:line = getline('.')
   let l:pos = getpos('.')
-  let l:pattern = s:GetJump()
+  let l:pattern = s:GetJump()[0]
   let l:jump = ''
 
   if !empty(l:pattern)
@@ -1368,7 +1374,7 @@ function s:JumpLong(op, count)
   endif
 
   if !empty(l:jump) && s:MatchPattern(l:line, l:pos, l:jump)
-    return s:JumpTo(l:jump, l:op, l:count, 0)
+    return s:JumpTo(l:jump, 0, l:op, l:count)
   endif
 
   let i = l:size
@@ -1376,15 +1382,15 @@ function s:JumpLong(op, count)
     let i -= 1
     let l:m = l:matches[i]
     if match(l:m.group, s:Group) == 0 && s:MatchPattern(l:line, l:pos, l:m.pattern)
-      return s:JumpTo(l:m.pattern, l:op, l:count, 1)
+      return s:JumpTo(l:m.pattern, l:m.group, l:op, l:count)
     endif
   endwhile
 
   if !empty(l:jump)
     if search('\C'.l:jump, 'n'.l:op)
-      return s:JumpTo(l:jump, l:op, l:count, 0)
+      return s:JumpTo(l:jump, 0, l:op, l:count)
     elseif search('\C'.l:jump, 'n'.l:rev)
-      return s:JumpTo(l:jump, l:rev, 1, 0)
+      return s:JumpTo(l:jump, 0, l:rev, 1)
     endif
   endif
 
@@ -1394,9 +1400,9 @@ function s:JumpLong(op, count)
     let l:m = l:matches[i]
     if match(l:m.group, s:Group) == 0
       if search('\C'.l:m.pattern, 'n'.l:op)
-        return s:JumpTo(l:m.pattern, l:op, 1, 1)
+        return s:JumpTo(l:m.pattern, l:m.group, l:op, 1)
       elseif search('\C'.l:m.pattern, 'n'.l:rev)
-        return s:JumpTo(l:m.pattern, l:rev, 1, 1)
+        return s:JumpTo(l:m.pattern, l:m.group, l:rev, 1)
       endif
     endif
   endwhile
@@ -1442,7 +1448,7 @@ function s:JumpNear(op, count, group='')
         let [l:num, l:col] = searchpos('\C'.l:m.pattern, l:op, l:stop)
         let l:col *= l:sign
         if empty(l:next) || l:col < l:next.col
-          let l:next = {'col': l:col, 'pattern': l:m.pattern}
+          let l:next = {'col':l:col, 'pattern':l:m.pattern, 'group':l:m.group}
         endif
       endfor
     endif
@@ -1451,9 +1457,10 @@ function s:JumpNear(op, count, group='')
     if !empty(l:near) && (l:near[3] < l:range || (l:near[3] == l:range && l:sign*l:near[1] < l:next.col))
       call cursor(l:near[0], l:near[1])
       call s:SetJumpGuide(0, l:near)
+      call s:UpdateJump(s:GetJump()[0], l:near[4])
       call feedkeys('zv', 'n')
     elseif !empty(l:next)
-      call s:JumpTo(l:next.pattern, l:op[1:], 1, 1, 1)
+      call s:JumpTo(l:next.pattern, l:next.group, l:op[1:], 1, 1)
     else
       break
     endif
@@ -1478,6 +1485,11 @@ function s:JumpGroup(op, count)
   endwhile
 
   let l:group = s:FindPosHighlightGroupAt(l:pos)
+  if !empty(l:group)
+    return s:JumpNear(a:op, a:count, l:group.'\>')
+  endif
+
+  let l:group = s:GetJump()[1]
   if !empty(l:group)
     return s:JumpNear(a:op, a:count, l:group.'\>')
   endif
@@ -2471,7 +2483,7 @@ function highlighter#List()
 endfunction
 
 function highlighter#Search(key)
-  if v:hlsearch || empty(s:GetJump())
+  if v:hlsearch || empty(s:GetJump()[0])
     call feedkeys(max([v:count, 1]).a:key.'zv', 'n')
     return 0
   else
