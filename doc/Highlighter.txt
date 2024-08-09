@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                    `ver 1.62`
+                                                                   `ver 1.62.2`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Jump to Highlight     |Hi-Jump-To-Highlight|
@@ -349,7 +349,7 @@ with subsequent commands using an optional space.
 
 :Hi ~
     Print the plugin version
-                                                                  *:HI+*  *:Hi+x*
+                                                                  *:HI+*  *:HI+x*
 :Hi +  +x ~
     |HiSet| key function in normal mode (+), visual mode (+x)
     Set highlights of the word under the cursor, visual selection, or a given
@@ -370,18 +370,18 @@ with subsequent commands using an optional space.
     To highlight the pattern used in your search:
 >
       :Hi+ CTRL-R /
-<                                                                *:HI+%*  *:Hi+x%*
+<                                                                *:HI+%*  *:HI+x%*
 :Hi +%  +x% ~
     |HiSetSL| key function in normal mode (+%), visual mode (+x%)
     Set `POSITIONAL HIGHLIGHT` at the position of the word under the cursor,
     visual selection. An optional color number can be specified before the
     command.
-                                                                  *:HI-*  *:Hi-x*
+                                                                  *:Hi-*  *:Hi-x*
 :Hi -  -x ~
     |HiErase| key function in normal mode (-), visual mode (-x)
     Erase highlights of the word under the cursor, visual selection, patterns
     set by "Hi+ pattern" command, or set `ONE TIME HIGHLIGHT`
-                                                                   *:Hi>*  *:Hi<*
+                                                                   *:HI>*  *:HI<*
 :Hi > ~
 :Hi < ~
     Jump forward | backward to highlights of the same pattern at the cursor
@@ -393,7 +393,7 @@ with subsequent commands using an optional space.
       nn g<CR> <Cmd>Hi<<CR>
 <
     Alternatively, you can map `n` and `N` keys to the |HiSearch()| function.
-                                                                   *:Hi}*  *:Hi{*
+                                                                   *:HI}*  *:HI{*
 :Hi } ~
 :Hi { ~
     Jump forward | backward to the nearest highlight. These commands support
@@ -413,10 +413,10 @@ with subsequent commands using an optional space.
 >
       nn gj <Cmd>Hi]<CR>
       nn gk <Cmd>Hi[<CR>
-<                                                                        *:Hi>>*
+<                                                                        *:HI>>*
 :Hi >> ~
     Set `FOLLOWING HIGHLIGHT` mode
-                                                                     *:Hi:clear*
+                                                                     *:HI:clear*
 :Hi clear ~
     |HiClear| key function
     Clear all highlights in the current window
@@ -428,16 +428,16 @@ with subsequent commands using an optional space.
 :Hi === ~
     Synchronize window highlighting across all |tab-page|s
 
-                                                 *:Hi<>*  *:Hi<cword>*  *:Hi<cWORD>*
+                                                 *:HI<>*  *:HI<cword>*  *:HI<cWORD>*
 :Hi <>  <cword>  <cWORD> ~
     Set word matching mode in `FOLLOWING HIGHLIGHT`
     <> toggle between two modes
-                                                            *:Hi:save*  *:Hi:load*
+                                                            *:HI:save*  *:HI:load*
 :Hi save ~
 :Hi load ~
     Save | Load highlights of the current window to/from the user configurable
     |HiKeywords| directory or relative path
-                                                                        *:Hi:ls*
+                                                                        *:HI:ls*
 :Hi ls ~
     Open the |HiKeywords| directory using |netrw| to browse and manage the list of
     highlight files
@@ -471,7 +471,7 @@ with subsequent commands using an optional space.
                                                                          *:Hi//*
 :Hi // ~
     Clear highlights of the `Find` result
-                                                                   *:Hi:default*
+                                                                   *:HI:default*
 :Hi default ~
     Load plugin default colors for the current 'background' mode
 
@@ -553,7 +553,7 @@ window to a file. Now the default setting is:
     Values:  260 ~ 520
                                                                   *HiEffectOne*
 |HiEffectOne| option enables a slight glow effect on `ONE TIME HIGHLIGHT` and
-    `FOLLOWING HIGHLIGHT` in |termguicolors| mode.
+    `FOLLOWING HIGHLIGHT` in |termguicolors| or GUI mode.
 
     Default: 1 `(on)`
     Values:  0 `(off)`
@@ -635,6 +635,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.62.2~
+    Support |Hi]| jump outside the highlight
 1.62~
     Add |Hi]| command to jump to highlights of the same color
     Add glow effects option |HiEffectOne| on HiOneTime and HiFollow highlights
