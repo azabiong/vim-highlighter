@@ -8,7 +8,8 @@
  <h3> Introduction </h3>
 
  Highlighting keywords or lines can be useful when analyzing code, reviewing summaries, and quickly comparing spellings.
- This plugin provides easy commands and shortcuts for setting and deleting highlights, and additional features such as Move to Highlight, Save and Load, Find Pattern, and Customize Colors.
+ This plugin provides easy commands and shortcuts for setting and deleting highlights, and additional features such as
+ Move to Highlight,Save and Load, Find Pattern, and Customize Colors.
 
 ### Contents
 
@@ -79,7 +80,7 @@
 ## Key Map
 
  The plugin uses the following default key mapping variables that work in both normal and visual modes,
- and each key can be easily assigned in the configuration file.
+ and each key can be easily defined in the configuration file.
 
  <details open>
  <summary><b>&nbsp; .vim </b></summary>
@@ -162,7 +163,8 @@
 
 ## One Time Highlight
 
- When you only need one quick scan at the cursor position without setting the highlight, **One Time Highlight** can be useful.
+ When you only need quick pattern matching at the cursor position without setting highlighting,
+ **One Time Highlight** can be useful.
 
  When the cursor is over a word or visual selection that is not highlighted, pressing `HiErase` key sets **One Time Highlight**.
  The highlight remains on while the cursor is stationary, and automatically turns off after the cursor moves.
@@ -176,7 +178,7 @@
 
 ## Following Highlight
 
- When you need automatic matching based on cursor movement, **Following Highlight** mode can be useful.
+ When you need automatic matching based on cursor movement, **Following Highlight** mode may be useful.
 
  Pressing `HiSet` key over **One Time Highlight** without moving the cursor sets **Following Highlight** mode.
  The highlight follows the cursor. Pressing `HiEarase` key turns off the mode.
@@ -189,7 +191,7 @@
  <details>
  <summary><b>&nbsp;cWORD &nbsp;matching </b></summary> 
 
- Sometimes, when comparing variables consisting of letters and symbols, Vim's **`<cWORD>`** matching option can be useful.
+ Sometimes, when comparing patterns consisting of letters and symbols, Vim's **`<cWORD>`** matching option can be useful.
 
  <img width="422" alt="cword" src="https://user-images.githubusercontent.com/83812658/125083024-d6829b80-e102-11eb-8725-df0dc9e6915b.gif"> <br>
 
@@ -204,7 +206,7 @@
 ## Find in Files Highlight
 
  If you have installed hi-performance search tools such as **ag**, **rg**, **ack**, **sift**, or **grep**,
- the plugin can run it when looking for symbols based on the current directory. And when the given expression is simple,
+ the plugin can run it when looking for patterns based on the current directory. And when the given expression is simple,
  the plugin can highlight patterns to make them easier to find.
 
  `HiFind` key brings up the **Find** command prompt.

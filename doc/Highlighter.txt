@@ -41,7 +41,7 @@ as Move to Highlight, Save and Load, Find Pattern, and Customize Colors.
 KEY-MAP                   *HiSet*  *HiErase*  *HiClear*  *HiFind*  *HiSetSL*  *Hi-Key-Map*
 
 The plugin uses the following default key mapping variables that work in both
-normal and visual modes, and each key can be easily assigned in the configuration
+normal and visual modes, and each key can be easily defined in the configuration
 file.
 >
     let HiSet   = 'f<CR>'       " normal, visual
@@ -94,8 +94,8 @@ automatically selects the search type between native search and jump commands.
 ------------------------------------------------------------------------------
 ONE TIME HIGHLIGHT                                       *Hi-One-Time-Highlight*
 
-When you only need one quick scan at the cursor position without setting the
-highlight, `ONE TIME HIGHLIGHT` can be useful.
+When you only need quick pattern matching at the cursor position without
+setting highlighting, `ONE TIME HIGHLIGHT` can be useful.
 
 When the cursor is over a word or visual selection that is not highlighted,
 pressing |HiErase| key sets `ONE TIME HIGHLIGHT`, The highlight remains on while
@@ -108,7 +108,7 @@ and `Jump` commands |Hi<| and |Hi>| are also supported.
 FOLLOWING HIGHLIGHT                                     *Hi-Following-Highlight*
 
 When you need automatic matching based on cursor movement, `FOLLOWING HIGHLIGHT`
-mode can be useful.
+mode may be useful.
 
 Pressing |HiSet| key over `ONE TIME HIGHLIGHT` without moving the cursor sets
 `FOLLOWING HIGHLIGHT` mode. The highlight follows the cursor. Pressing |HiErase|
@@ -116,7 +116,7 @@ key turns off the mode.
 
 Matching option ~
 
-    Sometimes, when comparing variables consisting of letters and symbols,
+    Sometimes, when comparing patterns consisting of letters and symbols,
     Vim's |<cWORD>| matching option can be useful.
 >
       object.method      property:'value'      https://www.vim.org
@@ -135,7 +135,7 @@ and `Jump` commands |Hi<| and |Hi>| are also supported.
 FIND IN FILES HIGHLIGHT                             *Hi-Find-In-Files-Highlight*
 
 If you have installed hi-performance search tools such as 'ag', 'rg', 'ack',
-'sift' or 'grep', the plugin can run it when looking for symbols based on the
+'sift' or 'grep', the plugin can run it when looking for patterns based on the
 current directory. And when the given expression is simple, the plugin can
 highlight patterns to make them easier to find.
 
