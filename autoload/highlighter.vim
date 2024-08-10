@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.62.2
+" Version: 1.62.3
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -22,7 +22,7 @@ let g:HiEffectOne = get(g:, 'HiEffectOne', 1)
 let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiFindLines = 0
 
-let s:Version   = '1.62.2'
+let s:Version   = '1.62.3'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -494,7 +494,9 @@ function s:DeletePosHighlightAt(pos)
     for p in l:props
       if match(p.type, s:Group) == 0
         if p.lnum == a:pos[1] && p.col <= a:pos[2] && a:pos[2] < p.col + p.length
-          return prop_remove({'type':p.type, 'id': p.id, 'both':v:true})
+          call prop_remove({'type':p.type, 'id': p.id, 'both':v:true})
+          call s:UpdateJump(s:GetJump()[0], '')
+          return 1
         endif
       endif
     endfor
@@ -517,6 +519,7 @@ function s:DeletePosHighlightAt(pos)
         for l:id in range(m[0]-1, 1, -1)
           if !s:DeletePosHighlightGroup(l:id, r[1], m[3].hl_group) | break | endif
         endfor
+        call s:UpdateJump(s:GetJump()[0], '')
         return 1
       endif
     endfor
@@ -1491,8 +1494,9 @@ function s:JumpGroup(op, count)
 
   let l:group = s:GetJump()[1]
   if !empty(l:group)
-    return s:JumpNear(a:op, a:count, l:group.'\>')
+    let l:group .= '\>'
   endif
+  call s:JumpNear(a:op, a:count, l:group)
 endfunction
 
 function s:StartEffectOne(group)
