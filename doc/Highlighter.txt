@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.62.3`
+                                                                   `ver 1.62.4`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Jump to Highlight     |Hi-Jump-To-Highlight|
@@ -635,7 +635,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.62.3~
+1.62.4~
+    Improve |HiSearch()| key input
     Support |Hi]| jump outside the highlight
 1.62~
     Add |Hi]| command to jump to highlights of the same color
