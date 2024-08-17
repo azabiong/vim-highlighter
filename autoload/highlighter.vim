@@ -2451,10 +2451,10 @@ function highlighter#Complete(arg, line, pos)
       return getcompletion(a:arg, 'file')
     endif
   else  " commands
-    let l:opt1 = ['+ ', '==', '>>', '<>', '//']
+    let l:opt1 = ['+', '-', '>>', '<>', '//']
     let l:opt2 = ['/next', '/previous', '/older', '/newer', '/open', '/close',
-                 \'save ', 'load ', 'ls', 'default']
-    if l:len == 1 && l:part[0] == 'Hi'
+                 \'save ', 'load ', 'ls', 'clear', 'default']
+    if l:len == 1 && l:part[0] ==? 'Hi'
       return l:opt1 + opt2
     else
       let l:fields = 2 - (l:part[0] =~ 'Hi\S')
