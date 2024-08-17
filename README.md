@@ -8,7 +8,7 @@
  <h3> Introduction </h3>
 
  Highlighting keywords or lines can be useful when analyzing code, reviewing summaries, and quickly comparing spellings.
- This plugin provides easy commands and shortcuts for setting and deleting highlights, and additional features such as
+ This plugin provides easy commands and shortcuts to set and delete highlights, and additional features such as
  Move to Highlight, Save and Load, Find Pattern, and Customize Colors.
 
 ### Contents
@@ -172,7 +172,7 @@
  <img width="455" alt="onetime" src="https://user-images.githubusercontent.com/83812658/169995537-61725353-15b9-4d33-bccc-d0c471c15306.gif"> <br>
 
  **One Time Highlight** displays matches in all windows on the current tab-page, and
- **Jump** commands `Hi<` and `Hi>` are also supported.
+ **Jump** commands `Hi<>` and `Hi[]` are also supported.
 
  <br>
 
@@ -186,7 +186,7 @@
  <img width="493" alt="following" src="https://github.com/azabiong/vim-highlighter/assets/83812658/69dbc2ce-2bd9-4a3d-acac-e889cdffdd5e"> <br>
 
  **Following Highlight** displays matches in all windows on the current tab-page, and
- **Jump** commands `Hi<` and `Hi>` are also supported.
+ **Jump** commands `Hi<>` and `Hi[]` are also supported.
 
  <details>
  <summary><b>&nbsp;cWORD &nbsp;matching </b></summary> 

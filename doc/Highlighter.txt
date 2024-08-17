@@ -34,8 +34,8 @@ INTRODUCTION                                                   *Hi-Introduction*
 
 Highlighting keywords or lines can be useful when analyzing code, reviewing
 summaries, and quickly comparing spellings. This plugin provides easy commands
-and shortcuts for setting and deleting highlights, and additional features such
-as Move to Highlight, Save and Load, Find Pattern, and Customize Colors.
+and shortcuts to set and delete highlights, and additional features such as
+Move to Highlight, Save and Load, Find Pattern, and Customize Colors.
 
 ------------------------------------------------------------------------------
 KEY-MAP                   *HiSet*  *HiErase*  *HiClear*  *HiFind*  *HiSetSL*  *Hi-Key-Map*
@@ -102,7 +102,7 @@ pressing |HiErase| key sets `ONE TIME HIGHLIGHT`, The highlight remains on while
 the cursor is stationary, and automatically turns off after the cursor moves.
 
 `ONE TIME HIGHLIGHT` displays matches in all windows on the current |tab-page|,
-and `Jump` commands |Hi<| and |Hi>| are also supported.
+and `Jump` commands `Hi<>` and `Hi[]` are also supported.
 
 ------------------------------------------------------------------------------
 FOLLOWING HIGHLIGHT                                     *Hi-Following-Highlight*
@@ -129,7 +129,7 @@ Matching option ~
       :Hi <>
 <
 `FOLLOWING HIGHLIGHT` displays matches in all windows on the current |tab-page|,
-and `Jump` commands |Hi<| and |Hi>| are also supported.
+and `Jump` commands `Hi<>` and `Hi[]` are also supported.
 
 ------------------------------------------------------------------------------
 FIND IN FILES HIGHLIGHT                             *Hi-Find-In-Files-Highlight*
