@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.62.4 </h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.62.5 </h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -19,9 +19,9 @@
  [Jump to Highlight](#jump-to-highlight) &nbsp;&nbsp;&nbsp;
  [One Time Highlight](#one-time-highlight) &nbsp;&nbsp;&nbsp;
  [Following Highlight](#following-highlight) &nbsp;&nbsp; &nbsp;
- [Find in Files Highlight](#find-in-files-highlight) &nbsp;&nbsp;&nbsp;
- [Positional Highlight](#positional-highlight) <br> &nbsp;&nbsp;
- [Save & Load](#save--load) &nbsp;&nbsp;&nbsp; <br> &nbsp;&nbsp;
+ [Find in Files Highlight](#find-in-files-highlight) &nbsp;&nbsp;&nbsp; <br> &nbsp;&nbsp;
+ [Positional Highlight](#positional-highlight) &nbsp;&nbsp;&nbsp;
+ [Save & Load](#save--load) &nbsp;&nbsp;&nbsp;
  [Sync Mode](#sync-mode) <br> &nbsp;&nbsp;
  [Customizing Colors](#customizing-colors) <br> &nbsp;&nbsp;
  [Configuration](#configuration-examples) <br> &nbsp;&nbsp;
@@ -36,7 +36,7 @@
  | 1.60 | [Sync Mode](#sync-mode)&nbsp; across all tab-pages | |
  | 1.58 | [Positional Highlight](#positional-highlight)&nbsp; associated with a buffer | O |
  | 1.56 | [One Time Highlight](#one-time-highlight)&nbsp; and **Jump** | |
- | 1.52 | [Find window](#find-window)&nbsp; key <kbd>i</kbd> for View | O |
+ | 1.52 | [Find window](#find-window)&nbsp; key <kbd>i</kbd> for **View** | O |
  | 1.38 | [Input](#input)&nbsp; patterns in the command-line | |
  | 1.35 | [Multifunction keys](#configuration-examples)&nbsp; for **Find** | O |
 
@@ -339,7 +339,7 @@ Multiline highlighting is now automatically set to positional highlighting.
 
  <img width=400 alt="positional" src="https://github.com/azabiong/vim-highlighter/assets/83812658/25ba37c8-43ce-4eaf-9d43-663108bfb54b"> <br>
 
-**Jump** commands `Hi{}` and `Hi[]` are also supported after setting.
+**Jump** commands `Hi{}` and `Hi[]` are supported after setting.
 
  <br>
 

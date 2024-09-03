@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.62.4`
+                                                                   `ver 1.62.5`
                  Introduction          |Hi-Introduction|
                  Key Map               |Hi-Key-Map|
                  Jump to Highlight     |Hi-Jump-To-Highlight|
@@ -260,7 +260,7 @@ normal or visual mode.
 
 Multiline highlighting is now automatically set to positional highlighting.
 
-`Jump` commands `Hi{}` and `Hi[]` are also supported after setting.
+`Jump` commands `Hi{}` and `Hi[]` are supported after setting.
 
 ------------------------------------------------------------------------------
 SAVE AND LOAD                                                     *Hi-Save-Load*
@@ -558,6 +558,13 @@ window to a file. Now the default setting is:
     Default: 1 `(on)`
     Values:  0 `(off)`
 
+                                                                  *HiSetToggle*
+|HiSetToggle| option allows you to turn highlighting on or off using only the
+    |HiSet| key (issue #30).
+
+    Default: 0 `(off)`
+    Values:  1 `(on)`
+
 FUNCTIONS AND VARIABLES ~
                                                                       *HiFind()*
 |HiFind()| function returns whether the `Find` window is visible`(1)` or not`(0)`,
@@ -635,7 +642,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.62.4~
+1.62.5~
+    Add |HiSetToggle| option (issue #30)
     Improve |HiSearch()| key input
     Support |Hi]| jump outside the highlight
 1.62~

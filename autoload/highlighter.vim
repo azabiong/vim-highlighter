@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.62.4
+" Version: 1.62.5
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -20,9 +20,10 @@ let g:HiOneTimeWait = get(g:, 'HiOneTimeWait', 260)
 let g:HiFollowWait = get(g:, 'HiFollowWait', 320)
 let g:HiEffectOne = get(g:, 'HiEffectOne', 1)
 let g:HiBackup = get(g:, 'HiBackup', 1)
+let g:HiSetToggle = get(g:, 'HiSetToggle', 0)
 let g:HiFindLines = 0
 
-let s:Version   = '1.62.4'
+let s:Version   = '1.62.5'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -262,11 +263,14 @@ function s:SetHighlight(cmd, mode, num)
   let l:match = getmatches()
   let l:case = (&ic || stridx(@/, '\c') != -1) ? '\c' : ''
   if l:color
-    call s:DeleteMatch(l:match, '==', l:pattern)
+    let l:deleted = s:DeleteMatch(l:match, '==', l:pattern)
     let l:group = s:Group.l:color
     if a:mode == 'n' && s:GetFocusMode(1, l:pattern)
       return s:SetFocusMode('>', '')
     else
+      if g:HiSetToggle && l:deleted && !l:number
+        return
+      endif
       try
         call matchadd(l:group, l:pattern, 0)
       catch
