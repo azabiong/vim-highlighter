@@ -460,6 +460,22 @@ function s:SetPosHighlight(block, num)
   call s:UpdateJump(s:GetJump()[0], l:group)
 endfunction
 
+
+function highlighter#MyHiLine(line, number)
+  if !exists("s:Colors") && !s:Load()
+    return
+  endif
+  let l:fullline = {'mode': 'v', 'rect': [a:line, 1, a:line, 10000]}
+  call s:SetPosHighlight(l:fullline, a:number)
+endfunction
+
+function highlighter#MyDelHiLine(line)
+  call s:DeletePosHighlightAt([0,a:line,1,0])
+endfunction
+
+
+
+
 function s:DeletePosHighlight(rect)
   if s:PI
     let l:props = prop_list(a:rect[0], {'end_lnum':a:rect[2]})
