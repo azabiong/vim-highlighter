@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.62.5
+" Version: 1.63
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -23,7 +23,7 @@ let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiSetToggle = get(g:, 'HiSetToggle', 0)
 let g:HiFindLines = 0
 
-let s:Version   = '1.62.5'
+let s:Version   = '1.63'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -46,6 +46,7 @@ const s:FL = s:FindList
 const s:Group = 'HiColor'
 
 function s:Load()
+  if exists("s:Colors") | return 1 | endif
   if !exists("s:Check")
     let s:GuiMode = has('gui_running')
     if s:GuiColors() || &t_Co >= 256
@@ -417,6 +418,7 @@ function s:SetPosHighlight(block, num)
   let l:color = a:num ? a:num : s:Number[l:pack]
   let l:color = hlexists(s:Group.l:color) ? l:color : [1, 80][l:pack]
   let l:group = s:Group.l:color
+  let l:full = l:rect[3] < 0
 
   if s:PI
     call s:SetPosType(l:group)
@@ -431,14 +433,19 @@ function s:SetPosHighlight(block, num)
       endfor
       call prop_add_list({'id':s:PI, 'type':l:group}, l:list)
     else
+      let l:length = len(getline(l:rect[2])) + 1
+      if l:full
+        let l:rect[3] = l:length
+        call prop_add(l:rect[0], 0, {'id':s:PI, 'type':l:group, 'text':repeat(' ', max([256 - l:length, 2]))})
+      else
+        let l:rect[3] = min([l:rect[3], l:length])
+      endif
       call s:DeletePosHighlight(l:rect)
       call prop_add(l:rect[0], l:rect[1], {'id':s:PI, 'end_lnum':l:rect[2], 'end_col':l:rect[3], 'type':l:group})
     endif
     let s:PI += 1
   else
-    if l:rect[3] == v:maxcol
-      let l:rect[3] = col("'>")
-    endif
+    let l:rect[3] = min([l:rect[3], len(getline(l:rect[2]))+1])
     call map(l:rect, {i,v -> v-1})
     if a:block.mode == "\<C-V>"
       for i in range(l:rect[0], l:rect[2])
@@ -450,8 +457,16 @@ function s:SetPosHighlight(block, num)
         endif
       endfor
     else
+      if l:full
+        let l:rect[3] = 0
+      endif
       call s:DeletePosHighlight(l:rect)
-      call nvim_buf_set_extmark(0, s:NS, l:rect[0], l:rect[1], {'end_row':l:rect[2], 'end_col':l:rect[3], 'hl_group':l:group})
+      if l:full
+        let l:opts = {'end_row':l:rect[2], 'line_hl_group':l:group}
+      else
+        let l:opts = {'end_row':l:rect[2], 'end_col':l:rect[3], 'hl_group':l:group}
+      endif
+      call nvim_buf_set_extmark(0, s:NS, l:rect[0], l:rect[1], l:opts)
     endif
   endif
   if l:pack == s:MultilineColor(l:color)
@@ -460,35 +475,22 @@ function s:SetPosHighlight(block, num)
   call s:UpdateJump(s:GetJump()[0], l:group)
 endfunction
 
-
-function highlighter#MyHiLine(line, number)
-  if !exists("s:Colors") && !s:Load()
-    return
-  endif
-  let l:fullline = {'mode': 'v', 'rect': [a:line, 1, a:line, 10000]}
-  call s:SetPosHighlight(l:fullline, a:number)
-endfunction
-
-function highlighter#MyDelHiLine(line)
-  call s:DeletePosHighlightAt([0,a:line,1,0])
-endfunction
-
-
-
-
 function s:DeletePosHighlight(rect)
   if s:PI
     let l:props = prop_list(a:rect[0], {'end_lnum':a:rect[2]})
     let l:pos = {}
     for p in l:props
       if match(p.type, s:Group) == 0
-        if p.start
-          let l:pos[p.id] = [a:rect[0], a:rect[1]]
+        let l:id = exists("p.id") ? p.id : 0
+        if l:id && p.start
+          let l:pos[l:id] = [a:rect[0], a:rect[1]]
         endif
-        if p.end && has_key(l:pos, p.id)
+        if l:id && p.end && has_key(l:pos, p.id)
           call extend(l:pos[p.id], [p.lnum, p.col + p.length])
           if l:pos[p.id] == a:rect
-            return prop_remove({'type':p.type, 'id': p.id, 'both':v:true})
+            call prop_remove({'type':p.type, 'id': p.id, 'both':v:true})
+            call prop_remove({'type':p.type}, a:rect[0])
+            return 1
           endif
           call remove(l:pos, p.id)
         endif
@@ -515,6 +517,7 @@ function s:DeletePosHighlightAt(pos)
       if match(p.type, s:Group) == 0
         if p.lnum == a:pos[1] && p.col <= a:pos[2] && a:pos[2] < p.col + p.length
           call prop_remove({'type':p.type, 'id': p.id, 'both':v:true})
+          call prop_remove({'type':p.type}, p.lnum)
           call s:UpdateJump(s:GetJump()[0], '')
           return 1
         endif
@@ -526,6 +529,12 @@ function s:DeletePosHighlightAt(pos)
     for i in range(len(l:marks)-1, 0, -1)
       let m = l:marks[i]
       let r = [m[1], m[2], m[3].end_row, m[3].end_col]
+      if exists("m[3].hl_group")
+        let l:group = m[3].hl_group
+      else
+        let l:group = m[3].line_hl_group
+        let r[3] = v:maxcol
+      endif
       if (r[0] == r[2] && r[0] == l:row)
         let l:in = r[1] <= l:col && l:col < r[3]
       else
@@ -534,10 +543,10 @@ function s:DeletePosHighlightAt(pos)
       if l:in
         call nvim_buf_del_extmark(0, s:NS, m[0])
         for l:id in range(m[0]+1, m[0]+1024)
-          if !s:DeletePosHighlightGroup(l:id, r[1], m[3].hl_group) | break | endif
+          if !s:DeletePosHighlightGroup(l:id, r[1], l:group) | break | endif
         endfor
         for l:id in range(m[0]-1, 1, -1)
-          if !s:DeletePosHighlightGroup(l:id, r[1], m[3].hl_group) | break | endif
+          if !s:DeletePosHighlightGroup(l:id, r[1], l:group) | break | endif
         endfor
         call s:UpdateJump(s:GetJump()[0], '')
         return 1
@@ -548,8 +557,11 @@ endfunction
 
 function s:DeletePosHighlightGroup(id, col, group)
   let l:m = nvim_buf_get_extmark_by_id(0, s:NS, a:id, {'details':v:true})
-  if !empty(l:m) && a:col == l:m[1] && l:m[0] == l:m[2].end_row && a:group == l:m[2].hl_group
-    return nvim_buf_del_extmark(0, s:NS, a:id)
+  if !empty(l:m) && a:col == l:m[1] && l:m[0] == l:m[2].end_row
+    let l:group = exists("l:m[2].hl_group") ? l:m[2].hl_group : l:m[2].line_hl_group
+    if a:group == l:group
+      return nvim_buf_del_extmark(0, s:NS, a:id)
+    endif
   endif
 endfunction
 
@@ -604,7 +616,7 @@ function s:GetNearPosHighlight(sign, pos, range, group)
     let [l:row, l:col] = [a:pos[1], a:pos[2]]
     let l:props = prop_list(1, {'end_lnum':-1})
     for p in l:props
-      if match(p.type, a:group) == 0 && p.start
+      if match(p.type, a:group) == 0 && p.start && exists("p.id")
         let l:dist = a:sign * (p.lnum - l:row)
         if l:dist >= 0 && l:dist < l:range
           if p.lnum == l:row && a:sign * (p.col - l:col) <= 0
@@ -641,11 +653,19 @@ function s:GetNearPosHighlight(sign, pos, range, group)
     let [l:row, l:col] = [a:pos[1]-1, a:pos[2]-1]
     let l:marks = nvim_buf_get_extmarks(0, s:NS, 0, -1, {'details':v:true})
     for m in l:marks
-      if m[1] == m[3].end_row && m[2] >= m[3].end_col
-        call nvim_buf_del_extmark(0, s:NS, m[0])
-        continue
-      endif
-      if match(m[3].hl_group, a:group) != 0
+      if exists("m[3].hl_group")
+        if match(m[3].hl_group, a:group) != 0
+          continue
+        endif
+        if m[1] == m[3].end_row && m[2] >= m[3].end_col
+          call nvim_buf_del_extmark(0, s:NS, m[0])
+          continue
+        endif
+      elseif exists("m[3].line_hl_group")
+        if match(m[3].line_hl_group, a:group) != 0
+          continue
+        endif
+      else
         continue
       endif
       let l:dist = a:sign * (m[1] - l:row)
@@ -675,7 +695,8 @@ function s:GetNearPosHighlight(sign, pos, range, group)
       if l:id
         let l:m = nvim_buf_get_extmark_by_id(0, s:NS, l:id, {'details':v:true})
         let l:span = (l:m[0] == l:m[2].end_row) ? l:m[2].end_col - l:m[1] : len(getline(l:m[0]+1)) - l:m[1]
-        return [l:m[0]+1, l:m[1]+1, l:span, l:range, l:m[2].hl_group]
+        let l:group = exists("l:m[2].hl_group") ? l:m[2].hl_group : l:m[2].line_hl_group
+        return [l:m[0]+1, l:m[1]+1, l:span, l:range, l:group]
       endif
     endif
   endif
@@ -2517,10 +2538,36 @@ function highlighter#Search(key)
   endif
 endfunction
 
-function highlighter#Command(cmd, ...)
-  if !exists("s:Colors") && !s:Load()
+" args: [line, color] or [line, column, length, color]
+function highlighter#SetPosHighlight(args)
+  let l:args = len(a:args)
+  if !s:Load() || !l:args
     return
   endif
+  let l:line = a:args[0]
+  if l:args > 2
+    let [l:from, l:to] = [a:args[1], a:args[1]+a:args[2]]
+  else
+    let [l:from, l:to] = [1, -1]
+  endif
+  let l:color = (l:args == 2) ? a:args[1] : (l:args == 4) ? a:args[3] : 0
+  let l:block = {'mode':'v', 'rect':[l:line, l:from, l:line, l:to]}
+  call s:SetPosHighlight(l:block, l:color)
+endfunction
+
+" args: [line, column]
+function highlighter#DelPosHighlight(args)
+  let l:args = len(a:args)
+  if !s:Load() || !l:args
+    return
+  endif
+  let l:line = a:args[0]
+  let l:column = (l:args > 1) ? a:args[1] : 1
+  call s:DeletePosHighlightAt([0, l:line, l:column, 0])
+endfunction
+
+function highlighter#Command(cmd, ...)
+  if !s:Load() | return | endif
   let l:num = a:0 ? a:1 : 0
   let l:arg = split(a:cmd)
   let l:cmd = substitute(get(l:arg, 0, ''), '\v^[:/]', '', '')

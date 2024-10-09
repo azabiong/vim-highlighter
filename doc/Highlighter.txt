@@ -12,22 +12,23 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.62.5`
-                 Introduction          |Hi-Introduction|
-                 Key Map               |Hi-Key-Map|
-                 Jump to Highlight     |Hi-Jump-To-Highlight|
-                 One Time              |Hi-One-Time-Highlight|
-                 Following             |Hi-Following-Highlight|
-                 Find in Files         |Hi-Find-In-Files-Highlight|
-                 Positional Highlight  |Hi-Positional-Highlight|
-                 Save & Load           |Hi-Save-Load|
-                 Sync Mode             |Hi-Sync-Mode|
-                 Customizing Colors    |Hi-Customizing-Colors|
-                 Commands              |Hi-Commands|
-                 Options               |Hi-Options|
-                 Issues                |Hi-Issues|
-                 Log                   |Hi-Log|
-                 Credits               |Hi-Credits|
+                                                                    `ver 1.63`
+                 Introduction            |Hi-Introduction|
+                 Key Map                 |Hi-Key-Map|
+                 Jump to Highlight       |Hi-Jump-To-Highlight|
+                 One Time Highlight      |Hi-One-Time-Highlight|
+                 Following Highlight     |Hi-Following-Highlight|
+                 Find in Files Highlight |Hi-Find-In-Files-Highlight|
+                 Positional Highlight    |Hi-Positional-Highlight|
+                 Save & Load             |Hi-Save-Load|
+                 Sync Mode               |Hi-Sync-Mode|
+                 Customizing Colors      |Hi-Customizing-Colors|
+                 Commands                |Hi-Commands|
+                 Options                 |Hi-Options|
+                 Functions               |Hi-Functions|
+                 Issues                  |Hi-Issues|
+                 Log                     |Hi-Log|
+                 Credits                 |Hi-Credits|
 
 ------------------------------------------------------------------------------
 INTRODUCTION                                                   *Hi-Introduction*
@@ -513,19 +514,19 @@ window to a file. Now the default setting is:
                                                                     *HiFindTool*
 |HiFindTool|, in this variable, you can set your preferred search tool and options
     to run when using `FIND IN FILES` function. For example,
-    "grep": >
+    grep: >
           let HiFindTool = 'grep -H -EnrI --exclude-dir=.git'
-<    "ag": >
+<    ag: >
           let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
-<    "rg": >
+<    rg: >
           let HiFindTool = 'rg -H --color=never --no-heading --column --smart-case'
-<    "ack": >
+<    ack: >
           let HiFindTool = 'ack -H --nocolor --noheading --column --smart-case'
-<    "sift:" >
+<    sift: >
           let HiFindTool = 'sift --no-color --line-number --column --binary-skip --git --smart-case'
-<    "ggrep": >
+<    ggrep: >
           let HiFindTool = 'ggrep -H -EnrI --exclude-dir=.git'
-<    "git grep": >
+<    git grep: >
           let HiFindTool = 'git grep -EnI --no-color --column'
 <                                                                 *HiFindHistory*
 |HiFindHistory| specifies the number of recent `FIND IN FILES` lists to keep in
@@ -558,14 +559,67 @@ window to a file. Now the default setting is:
     Default: 1 `(on)`
     Values:  0 `(off)`
 
+CUSTOM OPTIONS~
                                                                   *HiSetToggle*
 |HiSetToggle| option allows you to turn highlighting on or off using only the
     |HiSet| key (issue #30).
 
     Default: 0 `(off)`
     Values:  1 `(on)`
+                                                           *HiClearUsingOneTime*
+|HiClearUsingOneTime| option assigns the normal mode `ONE TIME HIGHLIGHT` key to
+    the |HiClear| function (issue #10).
 
-FUNCTIONS AND VARIABLES ~
+    Default: 0 `(off)`
+    Values:  1 `(on)`
+
+------------------------------------------------------------------------------
+FUNCTIONS AND VARIABLES ~                                         *Hi-Functions*
+                                                                    *HiSearch()*
+|HiSearch()| function supports `n` and `N` key mappings for both the native search
+    and the plugin's jump commands (issue #12).
+>
+        nn n <Cmd>call HiSearch('n')<CR>
+        nn N <Cmd>call HiSearch('N')<CR>
+<
+    While |hlsearch| is displayed, the function executes the native search command
+    assigned to each key, otherwise, it executes the |Hi>| or |Hi<| command. When
+    switching from native search to jump mode, you can simply turn off |hlsearch|
+    using the |:noh| command. For example:
+>
+        nn <Esc>n <Cmd>noh<CR>
+<
+    The function returns the current search type:
+        `0` (native search), `1` (jump to highlight)
+                                                        *HiSetPos()*  *HiDelPos()*
+|HiSetPos()| function supports setting `POSITIONAL HIGHLIGHT` on a given line with
+    a given color number (PR #32). For example:
+
+    To highlight the entire line, using the next auto color: >
+    HiSetPos(line)
+<
+    To highlight the entire line, with the given color: >
+    HiSetPos(line, color)
+<
+    To highlight the text area of the given length, starting from the given column,
+    with the given color: >
+    HiSetPos(line, column, length, color)
+<
+    To delete the highlight: >
+    HiDelPos(line)
+    HiDelPos(line, column)
+<                                                                      *HiList()*
+|HiList()| function returns a list of highlight patterns for the current window,
+    which can be used to generate a |Quickfix| or |Location| list for further
+    processing (issue #11).
+
+    The return value has the following format. Each dictionary entry has
+    `color` number and `pattern` fields. For example: >
+    [{'color':2, 'pattern':'\VFoo'}, {'color':6, 'pattern':'\mBar'}]
+<
+    To list highlights of the current window as a Quickfix list: >
+    :exe 'vimgrep /\v('. HiList()->map({i,v -> v.pattern})->join('\v|'). '\v)/gj %' | copen
+<
                                                                       *HiFind()*
 |HiFind()| function returns whether the `Find` window is visible`(1)` or not`(0)`,
     which can be used to define multifunction keys.
@@ -585,53 +639,9 @@ FUNCTIONS AND VARIABLES ~
             exe "normal!" a:key
           endif
         endfunction
-<                                                                   *HiSearch()*
-|HiSearch()| function supports `n` and `N` key mappings for both the native search
-    and the plugin's jump commands (issue #12).
->
-        nn n <Cmd>call HiSearch('n')<CR>
-        nn N <Cmd>call HiSearch('N')<CR>
-<
-    While |hlsearch| is displayed, the function executes the native search command
-    assigned to each key, otherwise, it executes the |Hi>| or |Hi<| command. When
-    switching from native search to jump mode, you can simply turn off |hlsearch|
-    using the |:noh| command. For example:
->
-        nn <Esc>n <Cmd>noh<CR>
-<
-    The function returns the current search type:
-        `0` (native search), `1` (jump to highlight)
-                                                                      *HiList()*
-|HiList()| function returns a list of highlight patterns for the current window,
-    which can be used to generate a |Quickfix| or |Location| list for further
-    processing (issue #11). Each dictionary entry has `color` number and `pattern`
-    fields. For example:
->
-    [{'color':2, 'pattern':'\VFoo'}, {'color':6, 'pattern':'\mBar'}]
-<
-    To list highlights of the current window as a Quickfix list:
->
-    :exe 'vimgrep /\v('. HiList()->map({i,v -> v.pattern})->join('\v|'). '\v)/gj %' | copen
-<
-    To synchronize highlighting of the current window to the Quickfix window in
-    the default single window highlighting mode, you can use |Hi==| command before
-    running the above command.
-                                                                   *HiFindLines*
+<                                                                   *HiFindLines*
 |HiFindLines| represents the number of lines found as a result of `FIND` `IN FILES`
-operation, which can be used to check if an item exists.
-
-CUSTOM OPTIONS~
-                                                           *HiClearUsingOneTime*
-|HiClearUsingOneTime| option assigns the normal mode `ONE TIME HIGHLIGHT` key to
-    the |HiClear| function (issue #10).
->
-        let HiClearUsingOneTime = 1
-<
-    Default: 0 `(off)`
-    Values:  1 `(on)`
-
-    This option can also be set during runtime, and the visual mode `ONE TIME`
-    `HIGHLIGHT` function is supported independently of this option.
+operation, which can be used to check the number of items found.
 
 ------------------------------------------------------------------------------
 ISSUES                                                               *Hi-Issues*
@@ -642,11 +652,11 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.62.5~
+1.63~
+    Add APIs for setting "Positional Highlight" |HiSetPos()| (PR #32)
+1.62~
     Add |HiSetToggle| option (issue #30)
     Improve |HiSearch()| key input
-    Support |Hi]| jump outside the highlight
-1.62~
     Add |Hi]| command to jump to highlights of the same color
     Add glow effects option |HiEffectOne| on HiOneTime and HiFollow highlights
 1.61~
@@ -811,6 +821,8 @@ code contributions and help in resolving issues.
                     Amin Roosta   Jump using `n` and `N` keys
 
                       N. Dubray   Positional Highlight
+
+       Florent Bouchez Tichadou   APIs for Positional Highlight
 
 
 
