@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.62
+" Version: 1.63
 
 scriptencoding utf-8
 if exists("g:loaded_vim_highlighter")
@@ -52,6 +52,14 @@ endfunction
 
 function HiSearch(key)
   return highlighter#Search(a:key)
+endfunction
+
+function HiSetPos(...)
+  return highlighter#SetPosHighlight(a:000)
+endfunction
+
+function HiDelPos(...)
+  return highlighter#DelPosHighlight(a:000)
 endfunction
 
 if get(g:,'HiMapKeys', 1)
