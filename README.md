@@ -662,14 +662,16 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 
 ## Help tags
 
- For more information about commands and configurable options, please see:
+ For more information about commands, configurable options, and functions, please see:
 
  ```vim
-  :h Hi
+ :h Hi
  ```
- and
  ```vim
-  :h Hi-Options
+ :h Hi-Options
+ ```
+ ```vim
+ :h Hi-Functions
  ```
  <br>
 
