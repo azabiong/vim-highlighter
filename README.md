@@ -2,7 +2,7 @@
 
 # Vim Highlighter
 
- <p><h6> &nbsp;&nbsp; ver 1.62.5 </h6></p>
+ <p><h6> &nbsp;&nbsp; ver 1.63 </h6></p>
 
  <img width="220" alt="highlighter" align="right" src="https://user-images.githubusercontent.com/83812658/136645135-46bbe613-0ac7-4688-9deb-4bc28ae627f3.jpg">
  <h3> Introduction </h3>
@@ -662,14 +662,16 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 
 ## Help tags
 
- For more information about commands and configurable options, please see:
+ For more information about commands, configurable options, and functions, please see:
 
  ```vim
-  :h Hi
+ :h Hi
  ```
- and
  ```vim
-  :h Hi-Options
+ :h Hi-Options
+ ```
+ ```vim
+ :h Hi-Functions
  ```
  <br>
 
