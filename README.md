@@ -19,10 +19,10 @@
  [Jump to Highlight](#jump-to-highlight) &nbsp;&nbsp;&nbsp;
  [One Time Highlight](#one-time-highlight) &nbsp;&nbsp;&nbsp;
  [Following Highlight](#following-highlight) &nbsp;&nbsp; &nbsp;
- [Find in Files Highlight](#find-in-files-highlight) &nbsp;&nbsp;&nbsp; <br> &nbsp;&nbsp;
- [Positional Highlight](#positional-highlight) &nbsp;&nbsp;&nbsp;
+ [Positional Highlight](#positional-highlight) <br> &nbsp;&nbsp;
  [Save & Load](#save--load) &nbsp;&nbsp;&nbsp;
  [Sync Mode](#sync-mode) <br> &nbsp;&nbsp;
+ [Find in Files](#find-in-files) <br> &nbsp;&nbsp;
  [Customizing Colors](#customizing-colors) <br> &nbsp;&nbsp;
  [Configuration](#configuration-examples) <br> &nbsp;&nbsp;
 
@@ -203,7 +203,79 @@
  </details>
  <br>
 
-## Find in Files Highlight
+## Positional Highlight
+
+ Unlike **pattern-based** highlighting, **Positional Highlight** is set to a specific position in the buffer.
+ Thanks to new APIs in Vim and Neovim, it's similar to coloring over text with a highlighter.
+ The position is updated when inserting or deleting the line above.
+ 
+ To set a **Positional Highlight** on a specific line, press the `HiSetSL` key in normal or visual mode.  
+ Multiline highlighting is now automatically set to positional highlighting.
+
+ <img width=400 alt="positional" src="https://github.com/azabiong/vim-highlighter/assets/83812658/25ba37c8-43ce-4eaf-9d43-663108bfb54b"> <br>
+
+ **Jump** commands `Hi{}` and `Hi[]` are supported after setting.
+
+ <br>
+
+## Save & Load
+
+ Sometimes when you want to save highlights of the current window and reload them next time, you can use:
+ ```vim
+  :Hi save
+ ```
+ and when loading:
+ ```vim
+  :Hi load
+ ```
+ You can name the file when saving, and use tab-completion when loading. For example:
+ ```vim
+  :Hi save name
+  :Hi load <Tab>
+ ```
+ Highlight files are stored in a user configurable `HiKeywords` directory.
+ To browse and manage files in the directory, you can open **netrw** using the command:
+ ```vim
+  :Hi ls
+ ```
+ <details>
+ <summary><b>&nbsp; relative path </b></summary>
+ <br>
+
+ You can also use relative paths. For example, to save and load a highlight file in the current directory:
+ ```vim
+  :Hi save ./name
+  :Hi load ./<Tab>
+ ```
+ </details>
+ <br>
+
+## Sync Mode
+
+ The plugin supports three highlight sync mode commands.
+ <br>
+
+ For each single window highlighting mode:
+ ```vim
+  :Hi =
+ ```
+
+ To synchronize window highlighting on each tab-page:
+ ```vim
+  :Hi ==
+ ```
+
+ When synchronizing window highlighting across all tab-pages:
+ ```vim
+  :Hi ===
+ ```
+ <br>
+
+> The initial mode can be set using the `HiSyncMode` configuration variable.
+
+ <br>
+
+## Find in Files
 
  If you have installed hi-performance search tools such as **ag**, **rg**, **ack**, **sift**, or **grep**,
  the plugin can run it when looking for patterns based on the current directory. And when the given expression is simple,
@@ -326,80 +398,6 @@ in the search results. For example, in the mapping above, entering `1` `-` will 
 
  <br>
 
-## Positional Highlight
-
-There is another type of highlight that is set in a specific location.
-
-Unlike **pattern-based** highlighting, **Positional Highlight** is set to a specific position in the buffer.
-Thanks to new APIs in Vim and Neovim, it's similar to coloring over text with a highlighter.
-The position is updated when inserting or deleting the line above.
-
-To set a **Positional Highlight** on a specific line, press the `HiSetSL` key in normal or visual mode.  
-Multiline highlighting is now automatically set to positional highlighting.
-
- <img width=400 alt="positional" src="https://github.com/azabiong/vim-highlighter/assets/83812658/25ba37c8-43ce-4eaf-9d43-663108bfb54b"> <br>
-
-**Jump** commands `Hi{}` and `Hi[]` are supported after setting.
-
- <br>
-
-## Save & Load
-
- Sometimes when you want to save highlights of the current window and reload them next time, you can use:
- ```vim
-  :Hi save
- ```
- and when loading:
- ```vim
-  :Hi load
- ```
- You can name the file when saving, and use tab-completion when loading. For example:
- ```vim
-  :Hi save name
-  :Hi load <Tab>
- ```
- Highlight files are stored in a user configurable `HiKeywords` directory.
- To browse and manage files in the directory, you can open **netrw** using the command:
- ```vim
-  :Hi ls
- ```
- <details>
- <summary><b>&nbsp; relative path </b></summary>
- <br>
-
- You can also use relative paths. For example, to save and load a highlight file in the current directory:
- ```vim
-  :Hi save ./name
-  :Hi load ./<Tab>
- ```
- </details>
- <br>
-
-## Sync Mode
-
- The plugin supports three highlight sync mode commands.
- <br>
-
- For each single window highlighting mode:
- ```vim
-  :Hi =
- ```
-
- To synchronize window highlighting on each tab-page:
- ```vim
-  :Hi ==
- ```
-
- When synchronizing window highlighting across all tab-pages:
- ```vim
-  :Hi ===
- ```
- <br>
-
-> The initial mode can be set using the `HiSyncMode` configuration variable.
-
- <br>
-
 ## Customizing Colors
 
   The plugin provides two default color sets which are automatically loaded based on the current `background` mode.
@@ -448,7 +446,6 @@ Multiline highlighting is now automatically set to positional highlighting.
 Multiline highlight color numbers start at 80, `HiColor80`.
 
  <br>
-
 
 ## Configuration Examples
 

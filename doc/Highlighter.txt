@@ -18,10 +18,10 @@ CONTENTS                                                           *Highlighter*
                  Jump to Highlight       |Hi-Jump-To-Highlight|
                  One Time Highlight      |Hi-One-Time-Highlight|
                  Following Highlight     |Hi-Following-Highlight|
-                 Find in Files Highlight |Hi-Find-In-Files-Highlight|
                  Positional Highlight    |Hi-Positional-Highlight|
                  Save & Load             |Hi-Save-Load|
                  Sync Mode               |Hi-Sync-Mode|
+                 Find in Files           |Hi-Find-In-Files|
                  Customizing Colors      |Hi-Customizing-Colors|
                  Commands                |Hi-Commands|
                  Options                 |Hi-Options|
@@ -133,7 +133,70 @@ Matching option ~
 and `Jump` commands `Hi<>` and `Hi[]` are also supported.
 
 ------------------------------------------------------------------------------
-FIND IN FILES HIGHLIGHT                             *Hi-Find-In-Files-Highlight*
+POSITIONAL HIGHLIGHT                                   *Hi-Positional-Highlight*
+
+Unlike pattern-based highlighting, `POSITIONAL HIGHLIGHT` is set to a specific
+position in the buffer. Thanks to new APIs in Vim and Neovim, it's similar to
+coloring over text with a highlighter. The position is updated when inserting
+or deleting the line above.
+
+To set a `POSITIONAL HIGHLIGHT` on a specific line, press the |HiSetSL| key in
+normal or visual mode.
+
+Multiline highlighting is now automatically set to positional highlighting.
+
+`Jump` commands `Hi{}` and `Hi[]` are supported after setting.
+
+------------------------------------------------------------------------------
+SAVE AND LOAD                                                     *Hi-Save-Load*
+
+Sometimes when you want to save highlights of the current window, and reload
+them next time, you can use:
+>
+    :Hi save
+<
+and when loading:
+>
+    :Hi load
+<
+You can name the file when saving, and use <Tab> completion when loading.
+For example:
+>
+    :Hi save name
+    :Hi load <Tab>
+<
+Highlight files are stored in a user configurable |HiKeywords| directory. To
+browse and manage files in the directory, you can open |netrw| using the command:
+>
+    :Hi ls
+<
+You can also use relative paths. For example, to save and load a highlight file
+in the current directory:
+>
+    :Hi save ./name
+    :Hi load ./<Tab>
+<
+------------------------------------------------------------------------------
+SYNC MODE                                                         *Hi-Sync-Mode*
+
+The plugin supports three highlight sync mode commands.
+
+For each single window highlighting mode:
+>
+    :Hi =
+<
+To synchronize window highlighting on each tab-page:
+>
+    :Hi ==
+<
+When synchronizing window highlighting across all tab-pages:
+>
+    :Hi ===
+<
+The initial mode can be set using the |HiSyncMode| configuration variable.
+
+------------------------------------------------------------------------------
+FIND IN FILES                                                 *Hi-Find-In-Files*
 
 If you have installed hi-performance search tools such as 'ag', 'rg', 'ack',
 'sift' or 'grep', the plugin can run it when looking for patterns based on the
@@ -245,71 +308,6 @@ highlight patterns to make them easier to find.
     Pressing the number `1` before the |Hi/next| command invokes a special
     function that jumps to the first item in the search results. For example,
     in the mapping above, entering `1-` will jump to the first item.
-
-------------------------------------------------------------------------------
-POSITIONAL HIGHLIGHT                                   *Hi-Positional-Highlight*
-
-There is another type of highlight that is set in a specific location.
-
-Unlike pattern-based highlighting, `POSITIONAL HIGHLIGHT` is set to a specific
-position in the buffer. Thanks to new APIs in Vim and Neovim, it's similar to
-coloring over text with a highlighter. The position is updated when inserting
-or deleting the line above.
-
-To set a `POSITIONAL HIGHLIGHT` on a specific line, press the |HiSetSL| key in
-normal or visual mode.
-
-Multiline highlighting is now automatically set to positional highlighting.
-
-`Jump` commands `Hi{}` and `Hi[]` are supported after setting.
-
-------------------------------------------------------------------------------
-SAVE AND LOAD                                                     *Hi-Save-Load*
-
-Sometimes when you want to save highlights of the current window, and reload
-them next time, you can use:
->
-    :Hi save
-<
-and when loading:
->
-    :Hi load
-<
-You can name the file when saving, and use <Tab> completion when loading.
-For example:
->
-    :Hi save name
-    :Hi load <Tab>
-<
-Highlight files are stored in a user configurable |HiKeywords| directory. To
-browse and manage files in the directory, you can open |netrw| using the command:
->
-    :Hi ls
-<
-You can also use relative paths. For example, to save and load a highlight file
-in the current directory:
->
-    :Hi save ./name
-    :Hi load ./<Tab>
-<
-------------------------------------------------------------------------------
-SYNC MODE                                                         *Hi-Sync-Mode*
-
-The plugin supports three highlight sync mode commands.
-
-For each single window highlighting mode:
->
-    :Hi =
-<
-To synchronize window highlighting on each tab-page:
->
-    :Hi ==
-<
-When synchronizing window highlighting across all tab-pages:
->
-    :Hi ===
-<
-The initial mode can be set using the |HiSyncMode| configuration variable.
 
 ------------------------------------------------------------------------------
 CUSTOMIZING COLORS                                       *Hi-Customizing-Colors*
