@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.63.2
+" Version: 1.63.3
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -23,7 +23,7 @@ let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiSetToggle = get(g:, 'HiSetToggle', 0)
 let g:HiFindLines = 0
 
-let s:Version   = '1.63.2'
+let s:Version   = '1.63.3'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
@@ -782,9 +782,7 @@ function s:SetSyncMode(op, msg=0)
   let s:Sync.mode = l:op
   let g:HiSyncMode = l:op
   call s:SetPage()
-  if l:op == 0
-    return
-  endif
+  if l:op == 0 | return | endif
 
   let l:match = s:LoadMatch()
   if l:op == 1
@@ -1290,8 +1288,9 @@ function s:LoadHighlight(file)
   let s:Number[0] += 1
 
   if s:Sync.mode
-    call s:SetSyncMode('=')
-    call s:SetSyncMode(s:Sync.mode == 1 ? '==' : '===')
+    let l:mode = s:Sync.mode
+    let s:Sync.mode = 0
+    call s:SetSyncMode(l:mode == 1 ? '==' : '===')
   endif
   call s:UpdateJump(l:jump[0], l:jump[1])
 endfunction
@@ -1387,6 +1386,7 @@ function s:JumpTo(pattern, group, flag, count, align=0)
   if !empty(a:group)
     call s:UpdateJump(a:pattern, a:group)
   endif
+  return 1
 endfunction
 
 function s:JumpLong(op, count)
@@ -1397,7 +1397,7 @@ function s:JumpLong(op, count)
     if !empty(l:jump)
       call s:JumpTo(l:jump, 0, l:op, l:count)
       let s:HiMode['p'] = getpos('.')
-      return
+      return 1
     endif
   endif
 
@@ -2528,14 +2528,16 @@ function highlighter#List()
 endfunction
 
 function highlighter#Search(key)
-  if v:hlsearch || (empty(s:GetJump()[0]) && !exists("s:HiMode"))
-    call feedkeys(max([v:count, 1]).a:key.'zv', 'n')
-    return 0
+  if v:hlsearch
+    let l:jmp = 0
   else
     let l:cmd = (a:key[0] ==# 'n') ? '>' : '<'
-    call s:JumpLong(l:cmd, v:count)
-    return 1
+    let l:jmp = s:JumpLong(l:cmd, v:count)
   endif
+  if !l:jmp
+    call feedkeys(max([v:count, 1]).a:key.'zv', 'n')
+  endif
+  return l:jmp
 endfunction
 
 " args: [line, color] or [line, column, length, color]
