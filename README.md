@@ -153,8 +153,8 @@
  You can easily define key mappings for these commands. For example:
 
  ```vim
-   nn <CR>  <Cmd>Hi><CR>
-   nn g<CR> <Cmd>Hi<<CR>
+   nn g<CR> <Cmd>Hi><CR>
+   nn g<BS> <Cmd>Hi<<CR>
  ```
  > Alternatively, you can map the <kbd>n</kbd> and <kbd>N</kbd> keys to `HiSearch()` function, which automatically selects
  > the search type between native search and jump commands. &nbsp;→ &nbsp;[Configuration](#configuration-examples)
@@ -468,8 +468,8 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > " let HiSetSL = 't<CR>'
 >
 > " jump key mappings
-> nn <CR>  <Cmd>Hi><CR>
-> nn g<CR> <Cmd>Hi<<CR>
+> nn g<CR> <Cmd>Hi><CR>
+> nn g<BS> <Cmd>Hi<<CR>
 > nn gl    <Cmd>Hi}<CR>
 > nn gh    <Cmd>Hi{<CR>
 > nn gj    <Cmd>Hi]<CR>
@@ -511,8 +511,8 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 >   " let HiSetSL = 't<CR>'
 >
 >   " jump key mappings
->   nn <CR>  <Cmd>Hi><CR>
->   nn g<CR> <Cmd>Hi<<CR>
+>   nn g<CR> <Cmd>Hi><CR>
+>   nn g<BS> <Cmd>Hi<<CR>
 >   nn gl    <Cmd>Hi}<CR>
 >   nn gh    <Cmd>Hi{<CR>
 >   nn gj    <Cmd>Hi]<CR>

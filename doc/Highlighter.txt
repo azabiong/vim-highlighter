@@ -86,8 +86,8 @@ Color ~
 
 You can easily define key mappings for these commands. For example:
 >
-    nn <CR>  <Cmd>Hi><CR>
-    nn g<CR> <Cmd>Hi<<CR>
+    nn g<CR> <Cmd>Hi><CR>
+    nn g<BS> <Cmd>Hi<<CR>
 <
 Alternatively, you can map the `n` and `N` keys to |HiSearch()| function, which
 automatically selects the search type between native search and jump commands.
@@ -388,8 +388,8 @@ with subsequent commands using an optional space.
     command is supported. It would be convenient to use shortcut keys for these
     commands. For example:
 >
-      nn <CR>  <Cmd>Hi><CR>
-      nn g<CR> <Cmd>Hi<<CR>
+      nn g<CR> <Cmd>Hi><CR>
+      nn g<BS> <Cmd>Hi<<CR>
 <
     Alternatively, you can map `n` and `N` keys to the |HiSearch()| function.
                                                                    *:HI}*  *:HI{*
