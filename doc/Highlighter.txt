@@ -76,7 +76,7 @@ Pattern ~
   matches the pattern at the cursor position or to the recently set highlight.
 
 Position ~
-  The `Hi{` and `Hi}` commands, move the cursor to the nearest highlight, even if
+  The `Hi{` and `Hi}` commands move the cursor to the nearest highlight, even if
   the pattern or type differs from the current selection.
 
 Color ~
@@ -86,8 +86,8 @@ Color ~
 
 You can easily define key mappings for these commands. For example:
 >
-    nn g<CR> <Cmd>Hi><CR>
-    nn g<BS> <Cmd>Hi<<CR>
+    nn gj <Cmd>Hi><CR>
+    nn gk <Cmd>Hi<<CR>
 <
 Alternatively, you can map the `n` and `N` keys to |HiSearch()| function, which
 automatically selects the search type between native search and jump commands.
@@ -388,8 +388,8 @@ with subsequent commands using an optional space.
     command is supported. It would be convenient to use shortcut keys for these
     commands. For example:
 >
-      nn g<CR> <Cmd>Hi><CR>
-      nn g<BS> <Cmd>Hi<<CR>
+      nn gj <Cmd>Hi><CR>
+      nn gk <Cmd>Hi<<CR>
 <
     Alternatively, you can map `n` and `N` keys to the |HiSearch()| function.
                                                                    *:HI}*  *:HI{*
@@ -410,8 +410,8 @@ with subsequent commands using an optional space.
     When setting the highlights, you can specify a color number before the |Hi+|
     command. For key mapping, for example:
 >
-      nn gj <Cmd>Hi]<CR>
-      nn gk <Cmd>Hi[<CR>
+      nn g<CR> <Cmd>Hi]<CR>
+      nn g<BS> <Cmd>Hi[<CR>
 <                                                                        *:HI>>*
 :Hi >> ~
     Set `FOLLOWING HIGHLIGHT` mode

@@ -141,7 +141,7 @@
  matches the pattern at the cursor position or to the recently set highlight.
 
  **2. Position** &nbsp;
- The `Hi {` and `Hi }` commands, move the cursor to the nearest highlight,
+ The `Hi {` and `Hi }` commands move the cursor to the nearest highlight,
  even if the pattern or type differs from the current selection.
 
  **3. Color** &nbsp; &nbsp; &nbsp;
@@ -153,8 +153,8 @@
  You can easily define key mappings for these commands. For example:
 
  ```vim
-   nn g<CR> <Cmd>Hi><CR>
-   nn g<BS> <Cmd>Hi<<CR>
+   nn gj <Cmd>Hi><CR>
+   nn gk <Cmd>Hi<<CR>
  ```
  > Alternatively, you can map the <kbd>n</kbd> and <kbd>N</kbd> keys to `HiSearch()` function, which automatically selects
  > the search type between native search and jump commands. &nbsp;→ &nbsp;[Configuration](#configuration-examples)
@@ -468,12 +468,12 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 > " let HiSetSL = 't<CR>'
 >
 > " jump key mappings
-> nn g<CR> <Cmd>Hi><CR>
-> nn g<BS> <Cmd>Hi<<CR>
+> nn gj    <Cmd>Hi><CR>
+> nn gk    <Cmd>Hi<<CR>
 > nn gl    <Cmd>Hi}<CR>
 > nn gh    <Cmd>Hi{<CR>
-> nn gj    <Cmd>Hi]<CR>
-> nn gk    <Cmd>Hi[<CR>
+> nn g<CR> <Cmd>Hi]<CR>
+> nn g<BS> <Cmd>Hi[<CR>
 >
 > " find key mappings
 > nn -        <Cmd>Hi/next<CR>
@@ -511,12 +511,12 @@ Multiline highlight color numbers start at 80, `HiColor80`.
 >   " let HiSetSL = 't<CR>'
 >
 >   " jump key mappings
->   nn g<CR> <Cmd>Hi><CR>
->   nn g<BS> <Cmd>Hi<<CR>
+>   nn gj    <Cmd>Hi><CR>
+>   nn gk    <Cmd>Hi<<CR>
 >   nn gl    <Cmd>Hi}<CR>
 >   nn gh    <Cmd>Hi{<CR>
->   nn gj    <Cmd>Hi]<CR>
->   nn gk    <Cmd>Hi[<CR>
+>   nn g<CR> <Cmd>Hi]<CR>
+>   nn g<BS> <Cmd>Hi[<CR>
 >
 >   " find key mappings
 >   nn -        <Cmd>Hi/next<CR>
