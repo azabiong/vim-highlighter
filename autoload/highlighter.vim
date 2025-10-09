@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.63.3
+" Version: 1.64
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -23,10 +23,10 @@ let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiSetToggle = get(g:, 'HiSetToggle', 0)
 let g:HiFindLines = 0
 
-let s:Version   = '1.63.3'
+let s:Version   = '1.64'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
-let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0}
+let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0, 'str':''}
 let s:Find      = {'tool':'_', 'opt':[], 'exp':'', 'file':[], 'line':'', 'err':0,
                   \'type':'', 'options':{}, 'hi_exp':[], 'hi':[], 'hi_err':'', 'hi_tag':0}
 let s:FindList  = {'name':' Find *', 'buf':-1, 'pos':0, 'lines':0, 'edit':0,
@@ -150,7 +150,7 @@ function s:Load()
     let s:PI = 1
     let s:PTypes = []
     for c in s:Colors
-      call prop_type_add(c[0], {'highlight': c[0]})
+      call prop_type_add(c[0], {'highlight': c[0], 'override':(c[1] =~? 'fg')})
       call add(s:PTypes, c[0])
     endfor
   else
@@ -181,7 +181,8 @@ endfunction
 
 function s:SetPosType(type)
   if index(s:PTypes, a:type) == -1
-    call prop_type_add(a:type, {'highlight': a:type})
+    let l:fg = s:GetColor(a:type) =~? 'fg'
+    call prop_type_add(a:type, {'highlight': a:type, 'override':l:fg})
     call add(s:PTypes, a:type)
   endif
 endfunction
@@ -292,6 +293,8 @@ function s:SetHighlight(cmd, mode, num)
       let l:deleted = 0
       if a:mode == 'x'
         let s:HiMode['>'] = '<'
+      else
+        let l:pattern = ''
       endif
     elseif a:mode == '='
         let l:deleted = s:DeleteMatch(l:match, '==', l:pattern)
@@ -713,13 +716,15 @@ function s:GetFocusMode(mode, word)
   endif
 endfunction
 
-" s:SetFocusMode(cmd) actions
-" |   mode  |   !   |  '1,<'  |   '>'   |  ! off   1  one-time    <  one-time_in_follow
+" s:SetFocusMode(cmd, word) actions
+" +---------+-------+---------+---------+
+" |   mode  |   !   |   1,<   |    >    |  ! off   1 one_time   < one_time_in_follow   > follow
 " |   word  |   *   | !=   == | !=   == |  * any   != not_match   == match
 " |-----+---|-------|---------|---------|
-" |     | . |   1   |  =   0  |  >   0  |  . check  1 one-time  = update   0 off
+" |     | . |   1   |  =   0  |  >   0  |  . check   1 one_time   = update   0 off
 " | cmd | > |   >   |  >   >  |  >   >  |  > follow
 " |     | - |   0   |  0   0  |  0   0  |  - off
+" +-----+---+-------+---------+---------+
 function s:SetFocusMode(cmd, word)
   if a:cmd == '.'
     if !exists("s:HiMode")
@@ -1143,12 +1148,18 @@ function s:SetFindGuide(tid)
     let s:Guide.right = col('.')
     let s:Guide.left = max([s:Guide.right-6, 1])
     let s:Guide.win = win_getid()
+    let s:Guide.str = getline('.')[s:Guide.left-1 : s:Guide.right]
   endif
   if !s:Guide.win || s:Guide.left >= s:Guide.right
     return
   endif
   let s:Guide.mid = matchaddpos('HiGuide', [[s:Guide.line, s:Guide.left, 2]], 1, -1, {'window': s:Guide.win})
-  let s:Guide.tid = timer_start(40, function('s:SetFindGuide'))
+  let l:time = 40
+  if s:Guide.str[s:Guide.left-1] == "\t"
+    let l:time = 200
+    let s:Guide.left = s:Guide.right-1
+  endif
+  let s:Guide.tid = timer_start(l:time, function('s:SetFindGuide'))
   let s:Guide.left += 1
 endfunction
 
@@ -2492,7 +2503,7 @@ function highlighter#Complete(arg, line, pos)
       return getcompletion(a:arg, 'file')
     endif
   else  " commands
-    let l:opt1 = ['+', '-', '>>', '<>', '//']
+    let l:opt1 = ['+', '-', '>>', '<>']
     let l:opt2 = ['/next', '/previous', '/older', '/newer', '/open', '/close',
                  \'save ', 'load ', 'ls', 'clear', 'default']
     if l:len == 1 && l:part[0] ==? 'Hi'

@@ -12,7 +12,7 @@
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                   `ver 1.63.3`
+                                                                    `ver 1.64`
                  Introduction            |Hi-Introduction|
                  Key Map                 |Hi-Key-Map|
                  Jump to Highlight       |Hi-Jump-To-Highlight|
@@ -652,7 +652,10 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
-1.63.3~
+1.64~
+    Improve "Positional Highlight" when |cursorline| is on
+    Improve |Hi-| in <cWORD> matching mode
+    Improve |HiCursorGuide| when jumping to "Find" results
     Improve |HiSearch()| on "One Time Highlight" (issue #34)
 1.63~
     Add APIs for setting "Positional Highlight" |HiSetPos()| (PR #32)
