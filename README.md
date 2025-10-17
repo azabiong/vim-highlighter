@@ -14,15 +14,15 @@
 ### Contents
 
  &nbsp;&nbsp;
- [Installation](#installation) <br> &nbsp;&nbsp;
- [Key Map](#key-map) <br> &nbsp;&nbsp;
+ [Installation](#installation) <br> &nbsp;&nbsp;&nbsp;&nbsp;
+ [Key Map](#key-map) <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  [Jump to Highlight](#jump-to-highlight) &nbsp;&nbsp;&nbsp;
- [One Time Highlight](#one-time-highlight) &nbsp;&nbsp;&nbsp;
- [Following Highlight](#following-highlight) &nbsp;&nbsp; &nbsp;
- [Positional Highlight](#positional-highlight) <br> &nbsp;&nbsp;
+ [One Time Highlight](#one-time-highlight) &nbsp;&nbsp;&nbsp;&nbsp;
+ [Following Highlight](#following-highlight) &nbsp;&nbsp;&nbsp;
+ [Positional Highlight](#positional-highlight) <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  [Save & Load](#save--load) &nbsp;&nbsp;&nbsp;
- [Sync Mode](#sync-mode) <br> &nbsp;&nbsp;
- [Find in Files](#find-in-files) <br> &nbsp;&nbsp;
+ [Sync Mode](#sync-mode) <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ [Find in Files](#find-in-files) <br> &nbsp;&nbsp;&nbsp;&nbsp;
  [Customizing Colors](#customizing-colors) <br> &nbsp;&nbsp;
  [Configuration](#configuration-examples) <br> &nbsp;&nbsp;
 
@@ -277,7 +277,7 @@
 
 ## Find in Files
 
- If you have installed hi-performance search tools such as **ag**, **rg**, **ack**, **sift**, or **grep**,
+ If you have installed hi-performance search tools such as **rg**, **ag**, **ack**, **sift**, or **grep**,
  the plugin can run it when looking for patterns based on the current directory. And when the given expression is simple,
  the plugin can highlight patterns to make them easier to find.
 
@@ -298,9 +298,9 @@
  <summary><b>&nbsp;Tools</b></summary>
 
  ```vim
-   let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
-
    let HiFindTool = 'rg -H --color=never --no-heading --column --smart-case'
+
+   let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
 
    let HiFindTool = 'ack -H --nocolor --noheading --column --smart-case'
 
@@ -349,7 +349,7 @@
 >
 > This option treats the input as a literal string, which is useful when searching for codes with symbols.
 > ```
->   ag,  rg,  grep,  git   -F --fixed-strings
+>   rg,  ag,  grep,  git   -F --fixed-strings
 >   ack, sift              -Q --literal
 > ```
 > Example: &nbsp; searching for `item[i+1].size() * 2`

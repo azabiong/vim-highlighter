@@ -1,3 +1,4 @@
+vim:ft=help:nowrap:norl
 *Highlighter.txt*  vim-highlighter
                                                                              ~
                                                                              ~
@@ -198,7 +199,7 @@ The initial mode can be set using the |HiSyncMode| configuration variable.
 ------------------------------------------------------------------------------
 FIND IN FILES                                                 *Hi-Find-In-Files*
 
-If you have installed hi-performance search tools such as 'ag', 'rg', 'ack',
+If you have installed hi-performance search tools such as 'rg', 'ag', 'ack',
 'sift' or 'grep', the plugin can run it when looking for patterns based on the
 current directory. And when the given expression is simple, the plugin can
 highlight patterns to make them easier to find.
@@ -259,7 +260,7 @@ highlight patterns to make them easier to find.
     This option treats the input as a literal string, which is useful when
     searching for codes with symbols.
 >
-       ag,  rg,  grep,  git   -F --fixed-strings
+       rg,  ag,  grep,  git   -F --fixed-strings
        ack, sift              -Q --literal
 <
     Example: searching for `item[i+1].size() * 2`
@@ -270,7 +271,7 @@ highlight patterns to make them easier to find.
     When this option is set to the default, you can force a case-sensitive
     search by using the option -s or -I
 >
-       ag,  rg      -s --case-sensitive
+       rg,  ag      -s --case-sensitive
        ack, sift    -I --no-ignore-case
 <
 5.Visual selection ~
@@ -514,10 +515,10 @@ window to a file. Now the default setting is:
     to run when using `FIND IN FILES` function. For example,
     grep: >
           let HiFindTool = 'grep -H -EnrI --exclude-dir=.git'
-<    ag: >
-          let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
 <    rg: >
           let HiFindTool = 'rg -H --color=never --no-heading --column --smart-case'
+<    ag: >
+          let HiFindTool = 'ag --nocolor --noheading --column --nobreak'
 <    ack: >
           let HiFindTool = 'ack -H --nocolor --noheading --column --smart-case'
 <    sift: >
@@ -832,6 +833,6 @@ code contributions and help in resolving issues.
 
 
 ------------------------------------------------------------------------------
-Vim:tw=80:ts=4:ft=help:nowrap:norl
+vim:ft=help:nowrap:norl:tw=80:ts=4:et
 
 
