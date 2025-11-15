@@ -2,7 +2,7 @@
 " Author: Azabiong
 " License: MIT
 " Source: https://github.com/azabiong/vim-highlighter
-" Version: 1.64
+" Version: 1.64.1
 
 scriptencoding utf-8
 if exists("s:Version")
@@ -23,7 +23,7 @@ let g:HiBackup = get(g:, 'HiBackup', 1)
 let g:HiSetToggle = get(g:, 'HiSetToggle', 0)
 let g:HiFindLines = 0
 
-let s:Version   = '1.64'
+let s:Version   = '1.64.1'
 let s:Sync      = {'mode':0, 'ver':0, 'match':[], 'add':[], 'del':[], 'prev':0}
 let s:Keywords  = {'plug': expand('<sfile>:h').'/keywords', '.':[]}
 let s:Guide     = {'tid':0, 'line':0, 'left':0, 'right':0, 'win':0, 'mid':0, 'str':''}
@@ -1558,14 +1558,14 @@ function s:StartEffectOne(group)
   endif
   let l:rgb = [str2nr(l:color[:1],16), str2nr(l:color[2:3],16), str2nr(l:color[4:5],16)]
   let s:EO = #{group:a:group, color:l:color, rgb:l:rgb, tid:0}
-  let s:EO.frame = #{rgb:s:EO.rgb, count:5, stage:0, step:0}
+  let s:EO.frame = #{rgb:s:EO.rgb, count:6, stage:0, step:0}
   let s:EO.frame.delta = (&background == 'dark') ? -6 : 3
   call s:UpdateEffectOne(0)
 endfunction
 
 function s:UpdateEffectOne(tid)
   if a:tid == 0
-    let l:next = 600
+    let l:next = 900
   else
     let l:f = s:EO.frame
     let l:f.step += 1
@@ -1573,7 +1573,7 @@ function s:UpdateEffectOne(tid)
       let l:f.step = 0
       let l:f.delta = -l:f.delta
       let l:f.stage += 1
-      let l:next = (l:f.stage % 2) ? 300 : 1200
+      let l:next = (l:f.stage % 2) ? 300 : 1500
     else
       let l:next = (l:f.delta > 0) ? 90 : 60
     endif
