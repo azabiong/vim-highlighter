@@ -2546,7 +2546,7 @@ function highlighter#Search(key)
     let l:jmp = s:JumpLong(l:cmd, v:count)
   endif
   if !l:jmp
-    call feedkeys(max([v:count, 1]).a:key.'zv', 'n')
+    call feedkeys(max([v:count, 1]).a:key, 'nt')
   endif
   return l:jmp
 endfunction
