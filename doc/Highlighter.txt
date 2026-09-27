@@ -13,7 +13,7 @@ vim:ft=help:nowrap:norl
                                                                              ~
 ------------------------------------------------------------------------------
 CONTENTS                                                           *Highlighter*
-                                                                    `ver 1.64.1`
+                                                                    `ver 1.64.2`
                  Introduction            |Hi-Introduction|
                  Key Map                 |Hi-Key-Map|
                  Jump to Highlight       |Hi-Jump-To-Highlight|
@@ -653,6 +653,8 @@ like to add, please feel free to open an issue.
 ------------------------------------------------------------------------------
 LOG                                                                     *Hi-Log*
 
+1.64.2~
+    Improve feedkeys() call for opening folds (issue #39)
 1.64.1~
     Improve |HiEffectOne|
 1.64~
